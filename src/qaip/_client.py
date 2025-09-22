@@ -82,7 +82,7 @@ class Qaip(SyncAPIClient):
         if base_url is None:
             base_url = os.environ.get("QAIP_BASE_URL")
         if base_url is None:
-            base_url = f"/v1"
+            base_url = f"https://developer.qaip.com/v1"
 
         super().__init__(
             version=__version__,
@@ -256,7 +256,7 @@ class AsyncQaip(AsyncAPIClient):
         if base_url is None:
             base_url = os.environ.get("QAIP_BASE_URL")
         if base_url is None:
-            base_url = f"/v1"
+            base_url = f"https://developer.qaip.com/v1"
 
         super().__init__(
             version=__version__,
