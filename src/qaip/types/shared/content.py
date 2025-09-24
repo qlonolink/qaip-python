@@ -2,7 +2,7 @@
 
 from typing import List, Optional
 
-from .._models import BaseModel
+from ..._models import BaseModel
 from .file_type import FileType
 from .source_type import SourceType
 
