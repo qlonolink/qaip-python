@@ -2,13 +2,13 @@
 
 from typing import List
 
-from .content import Content
 from .._models import BaseModel
+from .shared.content import Content
 
-__all__ = ["SearchQueryResponse"]
+__all__ = ["SearchResponse"]
 
 
-class SearchQueryResponse(BaseModel):
+class SearchResponse(BaseModel):
     id: str
     """A unique identifier for the search request"""
 

@@ -3,41 +3,60 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Mapping
+from typing import Any, List, Mapping, Iterable
 from typing_extensions import Self, override
 
 import httpx
 
 from . import _exceptions
 from ._qs import Querystring
+from .types import client_search_params, client_extract_params, client_completion_params
 from ._types import (
+    Body,
     Omit,
+    Query,
+    Headers,
     Timeout,
     NotGiven,
     Transport,
     ProxiesTypes,
     RequestOptions,
+    SequenceNotStr,
+    omit,
     not_given,
 )
-from ._utils import is_given, get_async_library
+from ._utils import (
+    is_given,
+    maybe_transform,
+    get_async_library,
+    async_maybe_transform,
+)
 from ._version import __version__
-from .resources import search, extract, contents, completions
+from ._response import (
+    to_raw_response_wrapper,
+    to_streamed_response_wrapper,
+    async_to_raw_response_wrapper,
+    async_to_streamed_response_wrapper,
+)
 from ._streaming import Stream as Stream, AsyncStream as AsyncStream
 from ._exceptions import QaipError, APIStatusError
 from ._base_client import (
     DEFAULT_MAX_RETRIES,
     SyncAPIClient,
     AsyncAPIClient,
+    make_request_options,
 )
+from .types.shared.content import Content
+from .types.search_response import SearchResponse
+from .types.extract_response import ExtractResponse
+from .types.shared.file_type import FileType
+from .types.shared.source_type import SourceType
+from .types.completion_response import CompletionResponse
 
 __all__ = ["Timeout", "Transport", "ProxiesTypes", "RequestOptions", "Qaip", "AsyncQaip", "Client", "AsyncClient"]
 
 
 class Qaip(SyncAPIClient):
-    completions: completions.CompletionsResource
-    contents: contents.ContentsResource
-    search: search.SearchResource
-    extract: extract.ExtractResource
     with_raw_response: QaipWithRawResponse
     with_streaming_response: QaipWithStreamedResponse
 
@@ -95,10 +114,6 @@ class Qaip(SyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.completions = completions.CompletionsResource(self)
-        self.contents = contents.ContentsResource(self)
-        self.search = search.SearchResource(self)
-        self.extract = extract.ExtractResource(self)
         self.with_raw_response = QaipWithRawResponse(self)
         self.with_streaming_response = QaipWithStreamedResponse(self)
 
@@ -173,6 +188,253 @@ class Qaip(SyncAPIClient):
     # client.with_options(timeout=10).foo.create(...)
     with_options = copy
 
+    def completion(
+        self,
+        *,
+        messages: Iterable[client_completion_params.Message],
+        citation: bool | Omit = omit,
+        date_from: int | Omit = omit,
+        date_to: int | Omit = omit,
+        domains: SequenceNotStr[str] | Omit = omit,
+        file_types: List[FileType] | Omit = omit,
+        source_types: List[SourceType] | Omit = omit,
+        stream: bool | Omit = omit,
+        tag_ids: SequenceNotStr[str] | Omit = omit,
+        tags: SequenceNotStr[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CompletionResponse:
+        """Generates a completion based on the input messages and retrieval chunks.
+
+        If the
+        'stream' parameter is set to true, the response is returned as a stream of plain
+        text (text/plain).
+
+        Args:
+          messages: The messages to generate completion for
+
+          citation: Whether to include citations in the response
+
+          date_from: Start date for content search (Unix timestamp in seconds)
+
+          date_to: End date for content search (Unix timestamp in seconds)
+
+          domains: Array of domains to search within (supports partial matching)
+
+          stream: Whether to stream the response. If true, the response is sent as a stream using
+              the 'text/plain' content type.
+
+          tag_ids: target tag IDs to be obtained
+
+          tags: target tag names to be obtained
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return self.post(
+            "/completions",
+            body=maybe_transform(
+                {
+                    "messages": messages,
+                    "citation": citation,
+                    "date_from": date_from,
+                    "date_to": date_to,
+                    "domains": domains,
+                    "file_types": file_types,
+                    "source_types": source_types,
+                    "stream": stream,
+                    "tag_ids": tag_ids,
+                    "tags": tags,
+                },
+                client_completion_params.ClientCompletionParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=CompletionResponse,
+        )
+
+    def content(
+        self,
+        id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Content:
+        """
+        Get through indexed content
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self.get(
+            f"/contents/{id}",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Content,
+        )
+
+    def extract(
+        self,
+        *,
+        schema: object,
+        date_from: int | Omit = omit,
+        date_to: int | Omit = omit,
+        domains: SequenceNotStr[str] | Omit = omit,
+        file_types: List[FileType] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        prompt: str | Omit = omit,
+        source_types: List[SourceType] | Omit = omit,
+        tag_ids: SequenceNotStr[str] | Omit = omit,
+        tags: SequenceNotStr[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ExtractResponse:
+        """
+        Performs data extraction using LLM based on the specified data source, filter
+        conditions, and JSON schema. Retrieves chunked data and uses the schema to
+        extract and return the result as JSON via LLM.
+
+        Args:
+          schema: JSON Schema for the data to be extracted.
+
+          date_from: Start date for content search (Unix timestamp in seconds)
+
+          date_to: End date for content search (Unix timestamp in seconds)
+
+          prompt: Additional prompt for the LLM (optional, if not specified, a default prompt in
+              Japanese will be used).
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return self.post(
+            "/extract",
+            body=maybe_transform(
+                {
+                    "schema": schema,
+                    "date_from": date_from,
+                    "date_to": date_to,
+                    "domains": domains,
+                    "file_types": file_types,
+                    "limit": limit,
+                    "offset": offset,
+                    "prompt": prompt,
+                    "source_types": source_types,
+                    "tag_ids": tag_ids,
+                    "tags": tags,
+                },
+                client_extract_params.ClientExtractParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ExtractResponse,
+        )
+
+    def search(
+        self,
+        *,
+        query: str,
+        date_from: int | Omit = omit,
+        date_to: int | Omit = omit,
+        domains: SequenceNotStr[str] | Omit = omit,
+        file_types: List[FileType] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        source_types: List[SourceType] | Omit = omit,
+        tag_ids: SequenceNotStr[str] | Omit = omit,
+        tags: SequenceNotStr[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> SearchResponse:
+        """
+        Searches through indexed content using query
+
+        Args:
+          query: Search query string
+
+          date_from: Start date for content search (Unix timestamp in seconds)
+
+          date_to: End date for content search (Unix timestamp in seconds)
+
+          domains: Array of domains to search within (supports partial matching)
+
+          limit: Maximum number of results to return
+
+          offset: Number of results to skip
+
+          tag_ids: target tag IDs to be obtained
+
+          tags: target tag names to be obtained
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return self.post(
+            "/search",
+            body=maybe_transform(
+                {
+                    "query": query,
+                    "date_from": date_from,
+                    "date_to": date_to,
+                    "domains": domains,
+                    "file_types": file_types,
+                    "limit": limit,
+                    "offset": offset,
+                    "source_types": source_types,
+                    "tag_ids": tag_ids,
+                    "tags": tags,
+                },
+                client_search_params.ClientSearchParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=SearchResponse,
+        )
+
     @override
     def _make_status_error(
         self,
@@ -208,10 +470,6 @@ class Qaip(SyncAPIClient):
 
 
 class AsyncQaip(AsyncAPIClient):
-    completions: completions.AsyncCompletionsResource
-    contents: contents.AsyncContentsResource
-    search: search.AsyncSearchResource
-    extract: extract.AsyncExtractResource
     with_raw_response: AsyncQaipWithRawResponse
     with_streaming_response: AsyncQaipWithStreamedResponse
 
@@ -269,10 +527,6 @@ class AsyncQaip(AsyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.completions = completions.AsyncCompletionsResource(self)
-        self.contents = contents.AsyncContentsResource(self)
-        self.search = search.AsyncSearchResource(self)
-        self.extract = extract.AsyncExtractResource(self)
         self.with_raw_response = AsyncQaipWithRawResponse(self)
         self.with_streaming_response = AsyncQaipWithStreamedResponse(self)
 
@@ -347,6 +601,253 @@ class AsyncQaip(AsyncAPIClient):
     # client.with_options(timeout=10).foo.create(...)
     with_options = copy
 
+    async def completion(
+        self,
+        *,
+        messages: Iterable[client_completion_params.Message],
+        citation: bool | Omit = omit,
+        date_from: int | Omit = omit,
+        date_to: int | Omit = omit,
+        domains: SequenceNotStr[str] | Omit = omit,
+        file_types: List[FileType] | Omit = omit,
+        source_types: List[SourceType] | Omit = omit,
+        stream: bool | Omit = omit,
+        tag_ids: SequenceNotStr[str] | Omit = omit,
+        tags: SequenceNotStr[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> CompletionResponse:
+        """Generates a completion based on the input messages and retrieval chunks.
+
+        If the
+        'stream' parameter is set to true, the response is returned as a stream of plain
+        text (text/plain).
+
+        Args:
+          messages: The messages to generate completion for
+
+          citation: Whether to include citations in the response
+
+          date_from: Start date for content search (Unix timestamp in seconds)
+
+          date_to: End date for content search (Unix timestamp in seconds)
+
+          domains: Array of domains to search within (supports partial matching)
+
+          stream: Whether to stream the response. If true, the response is sent as a stream using
+              the 'text/plain' content type.
+
+          tag_ids: target tag IDs to be obtained
+
+          tags: target tag names to be obtained
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return await self.post(
+            "/completions",
+            body=await async_maybe_transform(
+                {
+                    "messages": messages,
+                    "citation": citation,
+                    "date_from": date_from,
+                    "date_to": date_to,
+                    "domains": domains,
+                    "file_types": file_types,
+                    "source_types": source_types,
+                    "stream": stream,
+                    "tag_ids": tag_ids,
+                    "tags": tags,
+                },
+                client_completion_params.ClientCompletionParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=CompletionResponse,
+        )
+
+    async def content(
+        self,
+        id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Content:
+        """
+        Get through indexed content
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self.get(
+            f"/contents/{id}",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Content,
+        )
+
+    async def extract(
+        self,
+        *,
+        schema: object,
+        date_from: int | Omit = omit,
+        date_to: int | Omit = omit,
+        domains: SequenceNotStr[str] | Omit = omit,
+        file_types: List[FileType] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        prompt: str | Omit = omit,
+        source_types: List[SourceType] | Omit = omit,
+        tag_ids: SequenceNotStr[str] | Omit = omit,
+        tags: SequenceNotStr[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ExtractResponse:
+        """
+        Performs data extraction using LLM based on the specified data source, filter
+        conditions, and JSON schema. Retrieves chunked data and uses the schema to
+        extract and return the result as JSON via LLM.
+
+        Args:
+          schema: JSON Schema for the data to be extracted.
+
+          date_from: Start date for content search (Unix timestamp in seconds)
+
+          date_to: End date for content search (Unix timestamp in seconds)
+
+          prompt: Additional prompt for the LLM (optional, if not specified, a default prompt in
+              Japanese will be used).
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return await self.post(
+            "/extract",
+            body=await async_maybe_transform(
+                {
+                    "schema": schema,
+                    "date_from": date_from,
+                    "date_to": date_to,
+                    "domains": domains,
+                    "file_types": file_types,
+                    "limit": limit,
+                    "offset": offset,
+                    "prompt": prompt,
+                    "source_types": source_types,
+                    "tag_ids": tag_ids,
+                    "tags": tags,
+                },
+                client_extract_params.ClientExtractParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ExtractResponse,
+        )
+
+    async def search(
+        self,
+        *,
+        query: str,
+        date_from: int | Omit = omit,
+        date_to: int | Omit = omit,
+        domains: SequenceNotStr[str] | Omit = omit,
+        file_types: List[FileType] | Omit = omit,
+        limit: int | Omit = omit,
+        offset: int | Omit = omit,
+        source_types: List[SourceType] | Omit = omit,
+        tag_ids: SequenceNotStr[str] | Omit = omit,
+        tags: SequenceNotStr[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> SearchResponse:
+        """
+        Searches through indexed content using query
+
+        Args:
+          query: Search query string
+
+          date_from: Start date for content search (Unix timestamp in seconds)
+
+          date_to: End date for content search (Unix timestamp in seconds)
+
+          domains: Array of domains to search within (supports partial matching)
+
+          limit: Maximum number of results to return
+
+          offset: Number of results to skip
+
+          tag_ids: target tag IDs to be obtained
+
+          tags: target tag names to be obtained
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return await self.post(
+            "/search",
+            body=await async_maybe_transform(
+                {
+                    "query": query,
+                    "date_from": date_from,
+                    "date_to": date_to,
+                    "domains": domains,
+                    "file_types": file_types,
+                    "limit": limit,
+                    "offset": offset,
+                    "source_types": source_types,
+                    "tag_ids": tag_ids,
+                    "tags": tags,
+                },
+                client_search_params.ClientSearchParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=SearchResponse,
+        )
+
     @override
     def _make_status_error(
         self,
@@ -383,34 +884,66 @@ class AsyncQaip(AsyncAPIClient):
 
 class QaipWithRawResponse:
     def __init__(self, client: Qaip) -> None:
-        self.completions = completions.CompletionsResourceWithRawResponse(client.completions)
-        self.contents = contents.ContentsResourceWithRawResponse(client.contents)
-        self.search = search.SearchResourceWithRawResponse(client.search)
-        self.extract = extract.ExtractResourceWithRawResponse(client.extract)
+        self.completion = to_raw_response_wrapper(
+            client.completion,
+        )
+        self.content = to_raw_response_wrapper(
+            client.content,
+        )
+        self.extract = to_raw_response_wrapper(
+            client.extract,
+        )
+        self.search = to_raw_response_wrapper(
+            client.search,
+        )
 
 
 class AsyncQaipWithRawResponse:
     def __init__(self, client: AsyncQaip) -> None:
-        self.completions = completions.AsyncCompletionsResourceWithRawResponse(client.completions)
-        self.contents = contents.AsyncContentsResourceWithRawResponse(client.contents)
-        self.search = search.AsyncSearchResourceWithRawResponse(client.search)
-        self.extract = extract.AsyncExtractResourceWithRawResponse(client.extract)
+        self.completion = async_to_raw_response_wrapper(
+            client.completion,
+        )
+        self.content = async_to_raw_response_wrapper(
+            client.content,
+        )
+        self.extract = async_to_raw_response_wrapper(
+            client.extract,
+        )
+        self.search = async_to_raw_response_wrapper(
+            client.search,
+        )
 
 
 class QaipWithStreamedResponse:
     def __init__(self, client: Qaip) -> None:
-        self.completions = completions.CompletionsResourceWithStreamingResponse(client.completions)
-        self.contents = contents.ContentsResourceWithStreamingResponse(client.contents)
-        self.search = search.SearchResourceWithStreamingResponse(client.search)
-        self.extract = extract.ExtractResourceWithStreamingResponse(client.extract)
+        self.completion = to_streamed_response_wrapper(
+            client.completion,
+        )
+        self.content = to_streamed_response_wrapper(
+            client.content,
+        )
+        self.extract = to_streamed_response_wrapper(
+            client.extract,
+        )
+        self.search = to_streamed_response_wrapper(
+            client.search,
+        )
 
 
 class AsyncQaipWithStreamedResponse:
     def __init__(self, client: AsyncQaip) -> None:
-        self.completions = completions.AsyncCompletionsResourceWithStreamingResponse(client.completions)
-        self.contents = contents.AsyncContentsResourceWithStreamingResponse(client.contents)
-        self.search = search.AsyncSearchResourceWithStreamingResponse(client.search)
-        self.extract = extract.AsyncExtractResourceWithStreamingResponse(client.extract)
+        self.completion = async_to_streamed_response_wrapper(
+            client.completion,
+        )
+        self.content = async_to_streamed_response_wrapper(
+            client.content,
+        )
+        self.extract = async_to_streamed_response_wrapper(
+            client.extract,
+        )
+        self.search = async_to_streamed_response_wrapper(
+            client.search,
+        )
 
 
 Client = Qaip

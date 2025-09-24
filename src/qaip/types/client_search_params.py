@@ -6,13 +6,13 @@ from typing import List
 from typing_extensions import Required, TypedDict
 
 from .._types import SequenceNotStr
-from .file_type import FileType
-from .source_type import SourceType
+from .shared.file_type import FileType
+from .shared.source_type import SourceType
 
-__all__ = ["SearchQueryParams"]
+__all__ = ["ClientSearchParams"]
 
 
-class SearchQueryParams(TypedDict, total=False):
+class ClientSearchParams(TypedDict, total=False):
     query: Required[str]
     """Search query string"""
 
@@ -37,3 +37,6 @@ class SearchQueryParams(TypedDict, total=False):
 
     tag_ids: SequenceNotStr[str]
     """target tag IDs to be obtained"""
+
+    tags: SequenceNotStr[str]
+    """target tag names to be obtained"""

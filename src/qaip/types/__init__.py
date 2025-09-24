@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-from .content import Content as Content
-from .file_type import FileType as FileType
-from .source_type import SourceType as SourceType
-from .search_query_params import SearchQueryParams as SearchQueryParams
-from .search_query_response import SearchQueryResponse as SearchQueryResponse
-from .extract_perform_params import ExtractPerformParams as ExtractPerformParams
-from .completion_create_params import CompletionCreateParams as CompletionCreateParams
-from .extract_perform_response import ExtractPerformResponse as ExtractPerformResponse
-from .completion_create_response import CompletionCreateResponse as CompletionCreateResponse
+from .shared import Content as Content, FileType as FileType, SourceType as SourceType
+from .search_response import SearchResponse as SearchResponse
+from .extract_response import ExtractResponse as ExtractResponse
+from .completion_response import CompletionResponse as CompletionResponse
+from .client_search_params import ClientSearchParams as ClientSearchParams
+from .client_extract_params import ClientExtractParams as ClientExtractParams
+from .client_completion_params import ClientCompletionParams as ClientCompletionParams

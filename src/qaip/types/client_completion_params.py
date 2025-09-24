@@ -6,13 +6,13 @@ from typing import List, Iterable
 from typing_extensions import Literal, Required, TypedDict
 
 from .._types import SequenceNotStr
-from .file_type import FileType
-from .source_type import SourceType
+from .shared.file_type import FileType
+from .shared.source_type import SourceType
 
-__all__ = ["CompletionCreateParams", "Message"]
+__all__ = ["ClientCompletionParams", "Message"]
 
 
-class CompletionCreateParams(TypedDict, total=False):
+class ClientCompletionParams(TypedDict, total=False):
     messages: Required[Iterable[Message]]
     """The messages to generate completion for"""
 
@@ -40,6 +40,9 @@ class CompletionCreateParams(TypedDict, total=False):
 
     tag_ids: SequenceNotStr[str]
     """target tag IDs to be obtained"""
+
+    tags: SequenceNotStr[str]
+    """target tag names to be obtained"""
 
 
 class Message(TypedDict, total=False):

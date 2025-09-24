@@ -4,9 +4,9 @@ from typing import List, Optional
 from typing_extensions import Literal
 
 from .._models import BaseModel
-from .file_type import FileType
+from .shared.file_type import FileType
 
-__all__ = ["CompletionCreateResponse", "Choice", "ChoiceMessage", "ChoiceCitation"]
+__all__ = ["CompletionResponse", "Choice", "ChoiceMessage", "ChoiceCitation"]
 
 
 class ChoiceMessage(BaseModel):
@@ -47,7 +47,7 @@ class Choice(BaseModel):
     """Array of citations when citation parameter is true"""
 
 
-class CompletionCreateResponse(BaseModel):
+class CompletionResponse(BaseModel):
     id: str
     """A unique identifier for the completion"""
 
