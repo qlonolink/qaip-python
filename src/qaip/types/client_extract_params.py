@@ -6,13 +6,13 @@ from typing import List
 from typing_extensions import Required, TypedDict
 
 from .._types import SequenceNotStr
-from .file_type import FileType
-from .source_type import SourceType
+from .shared.file_type import FileType
+from .shared.source_type import SourceType
 
-__all__ = ["ExtractPerformParams"]
+__all__ = ["ClientExtractParams"]
 
 
-class ExtractPerformParams(TypedDict, total=False):
+class ClientExtractParams(TypedDict, total=False):
     schema: Required[object]
     """JSON Schema for the data to be extracted."""
 
@@ -28,9 +28,6 @@ class ExtractPerformParams(TypedDict, total=False):
 
     limit: int
 
-    llm_model: str
-    """LLM model to use (e.g., gpt-4.1, defaults to gpt-4.1 if not specified)."""
-
     offset: int
 
     prompt: str
@@ -42,3 +39,5 @@ class ExtractPerformParams(TypedDict, total=False):
     source_types: List[SourceType]
 
     tag_ids: SequenceNotStr[str]
+
+    tags: SequenceNotStr[str]

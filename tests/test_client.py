@@ -709,7 +709,7 @@ class TestQaip:
         respx_mock.post("/completions").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            client.completions.with_streaming_response.create(
+            client.with_streaming_response.completion(
                 messages=[
                     {
                         "content": "content",
@@ -726,7 +726,7 @@ class TestQaip:
         respx_mock.post("/completions").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            client.completions.with_streaming_response.create(
+            client.with_streaming_response.completion(
                 messages=[
                     {
                         "content": "content",
@@ -762,7 +762,7 @@ class TestQaip:
 
         respx_mock.post("/completions").mock(side_effect=retry_handler)
 
-        response = client.completions.with_raw_response.create(
+        response = client.with_raw_response.completion(
             messages=[
                 {
                     "content": "content",
@@ -791,7 +791,7 @@ class TestQaip:
 
         respx_mock.post("/completions").mock(side_effect=retry_handler)
 
-        response = client.completions.with_raw_response.create(
+        response = client.with_raw_response.completion(
             messages=[
                 {
                     "content": "content",
@@ -822,7 +822,7 @@ class TestQaip:
 
         respx_mock.post("/completions").mock(side_effect=retry_handler)
 
-        response = client.completions.with_raw_response.create(
+        response = client.with_raw_response.completion(
             messages=[
                 {
                     "content": "content",
@@ -1549,7 +1549,7 @@ class TestAsyncQaip:
         respx_mock.post("/completions").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            await async_client.completions.with_streaming_response.create(
+            await async_client.with_streaming_response.completion(
                 messages=[
                     {
                         "content": "content",
@@ -1566,7 +1566,7 @@ class TestAsyncQaip:
         respx_mock.post("/completions").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            await async_client.completions.with_streaming_response.create(
+            await async_client.with_streaming_response.completion(
                 messages=[
                     {
                         "content": "content",
@@ -1603,7 +1603,7 @@ class TestAsyncQaip:
 
         respx_mock.post("/completions").mock(side_effect=retry_handler)
 
-        response = await client.completions.with_raw_response.create(
+        response = await client.with_raw_response.completion(
             messages=[
                 {
                     "content": "content",
@@ -1635,7 +1635,7 @@ class TestAsyncQaip:
 
         respx_mock.post("/completions").mock(side_effect=retry_handler)
 
-        response = await client.completions.with_raw_response.create(
+        response = await client.with_raw_response.completion(
             messages=[
                 {
                     "content": "content",
@@ -1667,7 +1667,7 @@ class TestAsyncQaip:
 
         respx_mock.post("/completions").mock(side_effect=retry_handler)
 
-        response = await client.completions.with_raw_response.create(
+        response = await client.with_raw_response.completion(
             messages=[
                 {
                     "content": "content",

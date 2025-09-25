@@ -2,10 +2,10 @@
 
 from .._models import BaseModel
 
-__all__ = ["ExtractPerformResponse"]
+__all__ = ["ExtractResponse"]
 
 
-class ExtractPerformResponse(BaseModel):
+class ExtractResponse(BaseModel):
     id: str
     """リクエスト ID"""
 
