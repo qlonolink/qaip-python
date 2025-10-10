@@ -9,9 +9,6 @@ __all__ = ["SearchResponse"]
 
 
 class SearchResponse(BaseModel):
-    id: str
-    """A unique identifier for the search request"""
-
     created: int
     """The Unix timestamp (in seconds) of when the search was performed"""
 
