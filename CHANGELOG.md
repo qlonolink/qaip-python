@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.2.0 (2025-10-22)
+
+Full Changelog: [v0.1.0...v0.2.0](https://github.com/qlonolink/qaip-python/compare/v0.1.0...v0.2.0)
+
+### Features
+
+* API のレスポンスの ID を削除 ([532767b](https://github.com/qlonolink/qaip-python/commit/532767b6da7972c95b3341eb8c74433f151c8cf7))
+* StainlessによるPyPI自動公開を有効化 ([24ef918](https://github.com/qlonolink/qaip-python/commit/24ef918357585d800c8b68234a8c1f8572f73f73))
+
+
+### Chores
+
+* bump `httpx-aiohttp` version to 0.1.9 ([909d5a8](https://github.com/qlonolink/qaip-python/commit/909d5a88674ab296581ae3ea892322c241e38cb6))
+* **internal:** detect missing future annotations with ruff ([604af60](https://github.com/qlonolink/qaip-python/commit/604af603823ab09c30f4d9cbf89172c987664d95))
+
 ## 0.1.0 (2025-09-25)
 
 Full Changelog: [v0.0.2...v0.1.0](https://github.com/qlonolink/qaip-python/compare/v0.0.2...v0.1.0)
