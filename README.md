@@ -16,12 +16,9 @@ The REST API documentation can be found on [developer.qaip.com](https://develope
 ## Installation
 
 ```sh
-# install from the production repo
-pip install git+ssh://git@github.com/qlonolink/qaip-python.git
+# install from PyPI
+pip install qaip
 ```
-
-> [!NOTE]
-> Once this package is [published to PyPI](https://www.stainless.com/docs/guides/publish), this will become: `pip install qaip`
 
 ## Usage
 
@@ -43,7 +40,7 @@ response = client.completion(
         }
     ],
 )
-print(response.id)
+print(response.choices)
 ```
 
 While you can provide an `api_key` keyword argument,
@@ -74,7 +71,7 @@ async def main() -> None:
             }
         ],
     )
-    print(response.id)
+    print(response.choices)
 
 
 asyncio.run(main())
@@ -89,8 +86,8 @@ By default, the async client uses `httpx` for HTTP requests. However, for improv
 You can enable this by installing `aiohttp`:
 
 ```sh
-# install from the production repo
-pip install 'qaip[aiohttp] @ git+ssh://git@github.com/qlonolink/qaip-python.git'
+# install from PyPI
+pip install qaip[aiohttp]
 ```
 
 Then you can enable it by instantiating the client with `http_client=DefaultAioHttpClient()`:
@@ -114,7 +111,7 @@ async def main() -> None:
                 }
             ],
         )
-        print(response.id)
+        print(response.choices)
 
 
 asyncio.run(main())
@@ -282,7 +279,7 @@ response = client.with_raw_response.completion(
 print(response.headers.get('X-My-Header'))
 
 client = response.parse()  # get the object that `completion()` would have returned
-print(client.id)
+print(client.choices)
 ```
 
 These methods return an [`APIResponse`](https://github.com/qlonolink/qaip-python/tree/main/src/qaip/_response.py) object.
