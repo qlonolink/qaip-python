@@ -9,7 +9,7 @@ from qaip.types import Content, FileType, SourceType
 Types:
 
 ```python
-from qaip.types import CompletionResponse, ExtractResponse, SearchResponse
+from qaip.types import CompletionResponse, ExtractResponse, SearchResponse, TagsResponse
 ```
 
 Methods:
@@ -18,3 +18,4 @@ Methods:
 - <code title="get /contents/{id}">client.<a href="./src/qaip/_client.py">content</a>(id) -> <a href="./src/qaip/types/shared/content.py">Content</a></code>
 - <code title="post /extract">client.<a href="./src/qaip/_client.py">extract</a>(\*\*<a href="src/qaip/types/client_extract_params.py">params</a>) -> <a href="./src/qaip/types/extract_response.py">ExtractResponse</a></code>
 - <code title="post /search">client.<a href="./src/qaip/_client.py">search</a>(\*\*<a href="src/qaip/types/client_search_params.py">params</a>) -> <a href="./src/qaip/types/search_response.py">SearchResponse</a></code>
+- <code title="get /tags">client.<a href="./src/qaip/_client.py">tags</a>() -> <a href="./src/qaip/types/tags_response.py">TagsResponse</a></code>
