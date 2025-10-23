@@ -9,6 +9,7 @@ import pytest
 
 from qaip import Qaip, AsyncQaip
 from qaip.types import (
+    TagsResponse,
     SearchResponse,
     ExtractResponse,
     CompletionResponse,
@@ -238,6 +239,34 @@ class TestClient:
 
         assert cast(Any, response.is_closed) is True
 
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_method_tags(self, client: Qaip) -> None:
+        client_ = client.tags()
+        assert_matches_type(TagsResponse, client_, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_raw_response_tags(self, client: Qaip) -> None:
+        response = client.with_raw_response.tags()
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        client_ = response.parse()
+        assert_matches_type(TagsResponse, client_, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    def test_streaming_response_tags(self, client: Qaip) -> None:
+        with client.with_streaming_response.tags() as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            client_ = response.parse()
+            assert_matches_type(TagsResponse, client_, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
 
 class TestAsyncClient:
     parametrize = pytest.mark.parametrize(
@@ -457,5 +486,33 @@ class TestAsyncClient:
 
             client = await response.parse()
             assert_matches_type(SearchResponse, client, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_method_tags(self, async_client: AsyncQaip) -> None:
+        client = await async_client.tags()
+        assert_matches_type(TagsResponse, client, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_raw_response_tags(self, async_client: AsyncQaip) -> None:
+        response = await async_client.with_raw_response.tags()
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        client = await response.parse()
+        assert_matches_type(TagsResponse, client, path=["response"])
+
+    @pytest.mark.skip(reason="Prism tests are disabled")
+    @parametrize
+    async def test_streaming_response_tags(self, async_client: AsyncQaip) -> None:
+        async with async_client.with_streaming_response.tags() as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            client = await response.parse()
+            assert_matches_type(TagsResponse, client, path=["response"])
 
         assert cast(Any, response.is_closed) is True

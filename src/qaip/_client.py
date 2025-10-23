@@ -46,6 +46,7 @@ from ._base_client import (
     AsyncAPIClient,
     make_request_options,
 )
+from .types.tags_response import TagsResponse
 from .types.shared.content import Content
 from .types.search_response import SearchResponse
 from .types.extract_response import ExtractResponse
@@ -433,6 +434,25 @@ class Qaip(SyncAPIClient):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=SearchResponse,
+        )
+
+    def tags(
+        self,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> TagsResponse:
+        """Returns the list of tags"""
+        return self.get(
+            "/tags",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=TagsResponse,
         )
 
     @override
@@ -848,6 +868,25 @@ class AsyncQaip(AsyncAPIClient):
             cast_to=SearchResponse,
         )
 
+    async def tags(
+        self,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> TagsResponse:
+        """Returns the list of tags"""
+        return await self.get(
+            "/tags",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=TagsResponse,
+        )
+
     @override
     def _make_status_error(
         self,
@@ -896,6 +935,9 @@ class QaipWithRawResponse:
         self.search = to_raw_response_wrapper(
             client.search,
         )
+        self.tags = to_raw_response_wrapper(
+            client.tags,
+        )
 
 
 class AsyncQaipWithRawResponse:
@@ -911,6 +953,9 @@ class AsyncQaipWithRawResponse:
         )
         self.search = async_to_raw_response_wrapper(
             client.search,
+        )
+        self.tags = async_to_raw_response_wrapper(
+            client.tags,
         )
 
 
@@ -928,6 +973,9 @@ class QaipWithStreamedResponse:
         self.search = to_streamed_response_wrapper(
             client.search,
         )
+        self.tags = to_streamed_response_wrapper(
+            client.tags,
+        )
 
 
 class AsyncQaipWithStreamedResponse:
@@ -943,6 +991,9 @@ class AsyncQaipWithStreamedResponse:
         )
         self.search = async_to_streamed_response_wrapper(
             client.search,
+        )
+        self.tags = async_to_streamed_response_wrapper(
+            client.tags,
         )
 
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 (2025-10-23)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/qlonolink/qaip-python/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* stainless に /tags を追加 ([eb689aa](https://github.com/qlonolink/qaip-python/commit/eb689aa7c219222aefb89baacc0bcdeae9b10ce0))
+
 ## 0.2.0 (2025-10-22)
 
 Full Changelog: [v0.1.0...v0.2.0](https://github.com/qlonolink/qaip-python/compare/v0.1.0...v0.2.0)
