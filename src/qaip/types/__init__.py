@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from .shared import Content as Content, FileType as FileType, SourceType as SourceType
+from .tags_response import TagsResponse as TagsResponse
 from .search_response import SearchResponse as SearchResponse
 from .extract_response import ExtractResponse as ExtractResponse
 from .completion_response import CompletionResponse as CompletionResponse
