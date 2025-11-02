@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.1 (2025-10-31)
+
+Full Changelog: [v0.3.0...v0.3.1](https://github.com/qlonolink/qaip-python/compare/v0.3.0...v0.3.1)
+
+### Bug Fixes
+
+* **client:** close streams without requiring full consumption ([20eb525](https://github.com/qlonolink/qaip-python/commit/20eb525aa186bc0bd1c12d9fd48ca477ecf846ef))
+
+
+### Chores
+
+* **internal/tests:** avoid race condition with implicit client cleanup ([291cb64](https://github.com/qlonolink/qaip-python/commit/291cb64e32b4798ef98194dc90fd05100777a1ff))
+
 ## 0.3.0 (2025-10-23)
 
 Full Changelog: [v0.2.0...v0.3.0](https://github.com/qlonolink/qaip-python/compare/v0.2.0...v0.3.0)
