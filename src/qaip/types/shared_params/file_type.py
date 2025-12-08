@@ -7,5 +7,27 @@ from typing_extensions import Literal, TypeAlias
 __all__ = ["FileType"]
 
 FileType: TypeAlias = Literal[
-    "html", "pdf", "ppt", "pptx", "pptm", "doc", "docx", "docm", "xls", "xlsx", "xlsm", "md", "txt", "notion_page"
+    "html",
+    "pdf",
+    "ppt",
+    "pptx",
+    "pptm",
+    "doc",
+    "docx",
+    "docm",
+    "xls",
+    "xlsx",
+    "xlsm",
+    "md",
+    "txt",
+    "wav",
+    "mp3",
+    "aif",
+    "aiff",
+    "aac",
+    "m4a",
+    "oga",
+    "ogg",
+    "flac",
+    "notion_page",
 ]
