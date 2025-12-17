@@ -31,6 +31,7 @@ from ._utils import (
     get_async_library,
     async_maybe_transform,
 )
+from ._compat import cached_property
 from ._version import __version__
 from ._response import (
     to_raw_response_wrapper,
@@ -58,9 +59,6 @@ __all__ = ["Timeout", "Transport", "ProxiesTypes", "RequestOptions", "Qaip", "As
 
 
 class Qaip(SyncAPIClient):
-    with_raw_response: QaipWithRawResponse
-    with_streaming_response: QaipWithStreamedResponse
-
     # client options
     api_key: str
 
@@ -115,8 +113,13 @@ class Qaip(SyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.with_raw_response = QaipWithRawResponse(self)
-        self.with_streaming_response = QaipWithStreamedResponse(self)
+    @cached_property
+    def with_raw_response(self) -> QaipWithRawResponse:
+        return QaipWithRawResponse(self)
+
+    @cached_property
+    def with_streaming_response(self) -> QaipWithStreamedResponse:
+        return QaipWithStreamedResponse(self)
 
     @property
     @override
@@ -490,9 +493,6 @@ class Qaip(SyncAPIClient):
 
 
 class AsyncQaip(AsyncAPIClient):
-    with_raw_response: AsyncQaipWithRawResponse
-    with_streaming_response: AsyncQaipWithStreamedResponse
-
     # client options
     api_key: str
 
@@ -547,8 +547,13 @@ class AsyncQaip(AsyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.with_raw_response = AsyncQaipWithRawResponse(self)
-        self.with_streaming_response = AsyncQaipWithStreamedResponse(self)
+    @cached_property
+    def with_raw_response(self) -> AsyncQaipWithRawResponse:
+        return AsyncQaipWithRawResponse(self)
+
+    @cached_property
+    def with_streaming_response(self) -> AsyncQaipWithStreamedResponse:
+        return AsyncQaipWithStreamedResponse(self)
 
     @property
     @override
@@ -922,7 +927,11 @@ class AsyncQaip(AsyncAPIClient):
 
 
 class QaipWithRawResponse:
+    _client: Qaip
+
     def __init__(self, client: Qaip) -> None:
+        self._client = client
+
         self.completion = to_raw_response_wrapper(
             client.completion,
         )
@@ -941,7 +950,11 @@ class QaipWithRawResponse:
 
 
 class AsyncQaipWithRawResponse:
+    _client: AsyncQaip
+
     def __init__(self, client: AsyncQaip) -> None:
+        self._client = client
+
         self.completion = async_to_raw_response_wrapper(
             client.completion,
         )
@@ -960,7 +973,11 @@ class AsyncQaipWithRawResponse:
 
 
 class QaipWithStreamedResponse:
+    _client: Qaip
+
     def __init__(self, client: Qaip) -> None:
+        self._client = client
+
         self.completion = to_streamed_response_wrapper(
             client.completion,
         )
@@ -979,7 +996,11 @@ class QaipWithStreamedResponse:
 
 
 class AsyncQaipWithStreamedResponse:
+    _client: AsyncQaip
+
     def __init__(self, client: AsyncQaip) -> None:
+        self._client = client
+
         self.completion = async_to_streamed_response_wrapper(
             client.completion,
         )
