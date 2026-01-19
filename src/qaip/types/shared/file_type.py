@@ -18,6 +18,7 @@ FileType: TypeAlias = Literal[
     "xlsm",
     "md",
     "txt",
+    "jsonl",
     "png",
     "jpg",
     "webp",
