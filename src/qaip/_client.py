@@ -212,11 +212,9 @@ class Qaip(SyncAPIClient):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> CompletionResponse:
-        """Generates a completion based on the input messages and retrieval chunks.
+        """<p> Generates a completion based on the input messages and retrieval chunks.
 
-        If the
-        'stream' parameter is set to true, the response is returned as a stream of plain
-        text (text/plain).
+        If the 'stream' parameter is set to true, the response is returned as a stream of plain text (text/plain). </p> <p> Required roles: All, App </p>
 
         Args:
           messages: The messages to generate completion for
@@ -278,8 +276,9 @@ class Qaip(SyncAPIClient):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Content:
-        """
-        Get through indexed content
+        """<p> Get through indexed content.
+
+        </p> <p> Required roles: All, App </p>
 
         Args:
           extra_headers: Send extra headers
@@ -322,9 +321,7 @@ class Qaip(SyncAPIClient):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ExtractResponse:
         """
-        Performs data extraction using LLM based on the specified data source, filter
-        conditions, and JSON schema. Retrieves chunked data and uses the schema to
-        extract and return the result as JSON via LLM.
+        <p> Performs data extraction using LLM based on the specified data source, filter conditions, and JSON schema. Retrieves chunked data and uses the schema to extract and return the result as JSON via LLM. </p> <p> Required roles: All, App </p>
 
         Args:
           schema: JSON Schema for the data to be extracted.
@@ -388,8 +385,9 @@ class Qaip(SyncAPIClient):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> SearchResponse:
-        """
-        Searches through indexed content using query
+        """<p> Searches through indexed content using query.
+
+        </p> <p> Required roles: All, App </p>
 
         Args:
           query: Search query string
@@ -449,7 +447,7 @@ class Qaip(SyncAPIClient):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TagsResponse:
-        """Returns the list of tags"""
+        """<p> Returns the list of tags. </p> <p> Required roles: All, App </p>"""
         return self.get(
             "/tags",
             options=make_request_options(
@@ -646,11 +644,9 @@ class AsyncQaip(AsyncAPIClient):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> CompletionResponse:
-        """Generates a completion based on the input messages and retrieval chunks.
+        """<p> Generates a completion based on the input messages and retrieval chunks.
 
-        If the
-        'stream' parameter is set to true, the response is returned as a stream of plain
-        text (text/plain).
+        If the 'stream' parameter is set to true, the response is returned as a stream of plain text (text/plain). </p> <p> Required roles: All, App </p>
 
         Args:
           messages: The messages to generate completion for
@@ -712,8 +708,9 @@ class AsyncQaip(AsyncAPIClient):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Content:
-        """
-        Get through indexed content
+        """<p> Get through indexed content.
+
+        </p> <p> Required roles: All, App </p>
 
         Args:
           extra_headers: Send extra headers
@@ -756,9 +753,7 @@ class AsyncQaip(AsyncAPIClient):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ExtractResponse:
         """
-        Performs data extraction using LLM based on the specified data source, filter
-        conditions, and JSON schema. Retrieves chunked data and uses the schema to
-        extract and return the result as JSON via LLM.
+        <p> Performs data extraction using LLM based on the specified data source, filter conditions, and JSON schema. Retrieves chunked data and uses the schema to extract and return the result as JSON via LLM. </p> <p> Required roles: All, App </p>
 
         Args:
           schema: JSON Schema for the data to be extracted.
@@ -822,8 +817,9 @@ class AsyncQaip(AsyncAPIClient):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> SearchResponse:
-        """
-        Searches through indexed content using query
+        """<p> Searches through indexed content using query.
+
+        </p> <p> Required roles: All, App </p>
 
         Args:
           query: Search query string
@@ -883,7 +879,7 @@ class AsyncQaip(AsyncAPIClient):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TagsResponse:
-        """Returns the list of tags"""
+        """<p> Returns the list of tags. </p> <p> Required roles: All, App </p>"""
         return await self.get(
             "/tags",
             options=make_request_options(
