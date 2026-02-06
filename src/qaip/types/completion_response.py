@@ -4,9 +4,9 @@ from typing import List, Optional
 from typing_extensions import Literal
 
 from .._models import BaseModel
-from .shared.file_type import FileType
+from .shared.content import Content
 
-__all__ = ["CompletionResponse", "Choice", "ChoiceMessage", "ChoiceCitation"]
+__all__ = ["CompletionResponse", "Choice", "ChoiceMessage"]
 
 
 class ChoiceMessage(BaseModel):
@@ -15,23 +15,6 @@ class ChoiceMessage(BaseModel):
 
     role: Literal["assistant"]
     """The role of the message sender"""
-
-
-class ChoiceCitation(BaseModel):
-    file_type: FileType
-    """The type of the source file"""
-
-    text: str
-    """The relevant text from the cited source"""
-
-    url: str
-    """URL of the cited source"""
-
-    page_number: Optional[int] = None
-    """Page number for paginated documents like PDFs.
-
-    Set to 0 for sources without page numbers
-    """
 
 
 class Choice(BaseModel):
@@ -43,8 +26,8 @@ class Choice(BaseModel):
 
     message: ChoiceMessage
 
-    citations: Optional[List[ChoiceCitation]] = None
-    """Array of citations when citation parameter is true"""
+    citations: Optional[List[Content]] = None
+    """Array of search results"""
 
 
 class CompletionResponse(BaseModel):
