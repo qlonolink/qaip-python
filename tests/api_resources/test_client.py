@@ -30,7 +30,7 @@ class TestClient:
             messages=[
                 {
                     "content": "content",
-                    "role": "user",
+                    "role": "system",
                 }
             ],
         )
@@ -43,7 +43,7 @@ class TestClient:
             messages=[
                 {
                     "content": "content",
-                    "role": "user",
+                    "role": "system",
                 }
             ],
             citation=True,
@@ -65,7 +65,7 @@ class TestClient:
             messages=[
                 {
                     "content": "content",
-                    "role": "user",
+                    "role": "system",
                 }
             ],
         )
@@ -82,7 +82,7 @@ class TestClient:
             messages=[
                 {
                     "content": "content",
-                    "role": "user",
+                    "role": "system",
                 }
             ],
         ) as response:
@@ -280,7 +280,7 @@ class TestAsyncClient:
             messages=[
                 {
                     "content": "content",
-                    "role": "user",
+                    "role": "system",
                 }
             ],
         )
@@ -293,7 +293,7 @@ class TestAsyncClient:
             messages=[
                 {
                     "content": "content",
-                    "role": "user",
+                    "role": "system",
                 }
             ],
             citation=True,
@@ -315,7 +315,7 @@ class TestAsyncClient:
             messages=[
                 {
                     "content": "content",
-                    "role": "user",
+                    "role": "system",
                 }
             ],
         )
@@ -332,7 +332,7 @@ class TestAsyncClient:
             messages=[
                 {
                     "content": "content",
-                    "role": "user",
+                    "role": "system",
                 }
             ],
         ) as response:
