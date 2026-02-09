@@ -36,7 +36,7 @@ response = client.completion(
     messages=[
         {
             "content": "content",
-            "role": "user",
+            "role": "system",
         }
     ],
 )
@@ -67,7 +67,7 @@ async def main() -> None:
         messages=[
             {
                 "content": "content",
-                "role": "user",
+                "role": "system",
             }
         ],
     )
@@ -108,7 +108,7 @@ async def main() -> None:
             messages=[
                 {
                     "content": "content",
-                    "role": "user",
+                    "role": "system",
                 }
             ],
         )
@@ -147,7 +147,7 @@ try:
         messages=[
             {
                 "content": "content",
-                "role": "user",
+                "role": "system",
             }
         ],
     )
@@ -197,7 +197,7 @@ client.with_options(max_retries=5).completion(
     messages=[
         {
             "content": "content",
-            "role": "user",
+            "role": "system",
         }
     ],
 )
@@ -227,7 +227,7 @@ client.with_options(timeout=5.0).completion(
     messages=[
         {
             "content": "content",
-            "role": "user",
+            "role": "system",
         }
     ],
 )
@@ -274,7 +274,7 @@ client = Qaip()
 response = client.with_raw_response.completion(
     messages=[{
         "content": "content",
-        "role": "user",
+        "role": "system",
     }],
 )
 print(response.headers.get('X-My-Header'))
@@ -298,7 +298,7 @@ with client.with_streaming_response.completion(
     messages=[
         {
             "content": "content",
-            "role": "user",
+            "role": "system",
         }
     ],
 ) as response:
