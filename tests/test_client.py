@@ -850,7 +850,7 @@ class TestQaip:
                 messages=[
                     {
                         "content": "content",
-                        "role": "user",
+                        "role": "system",
                     }
                 ]
             ).__enter__()
@@ -867,7 +867,7 @@ class TestQaip:
                 messages=[
                     {
                         "content": "content",
-                        "role": "user",
+                        "role": "system",
                     }
                 ]
             ).__enter__()
@@ -903,7 +903,7 @@ class TestQaip:
             messages=[
                 {
                     "content": "content",
-                    "role": "user",
+                    "role": "system",
                 }
             ]
         )
@@ -932,7 +932,7 @@ class TestQaip:
             messages=[
                 {
                     "content": "content",
-                    "role": "user",
+                    "role": "system",
                 }
             ],
             extra_headers={"x-stainless-retry-count": Omit()},
@@ -963,7 +963,7 @@ class TestQaip:
             messages=[
                 {
                     "content": "content",
-                    "role": "user",
+                    "role": "system",
                 }
             ],
             extra_headers={"x-stainless-retry-count": "42"},
@@ -1773,7 +1773,7 @@ class TestAsyncQaip:
                 messages=[
                     {
                         "content": "content",
-                        "role": "user",
+                        "role": "system",
                     }
                 ]
             ).__aenter__()
@@ -1790,7 +1790,7 @@ class TestAsyncQaip:
                 messages=[
                     {
                         "content": "content",
-                        "role": "user",
+                        "role": "system",
                     }
                 ]
             ).__aenter__()
@@ -1826,7 +1826,7 @@ class TestAsyncQaip:
             messages=[
                 {
                     "content": "content",
-                    "role": "user",
+                    "role": "system",
                 }
             ]
         )
@@ -1857,7 +1857,7 @@ class TestAsyncQaip:
             messages=[
                 {
                     "content": "content",
-                    "role": "user",
+                    "role": "system",
                 }
             ],
             extra_headers={"x-stainless-retry-count": Omit()},
@@ -1888,7 +1888,7 @@ class TestAsyncQaip:
             messages=[
                 {
                     "content": "content",
-                    "role": "user",
+                    "role": "system",
                 }
             ],
             extra_headers={"x-stainless-retry-count": "42"},
