@@ -27,6 +27,7 @@ FileType: TypeAlias = Literal[
     "wav",
     "mp3",
     "aiff",
+    "aac",
     "m4a",
     "ogg",
     "flac",
