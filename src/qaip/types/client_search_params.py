@@ -30,6 +30,12 @@ class ClientSearchParams(TypedDict, total=False):
     limit: int
     """Maximum number of results to return"""
 
+    metadata: "MetadataFilterGroup"
+    """(reserved for future use) Filter group with nested structure.
+
+    Supports combining filters with AND/OR logic.
+    """
+
     offset: int
     """Number of results to skip"""
 
@@ -40,3 +46,6 @@ class ClientSearchParams(TypedDict, total=False):
 
     tags: SequenceNotStr[str]
     """target tag names to be obtained"""
+
+
+from .shared_params.metadata_filter_group import MetadataFilterGroup
