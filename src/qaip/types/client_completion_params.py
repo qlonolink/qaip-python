@@ -30,6 +30,12 @@ class ClientCompletionParams(TypedDict, total=False):
 
     file_types: List[FileType]
 
+    metadata: "MetadataFilterGroup"
+    """(reserved for future use) Filter group with nested structure.
+
+    Supports combining filters with AND/OR logic.
+    """
+
     source_types: List[SourceType]
 
     stream: bool
@@ -51,3 +57,6 @@ class Message(TypedDict, total=False):
 
     role: Required[Literal["system", "user", "assistant"]]
     """The role of the message sender"""
+
+
+from .shared_params.metadata_filter_group import MetadataFilterGroup

@@ -2,3 +2,4 @@
 
 from .file_type import FileType as FileType
 from .source_type import SourceType as SourceType
+from .metadata_filter_group import MetadataFilterGroup as MetadataFilterGroup

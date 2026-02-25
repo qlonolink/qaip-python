@@ -54,6 +54,7 @@ from .types.extract_response import ExtractResponse
 from .types.shared.file_type import FileType
 from .types.shared.source_type import SourceType
 from .types.completion_response import CompletionResponse
+from .types.shared_params.metadata_filter_group import MetadataFilterGroup
 
 __all__ = ["Timeout", "Transport", "ProxiesTypes", "RequestOptions", "Qaip", "AsyncQaip", "Client", "AsyncClient"]
 
@@ -201,6 +202,7 @@ class Qaip(SyncAPIClient):
         date_to: int | Omit = omit,
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
+        metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         stream: bool | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
@@ -227,6 +229,9 @@ class Qaip(SyncAPIClient):
 
           domains: Array of domains to search within (supports partial matching)
 
+          metadata: (reserved for future use) Filter group with nested structure. Supports combining
+              filters with AND/OR logic.
+
           stream: Whether to stream the response. If true, the response is sent as a stream using
               the 'text/plain' content type.
 
@@ -252,6 +257,7 @@ class Qaip(SyncAPIClient):
                     "date_to": date_to,
                     "domains": domains,
                     "file_types": file_types,
+                    "metadata": metadata,
                     "source_types": source_types,
                     "stream": stream,
                     "tag_ids": tag_ids,
@@ -308,6 +314,7 @@ class Qaip(SyncAPIClient):
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
         limit: int | Omit = omit,
+        metadata: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
         prompt: str | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
@@ -330,6 +337,9 @@ class Qaip(SyncAPIClient):
 
           date_to: End date for content search (Unix timestamp in seconds)
 
+          metadata: (reserved for future use) Filter group with nested structure. Supports combining
+              filters with AND/OR logic.
+
           prompt: Additional prompt for the LLM (optional, if not specified, a default prompt in
               Japanese will be used).
 
@@ -351,6 +361,7 @@ class Qaip(SyncAPIClient):
                     "domains": domains,
                     "file_types": file_types,
                     "limit": limit,
+                    "metadata": metadata,
                     "offset": offset,
                     "prompt": prompt,
                     "source_types": source_types,
@@ -374,6 +385,7 @@ class Qaip(SyncAPIClient):
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
         limit: int | Omit = omit,
+        metadata: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
@@ -400,6 +412,9 @@ class Qaip(SyncAPIClient):
 
           limit: Maximum number of results to return
 
+          metadata: (reserved for future use) Filter group with nested structure. Supports combining
+              filters with AND/OR logic.
+
           offset: Number of results to skip
 
           tag_ids: target tag IDs to be obtained
@@ -424,6 +439,7 @@ class Qaip(SyncAPIClient):
                     "domains": domains,
                     "file_types": file_types,
                     "limit": limit,
+                    "metadata": metadata,
                     "offset": offset,
                     "source_types": source_types,
                     "tag_ids": tag_ids,
@@ -633,6 +649,7 @@ class AsyncQaip(AsyncAPIClient):
         date_to: int | Omit = omit,
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
+        metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         stream: bool | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
@@ -659,6 +676,9 @@ class AsyncQaip(AsyncAPIClient):
 
           domains: Array of domains to search within (supports partial matching)
 
+          metadata: (reserved for future use) Filter group with nested structure. Supports combining
+              filters with AND/OR logic.
+
           stream: Whether to stream the response. If true, the response is sent as a stream using
               the 'text/plain' content type.
 
@@ -684,6 +704,7 @@ class AsyncQaip(AsyncAPIClient):
                     "date_to": date_to,
                     "domains": domains,
                     "file_types": file_types,
+                    "metadata": metadata,
                     "source_types": source_types,
                     "stream": stream,
                     "tag_ids": tag_ids,
@@ -740,6 +761,7 @@ class AsyncQaip(AsyncAPIClient):
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
         limit: int | Omit = omit,
+        metadata: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
         prompt: str | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
@@ -762,6 +784,9 @@ class AsyncQaip(AsyncAPIClient):
 
           date_to: End date for content search (Unix timestamp in seconds)
 
+          metadata: (reserved for future use) Filter group with nested structure. Supports combining
+              filters with AND/OR logic.
+
           prompt: Additional prompt for the LLM (optional, if not specified, a default prompt in
               Japanese will be used).
 
@@ -783,6 +808,7 @@ class AsyncQaip(AsyncAPIClient):
                     "domains": domains,
                     "file_types": file_types,
                     "limit": limit,
+                    "metadata": metadata,
                     "offset": offset,
                     "prompt": prompt,
                     "source_types": source_types,
@@ -806,6 +832,7 @@ class AsyncQaip(AsyncAPIClient):
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
         limit: int | Omit = omit,
+        metadata: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
@@ -832,6 +859,9 @@ class AsyncQaip(AsyncAPIClient):
 
           limit: Maximum number of results to return
 
+          metadata: (reserved for future use) Filter group with nested structure. Supports combining
+              filters with AND/OR logic.
+
           offset: Number of results to skip
 
           tag_ids: target tag IDs to be obtained
@@ -856,6 +886,7 @@ class AsyncQaip(AsyncAPIClient):
                     "domains": domains,
                     "file_types": file_types,
                     "limit": limit,
+                    "metadata": metadata,
                     "offset": offset,
                     "source_types": source_types,
                     "tag_ids": tag_ids,

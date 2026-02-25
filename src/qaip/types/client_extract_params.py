@@ -28,6 +28,12 @@ class ClientExtractParams(TypedDict, total=False):
 
     limit: int
 
+    metadata: "MetadataFilterGroup"
+    """(reserved for future use) Filter group with nested structure.
+
+    Supports combining filters with AND/OR logic.
+    """
+
     offset: int
 
     prompt: str
@@ -41,3 +47,6 @@ class ClientExtractParams(TypedDict, total=False):
     tag_ids: SequenceNotStr[str]
 
     tags: SequenceNotStr[str]
+
+
+from .shared_params.metadata_filter_group import MetadataFilterGroup
