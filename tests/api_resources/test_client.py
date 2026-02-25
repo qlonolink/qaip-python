@@ -51,6 +51,20 @@ class TestClient:
             date_to=1735639200,
             domains=["string"],
             file_types=["html"],
+            metadata={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             source_types=["crawl"],
             stream=True,
             tag_ids=["string"],
@@ -154,6 +168,20 @@ class TestClient:
             domains=["string"],
             file_types=["html"],
             limit=1,
+            metadata={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             offset=0,
             prompt="prompt",
             source_types=["crawl"],
@@ -206,6 +234,20 @@ class TestClient:
             domains=["example.com", "blog.example.com"],
             file_types=["html"],
             limit=10,
+            metadata={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             offset=0,
             source_types=["crawl"],
             tag_ids=["string"],
@@ -301,6 +343,20 @@ class TestAsyncClient:
             date_to=1735639200,
             domains=["string"],
             file_types=["html"],
+            metadata={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             source_types=["crawl"],
             stream=True,
             tag_ids=["string"],
@@ -404,6 +460,20 @@ class TestAsyncClient:
             domains=["string"],
             file_types=["html"],
             limit=1,
+            metadata={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             offset=0,
             prompt="prompt",
             source_types=["crawl"],
@@ -456,6 +526,20 @@ class TestAsyncClient:
             domains=["example.com", "blog.example.com"],
             file_types=["html"],
             limit=10,
+            metadata={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             offset=0,
             source_types=["crawl"],
             tag_ids=["string"],

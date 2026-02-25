@@ -1,7 +1,7 @@
 # Shared Types
 
 ```python
-from qaip.types import Content, FileType, SourceType
+from qaip.types import Content, FileType, MetadataFilterGroup, SourceType
 ```
 
 # Qaip
