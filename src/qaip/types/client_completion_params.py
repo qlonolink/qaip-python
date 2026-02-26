@@ -44,6 +44,9 @@ class ClientCompletionParams(TypedDict, total=False):
     If true, the response is sent as a stream using the 'text/plain' content type.
     """
 
+    tag_filter_logic: Literal["AND", "OR"]
+    """Logical operator for combining filter conditions"""
+
     tag_ids: SequenceNotStr[str]
     """target tag IDs to be obtained"""
 

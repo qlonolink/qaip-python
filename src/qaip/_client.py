@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 from typing import Any, List, Mapping, Iterable
-from typing_extensions import Self, override
+from typing_extensions import Self, Literal, override
 
 import httpx
 
@@ -205,6 +205,7 @@ class Qaip(SyncAPIClient):
         metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         stream: bool | Omit = omit,
+        tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -235,6 +236,8 @@ class Qaip(SyncAPIClient):
           stream: Whether to stream the response. If true, the response is sent as a stream using
               the 'text/plain' content type.
 
+          tag_filter_logic: Logical operator for combining filter conditions
+
           tag_ids: target tag IDs to be obtained
 
           tags: target tag names to be obtained
@@ -260,6 +263,7 @@ class Qaip(SyncAPIClient):
                     "metadata": metadata,
                     "source_types": source_types,
                     "stream": stream,
+                    "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
                 },
@@ -318,6 +322,7 @@ class Qaip(SyncAPIClient):
         offset: int | Omit = omit,
         prompt: str | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
+        tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -343,6 +348,8 @@ class Qaip(SyncAPIClient):
           prompt: Additional prompt for the LLM (optional, if not specified, a default prompt in
               Japanese will be used).
 
+          tag_filter_logic: Logical operator for combining filter conditions
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -365,6 +372,7 @@ class Qaip(SyncAPIClient):
                     "offset": offset,
                     "prompt": prompt,
                     "source_types": source_types,
+                    "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
                 },
@@ -388,6 +396,7 @@ class Qaip(SyncAPIClient):
         metadata: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
+        tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -417,6 +426,8 @@ class Qaip(SyncAPIClient):
 
           offset: Number of results to skip
 
+          tag_filter_logic: Logical operator for combining filter conditions
+
           tag_ids: target tag IDs to be obtained
 
           tags: target tag names to be obtained
@@ -442,6 +453,7 @@ class Qaip(SyncAPIClient):
                     "metadata": metadata,
                     "offset": offset,
                     "source_types": source_types,
+                    "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
                 },
@@ -652,6 +664,7 @@ class AsyncQaip(AsyncAPIClient):
         metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         stream: bool | Omit = omit,
+        tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -682,6 +695,8 @@ class AsyncQaip(AsyncAPIClient):
           stream: Whether to stream the response. If true, the response is sent as a stream using
               the 'text/plain' content type.
 
+          tag_filter_logic: Logical operator for combining filter conditions
+
           tag_ids: target tag IDs to be obtained
 
           tags: target tag names to be obtained
@@ -707,6 +722,7 @@ class AsyncQaip(AsyncAPIClient):
                     "metadata": metadata,
                     "source_types": source_types,
                     "stream": stream,
+                    "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
                 },
@@ -765,6 +781,7 @@ class AsyncQaip(AsyncAPIClient):
         offset: int | Omit = omit,
         prompt: str | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
+        tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -790,6 +807,8 @@ class AsyncQaip(AsyncAPIClient):
           prompt: Additional prompt for the LLM (optional, if not specified, a default prompt in
               Japanese will be used).
 
+          tag_filter_logic: Logical operator for combining filter conditions
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -812,6 +831,7 @@ class AsyncQaip(AsyncAPIClient):
                     "offset": offset,
                     "prompt": prompt,
                     "source_types": source_types,
+                    "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
                 },
@@ -835,6 +855,7 @@ class AsyncQaip(AsyncAPIClient):
         metadata: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
+        tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -864,6 +885,8 @@ class AsyncQaip(AsyncAPIClient):
 
           offset: Number of results to skip
 
+          tag_filter_logic: Logical operator for combining filter conditions
+
           tag_ids: target tag IDs to be obtained
 
           tags: target tag names to be obtained
@@ -889,6 +912,7 @@ class AsyncQaip(AsyncAPIClient):
                     "metadata": metadata,
                     "offset": offset,
                     "source_types": source_types,
+                    "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
                 },

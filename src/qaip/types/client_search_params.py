@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from typing import List
-from typing_extensions import Required, TypedDict
+from typing_extensions import Literal, Required, TypedDict
 
 from .._types import SequenceNotStr
 from .shared.file_type import FileType
@@ -40,6 +40,9 @@ class ClientSearchParams(TypedDict, total=False):
     """Number of results to skip"""
 
     source_types: List[SourceType]
+
+    tag_filter_logic: Literal["AND", "OR"]
+    """Logical operator for combining filter conditions"""
 
     tag_ids: SequenceNotStr[str]
     """target tag IDs to be obtained"""
