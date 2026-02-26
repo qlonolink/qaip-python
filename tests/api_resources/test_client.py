@@ -67,6 +67,7 @@ class TestClient:
             },
             source_types=["crawl"],
             stream=True,
+            tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
         )
@@ -185,6 +186,7 @@ class TestClient:
             offset=0,
             prompt="prompt",
             source_types=["crawl"],
+            tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
         )
@@ -250,6 +252,7 @@ class TestClient:
             },
             offset=0,
             source_types=["crawl"],
+            tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
         )
@@ -359,6 +362,7 @@ class TestAsyncClient:
             },
             source_types=["crawl"],
             stream=True,
+            tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
         )
@@ -477,6 +481,7 @@ class TestAsyncClient:
             offset=0,
             prompt="prompt",
             source_types=["crawl"],
+            tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
         )
@@ -542,6 +547,7 @@ class TestAsyncClient:
             },
             offset=0,
             source_types=["crawl"],
+            tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
         )
