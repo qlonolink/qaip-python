@@ -203,6 +203,7 @@ class Qaip(SyncAPIClient):
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
+        source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         stream: bool | Omit = omit,
         tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
@@ -233,6 +234,8 @@ class Qaip(SyncAPIClient):
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
 
+          source_metadata: Filter by individual source/file metadata from source_metadatas table
+
           stream: Whether to stream the response. If true, the response is sent as a stream using
               the 'text/plain' content type.
 
@@ -261,6 +264,7 @@ class Qaip(SyncAPIClient):
                     "domains": domains,
                     "file_types": file_types,
                     "metadata": metadata,
+                    "source_metadata": source_metadata,
                     "source_types": source_types,
                     "stream": stream,
                     "tag_filter_logic": tag_filter_logic,
@@ -321,6 +325,7 @@ class Qaip(SyncAPIClient):
         metadata: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
         prompt: str | Omit = omit,
+        source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
@@ -348,6 +353,8 @@ class Qaip(SyncAPIClient):
           prompt: Additional prompt for the LLM (optional, if not specified, a default prompt in
               Japanese will be used).
 
+          source_metadata: Filter by individual source/file metadata from source_metadatas table
+
           tag_filter_logic: Logical operator for combining filter conditions
 
           extra_headers: Send extra headers
@@ -371,6 +378,7 @@ class Qaip(SyncAPIClient):
                     "metadata": metadata,
                     "offset": offset,
                     "prompt": prompt,
+                    "source_metadata": source_metadata,
                     "source_types": source_types,
                     "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
@@ -395,6 +403,7 @@ class Qaip(SyncAPIClient):
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
+        source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
@@ -426,6 +435,8 @@ class Qaip(SyncAPIClient):
 
           offset: Number of results to skip
 
+          source_metadata: Filter by individual source/file metadata from source_metadatas table
+
           tag_filter_logic: Logical operator for combining filter conditions
 
           tag_ids: target tag IDs to be obtained
@@ -452,6 +463,7 @@ class Qaip(SyncAPIClient):
                     "limit": limit,
                     "metadata": metadata,
                     "offset": offset,
+                    "source_metadata": source_metadata,
                     "source_types": source_types,
                     "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
@@ -662,6 +674,7 @@ class AsyncQaip(AsyncAPIClient):
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
+        source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         stream: bool | Omit = omit,
         tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
@@ -692,6 +705,8 @@ class AsyncQaip(AsyncAPIClient):
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
 
+          source_metadata: Filter by individual source/file metadata from source_metadatas table
+
           stream: Whether to stream the response. If true, the response is sent as a stream using
               the 'text/plain' content type.
 
@@ -720,6 +735,7 @@ class AsyncQaip(AsyncAPIClient):
                     "domains": domains,
                     "file_types": file_types,
                     "metadata": metadata,
+                    "source_metadata": source_metadata,
                     "source_types": source_types,
                     "stream": stream,
                     "tag_filter_logic": tag_filter_logic,
@@ -780,6 +796,7 @@ class AsyncQaip(AsyncAPIClient):
         metadata: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
         prompt: str | Omit = omit,
+        source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
@@ -807,6 +824,8 @@ class AsyncQaip(AsyncAPIClient):
           prompt: Additional prompt for the LLM (optional, if not specified, a default prompt in
               Japanese will be used).
 
+          source_metadata: Filter by individual source/file metadata from source_metadatas table
+
           tag_filter_logic: Logical operator for combining filter conditions
 
           extra_headers: Send extra headers
@@ -830,6 +849,7 @@ class AsyncQaip(AsyncAPIClient):
                     "metadata": metadata,
                     "offset": offset,
                     "prompt": prompt,
+                    "source_metadata": source_metadata,
                     "source_types": source_types,
                     "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
@@ -854,6 +874,7 @@ class AsyncQaip(AsyncAPIClient):
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
+        source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
@@ -885,6 +906,8 @@ class AsyncQaip(AsyncAPIClient):
 
           offset: Number of results to skip
 
+          source_metadata: Filter by individual source/file metadata from source_metadatas table
+
           tag_filter_logic: Logical operator for combining filter conditions
 
           tag_ids: target tag IDs to be obtained
@@ -911,6 +934,7 @@ class AsyncQaip(AsyncAPIClient):
                     "limit": limit,
                     "metadata": metadata,
                     "offset": offset,
+                    "source_metadata": source_metadata,
                     "source_types": source_types,
                     "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,

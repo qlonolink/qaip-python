@@ -36,6 +36,9 @@ class ClientCompletionParams(TypedDict, total=False):
     Supports combining filters with AND/OR logic.
     """
 
+    source_metadata: "MetadataFilterGroup"
+    """Filter by individual source/file metadata from source_metadatas table"""
+
     source_types: List[SourceType]
 
     stream: bool
