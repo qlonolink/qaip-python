@@ -39,6 +39,9 @@ class ClientSearchParams(TypedDict, total=False):
     offset: int
     """Number of results to skip"""
 
+    source_metadata: "MetadataFilterGroup"
+    """Filter by individual source/file metadata from source_metadatas table"""
+
     source_types: List[SourceType]
 
     tag_filter_logic: Literal["AND", "OR"]
