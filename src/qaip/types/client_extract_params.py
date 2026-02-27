@@ -42,6 +42,9 @@ class ClientExtractParams(TypedDict, total=False):
     Japanese will be used).
     """
 
+    source_metadata: "MetadataFilterGroup"
+    """Filter by individual source/file metadata from source_metadatas table"""
+
     source_types: List[SourceType]
 
     tag_filter_logic: Literal["AND", "OR"]
