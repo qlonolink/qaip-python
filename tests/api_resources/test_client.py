@@ -199,6 +199,46 @@ class TestClient:
             },
             offset=0,
             prompt="prompt",
+            related_filter={
+                "date_from": 1735639200,
+                "date_to": 1735639200,
+                "domains": ["string"],
+                "file_types": ["html"],
+                "limit": 1,
+                "metadata": {
+                    "filters": [
+                        {
+                            "key": "key",
+                            "operator": "eq",
+                            "type": "string",
+                            "max": {},
+                            "min": {},
+                            "val": {},
+                        }
+                    ],
+                    "groups": [],
+                    "logic": "AND",
+                },
+                "offset": 0,
+                "source_metadata": {
+                    "filters": [
+                        {
+                            "key": "key",
+                            "operator": "eq",
+                            "type": "string",
+                            "max": {},
+                            "min": {},
+                            "val": {},
+                        }
+                    ],
+                    "groups": [],
+                    "logic": "AND",
+                },
+                "source_types": ["crawl"],
+                "tag_filter_logic": "AND",
+                "tag_ids": ["string"],
+                "tags": ["string"],
+            },
             source_metadata={
                 "filters": [
                     {
@@ -217,6 +257,7 @@ class TestClient:
             tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
+            use_related=True,
         )
         assert_matches_type(ExtractResponse, client_, path=["response"])
 
@@ -536,6 +577,46 @@ class TestAsyncClient:
             },
             offset=0,
             prompt="prompt",
+            related_filter={
+                "date_from": 1735639200,
+                "date_to": 1735639200,
+                "domains": ["string"],
+                "file_types": ["html"],
+                "limit": 1,
+                "metadata": {
+                    "filters": [
+                        {
+                            "key": "key",
+                            "operator": "eq",
+                            "type": "string",
+                            "max": {},
+                            "min": {},
+                            "val": {},
+                        }
+                    ],
+                    "groups": [],
+                    "logic": "AND",
+                },
+                "offset": 0,
+                "source_metadata": {
+                    "filters": [
+                        {
+                            "key": "key",
+                            "operator": "eq",
+                            "type": "string",
+                            "max": {},
+                            "min": {},
+                            "val": {},
+                        }
+                    ],
+                    "groups": [],
+                    "logic": "AND",
+                },
+                "source_types": ["crawl"],
+                "tag_filter_logic": "AND",
+                "tag_ids": ["string"],
+                "tags": ["string"],
+            },
             source_metadata={
                 "filters": [
                     {
@@ -554,6 +635,7 @@ class TestAsyncClient:
             tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
+            use_related=True,
         )
         assert_matches_type(ExtractResponse, client, path=["response"])
 

@@ -325,11 +325,13 @@ class Qaip(SyncAPIClient):
         metadata: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
         prompt: str | Omit = omit,
+        related_filter: client_extract_params.RelatedFilter | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
+        use_related: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -357,6 +359,8 @@ class Qaip(SyncAPIClient):
 
           tag_filter_logic: Logical operator for combining filter conditions
 
+          use_related: Whether to search for and use related content
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -378,11 +382,13 @@ class Qaip(SyncAPIClient):
                     "metadata": metadata,
                     "offset": offset,
                     "prompt": prompt,
+                    "related_filter": related_filter,
                     "source_metadata": source_metadata,
                     "source_types": source_types,
                     "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
+                    "use_related": use_related,
                 },
                 client_extract_params.ClientExtractParams,
             ),
@@ -796,11 +802,13 @@ class AsyncQaip(AsyncAPIClient):
         metadata: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
         prompt: str | Omit = omit,
+        related_filter: client_extract_params.RelatedFilter | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
+        use_related: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -828,6 +836,8 @@ class AsyncQaip(AsyncAPIClient):
 
           tag_filter_logic: Logical operator for combining filter conditions
 
+          use_related: Whether to search for and use related content
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -849,11 +859,13 @@ class AsyncQaip(AsyncAPIClient):
                     "metadata": metadata,
                     "offset": offset,
                     "prompt": prompt,
+                    "related_filter": related_filter,
                     "source_metadata": source_metadata,
                     "source_types": source_types,
                     "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
+                    "use_related": use_related,
                 },
                 client_extract_params.ClientExtractParams,
             ),
