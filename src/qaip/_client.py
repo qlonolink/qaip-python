@@ -27,6 +27,7 @@ from ._types import (
 )
 from ._utils import (
     is_given,
+    path_template,
     maybe_transform,
     get_async_library,
     async_maybe_transform,
@@ -306,7 +307,7 @@ class Qaip(SyncAPIClient):
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         return self.get(
-            f"/contents/{id}",
+            path_template("/contents/{id}", id=id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -783,7 +784,7 @@ class AsyncQaip(AsyncAPIClient):
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         return await self.get(
-            f"/contents/{id}",
+            path_template("/contents/{id}", id=id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
