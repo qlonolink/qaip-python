@@ -17,7 +17,7 @@ class Filter(TypedDict, total=False):
     operator: Required[Literal["eq", "ne", "gt", "gte", "lt", "lte", "between"]]
     """Comparison operator"""
 
-    type: Required[Literal["string", "integer", "float", "date"]]
+    type: Required[Literal["string", "integer", "float", "date", "datetime"]]
     """Data type of the metadata value"""
 
     max: object

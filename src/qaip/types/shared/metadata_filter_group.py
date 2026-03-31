@@ -19,7 +19,7 @@ class Filter(BaseModel):
     operator: Literal["eq", "ne", "gt", "gte", "lt", "lte", "between"]
     """Comparison operator"""
 
-    type: Literal["string", "integer", "float", "date"]
+    type: Literal["string", "integer", "float", "date", "datetime"]
     """Data type of the metadata value"""
 
     max: Optional[object] = None
