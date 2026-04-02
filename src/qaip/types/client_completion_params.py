@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 from typing import List, Iterable
-from typing_extensions import Literal, Required, TypedDict
+from typing_extensions import Required, TypedDict
 
 from .._types import SequenceNotStr
 from .shared.file_type import FileType
 from .shared.source_type import SourceType
+from .shared.message_role import MessageRole
+from .shared.logical_operator import LogicalOperator
 
 __all__ = ["ClientCompletionParams", "Message"]
 
@@ -50,7 +52,7 @@ class ClientCompletionParams(TypedDict, total=False):
     If true, the response is sent as a stream using the 'text/plain' content type.
     """
 
-    tag_filter_logic: Literal["AND", "OR"]
+    tag_filter_logic: LogicalOperator
     """Logical operator for combining filter conditions"""
 
     tag_ids: SequenceNotStr[str]
@@ -64,7 +66,7 @@ class Message(TypedDict, total=False):
     content: Required[str]
     """The content of the message"""
 
-    role: Required[Literal["system", "user", "assistant"]]
+    role: Required[MessageRole]
     """The role of the message sender"""
 
 
