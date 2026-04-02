@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 (2026-04-02)
+
+Full Changelog: [v0.4.0...v0.5.0](https://github.com/qlonolink/qaip-python/compare/v0.4.0...v0.5.0)
+
+### Features
+
+* search/extract/completion APIにchunk_metadataフィルタを追加 ([af80fac](https://github.com/qlonolink/qaip-python/commit/af80fac909b5ddf9c8bb58a708146e9b1a032ca0))
+
 ## 0.4.0 (2026-04-01)
 
 Full Changelog: [v0.3.1...v0.4.0](https://github.com/qlonolink/qaip-python/compare/v0.3.1...v0.4.0)
