@@ -46,6 +46,20 @@ class TestClient:
                     "role": "system",
                 }
             ],
+            chunk_metadata={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             citation=True,
             date_from=1735639200,
             date_to=1735639200,
@@ -178,6 +192,20 @@ class TestClient:
     def test_method_extract_with_all_params(self, client: Qaip) -> None:
         client_ = client.extract(
             schema={},
+            chunk_metadata={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             date_from=1735639200,
             date_to=1735639200,
             domains=["string"],
@@ -200,6 +228,20 @@ class TestClient:
             offset=0,
             prompt="prompt",
             related_filter={
+                "chunk_metadata": {
+                    "filters": [
+                        {
+                            "key": "key",
+                            "operator": "eq",
+                            "type": "string",
+                            "max": {},
+                            "min": {},
+                            "val": {},
+                        }
+                    ],
+                    "groups": [],
+                    "logic": "AND",
+                },
                 "date_from": 1735639200,
                 "date_to": 1735639200,
                 "domains": ["string"],
@@ -300,6 +342,20 @@ class TestClient:
     def test_method_search_with_all_params(self, client: Qaip) -> None:
         client_ = client.search(
             query="machine learning and artificial intelligence",
+            chunk_metadata={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             date_from=1735639200,
             date_to=1735639200,
             domains=["example.com", "blog.example.com"],
@@ -424,6 +480,20 @@ class TestAsyncClient:
                     "role": "system",
                 }
             ],
+            chunk_metadata={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             citation=True,
             date_from=1735639200,
             date_to=1735639200,
@@ -556,6 +626,20 @@ class TestAsyncClient:
     async def test_method_extract_with_all_params(self, async_client: AsyncQaip) -> None:
         client = await async_client.extract(
             schema={},
+            chunk_metadata={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             date_from=1735639200,
             date_to=1735639200,
             domains=["string"],
@@ -578,6 +662,20 @@ class TestAsyncClient:
             offset=0,
             prompt="prompt",
             related_filter={
+                "chunk_metadata": {
+                    "filters": [
+                        {
+                            "key": "key",
+                            "operator": "eq",
+                            "type": "string",
+                            "max": {},
+                            "min": {},
+                            "val": {},
+                        }
+                    ],
+                    "groups": [],
+                    "logic": "AND",
+                },
                 "date_from": 1735639200,
                 "date_to": 1735639200,
                 "domains": ["string"],
@@ -678,6 +776,20 @@ class TestAsyncClient:
     async def test_method_search_with_all_params(self, async_client: AsyncQaip) -> None:
         client = await async_client.search(
             query="machine learning and artificial intelligence",
+            chunk_metadata={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             date_from=1735639200,
             date_to=1735639200,
             domains=["example.com", "blog.example.com"],

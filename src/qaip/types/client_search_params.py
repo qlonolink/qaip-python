@@ -16,6 +16,9 @@ class ClientSearchParams(TypedDict, total=False):
     query: Required[str]
     """Search query string"""
 
+    chunk_metadata: "MetadataFilterGroup"
+    """Filter by chunk-level metadata from chunk_metadatas table"""
+
     date_from: int
     """Start date for content search (Unix timestamp in seconds)"""
 
