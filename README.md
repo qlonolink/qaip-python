@@ -143,9 +143,9 @@ response = client.completion(
             "role": "system",
         }
     ],
-    metadata={},
+    chunk_metadata={},
 )
-print(response.metadata)
+print(response.chunk_metadata)
 ```
 
 ## Handling errors

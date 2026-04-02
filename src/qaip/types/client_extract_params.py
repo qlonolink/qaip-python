@@ -16,6 +16,9 @@ class ClientExtractParams(TypedDict, total=False):
     schema: Required[object]
     """JSON Schema for the data to be extracted."""
 
+    chunk_metadata: "MetadataFilterGroup"
+    """Filter by chunk-level metadata from chunk_metadatas table"""
+
     date_from: int
     """Start date for content search (Unix timestamp in seconds)"""
 
@@ -61,6 +64,9 @@ class ClientExtractParams(TypedDict, total=False):
 
 
 class RelatedFilter(TypedDict, total=False):
+    chunk_metadata: "MetadataFilterGroup"
+    """Filter by chunk-level metadata from chunk_metadatas table"""
+
     date_from: int
     """Start date for content search (Unix timestamp in seconds)"""
 
