@@ -246,7 +246,6 @@ class TestClient:
                 "date_to": 1735639200,
                 "domains": ["string"],
                 "file_types": ["html"],
-                "limit": 1,
                 "metadata": {
                     "filters": [
                         {
@@ -261,7 +260,6 @@ class TestClient:
                     "groups": [],
                     "logic": "AND",
                 },
-                "offset": 0,
                 "source_metadata": {
                     "filters": [
                         {
@@ -280,6 +278,8 @@ class TestClient:
                 "tag_filter_logic": "AND",
                 "tag_ids": ["string"],
                 "tags": ["string"],
+                "limit": 1,
+                "offset": 0,
             },
             source_metadata={
                 "filters": [
@@ -680,7 +680,6 @@ class TestAsyncClient:
                 "date_to": 1735639200,
                 "domains": ["string"],
                 "file_types": ["html"],
-                "limit": 1,
                 "metadata": {
                     "filters": [
                         {
@@ -695,7 +694,6 @@ class TestAsyncClient:
                     "groups": [],
                     "logic": "AND",
                 },
-                "offset": 0,
                 "source_metadata": {
                     "filters": [
                         {
@@ -714,6 +712,8 @@ class TestAsyncClient:
                 "tag_filter_logic": "AND",
                 "tag_ids": ["string"],
                 "tags": ["string"],
+                "limit": 1,
+                "offset": 0,
             },
             source_metadata={
                 "filters": [

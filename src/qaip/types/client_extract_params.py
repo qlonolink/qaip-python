@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 from typing import List
-from typing_extensions import Literal, Required, TypedDict
+from typing_extensions import Required, TypedDict
 
 from .._types import SequenceNotStr
 from .shared.file_type import FileType
 from .shared.source_type import SourceType
+from .shared.logical_operator import LogicalOperator
+from .shared_params.common_filter import CommonFilter
 
 __all__ = ["ClientExtractParams", "RelatedFilter"]
 
@@ -52,7 +54,7 @@ class ClientExtractParams(TypedDict, total=False):
 
     source_types: List[SourceType]
 
-    tag_filter_logic: Literal["AND", "OR"]
+    tag_filter_logic: LogicalOperator
     """Logical operator for combining filter conditions"""
 
     tag_ids: SequenceNotStr[str]
@@ -63,41 +65,10 @@ class ClientExtractParams(TypedDict, total=False):
     """Whether to search for and use related content"""
 
 
-class RelatedFilter(TypedDict, total=False):
-    chunk_metadata: "MetadataFilterGroup"
-    """Filter by chunk-level metadata from chunk_metadatas table"""
-
-    date_from: int
-    """Start date for content search (Unix timestamp in seconds)"""
-
-    date_to: int
-    """End date for content search (Unix timestamp in seconds)"""
-
-    domains: SequenceNotStr[str]
-
-    file_types: List[FileType]
-
+class RelatedFilter(CommonFilter, total=False):
     limit: int
 
-    metadata: "MetadataFilterGroup"
-    """(reserved for future use) Filter group with nested structure.
-
-    Supports combining filters with AND/OR logic.
-    """
-
     offset: int
-
-    source_metadata: "MetadataFilterGroup"
-    """Filter by individual source/file metadata from source_metadatas table"""
-
-    source_types: List[SourceType]
-
-    tag_filter_logic: Literal["AND", "OR"]
-    """Logical operator for combining filter conditions"""
-
-    tag_ids: SequenceNotStr[str]
-
-    tags: SequenceNotStr[str]
 
 
 from .shared_params.metadata_filter_group import MetadataFilterGroup

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import os
-from typing import Any, List, Mapping, Iterable
-from typing_extensions import Self, Literal, override
+from typing import TYPE_CHECKING, Any, List, Mapping, Iterable
+from typing_extensions import Self, override
 
 import httpx
 
@@ -55,7 +55,32 @@ from .types.extract_response import ExtractResponse
 from .types.shared.file_type import FileType
 from .types.shared.source_type import SourceType
 from .types.completion_response import CompletionResponse
+from .types.shared.logical_operator import LogicalOperator
 from .types.shared_params.metadata_filter_group import MetadataFilterGroup
+
+if TYPE_CHECKING:
+    from .resources import (
+        agent,
+        crawls,
+        githubs,
+        notions,
+        secrets,
+        sources,
+        google_drives,
+        source_groups,
+        local_file_groups,
+        tag_source_groups,
+    )
+    from .resources.agent import AgentResource, AsyncAgentResource
+    from .resources.crawls import CrawlsResource, AsyncCrawlsResource
+    from .resources.githubs import GithubsResource, AsyncGithubsResource
+    from .resources.notions import NotionsResource, AsyncNotionsResource
+    from .resources.secrets import SecretsResource, AsyncSecretsResource
+    from .resources.sources import SourcesResource, AsyncSourcesResource
+    from .resources.google_drives import GoogleDrivesResource, AsyncGoogleDrivesResource
+    from .resources.source_groups import SourceGroupsResource, AsyncSourceGroupsResource
+    from .resources.local_file_groups import LocalFileGroupsResource, AsyncLocalFileGroupsResource
+    from .resources.tag_source_groups import TagSourceGroupsResource, AsyncTagSourceGroupsResource
 
 __all__ = ["Timeout", "Transport", "ProxiesTypes", "RequestOptions", "Qaip", "AsyncQaip", "Client", "AsyncClient"]
 
@@ -114,6 +139,72 @@ class Qaip(SyncAPIClient):
             custom_query=default_query,
             _strict_response_validation=_strict_response_validation,
         )
+
+    @cached_property
+    def agent(self) -> AgentResource:
+        """(Experimental) Agent operations"""
+        from .resources.agent import AgentResource
+
+        return AgentResource(self)
+
+    @cached_property
+    def tag_source_groups(self) -> TagSourceGroupsResource:
+        """Tag and source group associations"""
+        from .resources.tag_source_groups import TagSourceGroupsResource
+
+        return TagSourceGroupsResource(self)
+
+    @cached_property
+    def source_groups(self) -> SourceGroupsResource:
+        """Source group (job) management and metadata"""
+        from .resources.source_groups import SourceGroupsResource
+
+        return SourceGroupsResource(self)
+
+    @cached_property
+    def sources(self) -> SourcesResource:
+        """Sources management and metadata"""
+        from .resources.sources import SourcesResource
+
+        return SourcesResource(self)
+
+    @cached_property
+    def local_file_groups(self) -> LocalFileGroupsResource:
+        """Local file group management"""
+        from .resources.local_file_groups import LocalFileGroupsResource
+
+        return LocalFileGroupsResource(self)
+
+    @cached_property
+    def secrets(self) -> SecretsResource:
+        """Secret management"""
+        from .resources.secrets import SecretsResource
+
+        return SecretsResource(self)
+
+    @cached_property
+    def google_drives(self) -> GoogleDrivesResource:
+        from .resources.google_drives import GoogleDrivesResource
+
+        return GoogleDrivesResource(self)
+
+    @cached_property
+    def crawls(self) -> CrawlsResource:
+        from .resources.crawls import CrawlsResource
+
+        return CrawlsResource(self)
+
+    @cached_property
+    def githubs(self) -> GithubsResource:
+        from .resources.githubs import GithubsResource
+
+        return GithubsResource(self)
+
+    @cached_property
+    def notions(self) -> NotionsResource:
+        from .resources.notions import NotionsResource
+
+        return NotionsResource(self)
 
     @cached_property
     def with_raw_response(self) -> QaipWithRawResponse:
@@ -208,7 +299,7 @@ class Qaip(SyncAPIClient):
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         stream: bool | Omit = omit,
-        tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
+        tag_filter_logic: LogicalOperator | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -334,7 +425,7 @@ class Qaip(SyncAPIClient):
         related_filter: client_extract_params.RelatedFilter | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
-        tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
+        tag_filter_logic: LogicalOperator | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         use_related: bool | Omit = omit,
@@ -421,7 +512,7 @@ class Qaip(SyncAPIClient):
         offset: int | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
-        tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
+        tag_filter_logic: LogicalOperator | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -605,6 +696,72 @@ class AsyncQaip(AsyncAPIClient):
         )
 
     @cached_property
+    def agent(self) -> AsyncAgentResource:
+        """(Experimental) Agent operations"""
+        from .resources.agent import AsyncAgentResource
+
+        return AsyncAgentResource(self)
+
+    @cached_property
+    def tag_source_groups(self) -> AsyncTagSourceGroupsResource:
+        """Tag and source group associations"""
+        from .resources.tag_source_groups import AsyncTagSourceGroupsResource
+
+        return AsyncTagSourceGroupsResource(self)
+
+    @cached_property
+    def source_groups(self) -> AsyncSourceGroupsResource:
+        """Source group (job) management and metadata"""
+        from .resources.source_groups import AsyncSourceGroupsResource
+
+        return AsyncSourceGroupsResource(self)
+
+    @cached_property
+    def sources(self) -> AsyncSourcesResource:
+        """Sources management and metadata"""
+        from .resources.sources import AsyncSourcesResource
+
+        return AsyncSourcesResource(self)
+
+    @cached_property
+    def local_file_groups(self) -> AsyncLocalFileGroupsResource:
+        """Local file group management"""
+        from .resources.local_file_groups import AsyncLocalFileGroupsResource
+
+        return AsyncLocalFileGroupsResource(self)
+
+    @cached_property
+    def secrets(self) -> AsyncSecretsResource:
+        """Secret management"""
+        from .resources.secrets import AsyncSecretsResource
+
+        return AsyncSecretsResource(self)
+
+    @cached_property
+    def google_drives(self) -> AsyncGoogleDrivesResource:
+        from .resources.google_drives import AsyncGoogleDrivesResource
+
+        return AsyncGoogleDrivesResource(self)
+
+    @cached_property
+    def crawls(self) -> AsyncCrawlsResource:
+        from .resources.crawls import AsyncCrawlsResource
+
+        return AsyncCrawlsResource(self)
+
+    @cached_property
+    def githubs(self) -> AsyncGithubsResource:
+        from .resources.githubs import AsyncGithubsResource
+
+        return AsyncGithubsResource(self)
+
+    @cached_property
+    def notions(self) -> AsyncNotionsResource:
+        from .resources.notions import AsyncNotionsResource
+
+        return AsyncNotionsResource(self)
+
+    @cached_property
     def with_raw_response(self) -> AsyncQaipWithRawResponse:
         return AsyncQaipWithRawResponse(self)
 
@@ -697,7 +854,7 @@ class AsyncQaip(AsyncAPIClient):
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         stream: bool | Omit = omit,
-        tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
+        tag_filter_logic: LogicalOperator | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -823,7 +980,7 @@ class AsyncQaip(AsyncAPIClient):
         related_filter: client_extract_params.RelatedFilter | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
-        tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
+        tag_filter_logic: LogicalOperator | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         use_related: bool | Omit = omit,
@@ -910,7 +1067,7 @@ class AsyncQaip(AsyncAPIClient):
         offset: int | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
-        tag_filter_logic: Literal["AND", "OR"] | Omit = omit,
+        tag_filter_logic: LogicalOperator | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -1060,6 +1217,72 @@ class QaipWithRawResponse:
             client.tags,
         )
 
+    @cached_property
+    def agent(self) -> agent.AgentResourceWithRawResponse:
+        """(Experimental) Agent operations"""
+        from .resources.agent import AgentResourceWithRawResponse
+
+        return AgentResourceWithRawResponse(self._client.agent)
+
+    @cached_property
+    def tag_source_groups(self) -> tag_source_groups.TagSourceGroupsResourceWithRawResponse:
+        """Tag and source group associations"""
+        from .resources.tag_source_groups import TagSourceGroupsResourceWithRawResponse
+
+        return TagSourceGroupsResourceWithRawResponse(self._client.tag_source_groups)
+
+    @cached_property
+    def source_groups(self) -> source_groups.SourceGroupsResourceWithRawResponse:
+        """Source group (job) management and metadata"""
+        from .resources.source_groups import SourceGroupsResourceWithRawResponse
+
+        return SourceGroupsResourceWithRawResponse(self._client.source_groups)
+
+    @cached_property
+    def sources(self) -> sources.SourcesResourceWithRawResponse:
+        """Sources management and metadata"""
+        from .resources.sources import SourcesResourceWithRawResponse
+
+        return SourcesResourceWithRawResponse(self._client.sources)
+
+    @cached_property
+    def local_file_groups(self) -> local_file_groups.LocalFileGroupsResourceWithRawResponse:
+        """Local file group management"""
+        from .resources.local_file_groups import LocalFileGroupsResourceWithRawResponse
+
+        return LocalFileGroupsResourceWithRawResponse(self._client.local_file_groups)
+
+    @cached_property
+    def secrets(self) -> secrets.SecretsResourceWithRawResponse:
+        """Secret management"""
+        from .resources.secrets import SecretsResourceWithRawResponse
+
+        return SecretsResourceWithRawResponse(self._client.secrets)
+
+    @cached_property
+    def google_drives(self) -> google_drives.GoogleDrivesResourceWithRawResponse:
+        from .resources.google_drives import GoogleDrivesResourceWithRawResponse
+
+        return GoogleDrivesResourceWithRawResponse(self._client.google_drives)
+
+    @cached_property
+    def crawls(self) -> crawls.CrawlsResourceWithRawResponse:
+        from .resources.crawls import CrawlsResourceWithRawResponse
+
+        return CrawlsResourceWithRawResponse(self._client.crawls)
+
+    @cached_property
+    def githubs(self) -> githubs.GithubsResourceWithRawResponse:
+        from .resources.githubs import GithubsResourceWithRawResponse
+
+        return GithubsResourceWithRawResponse(self._client.githubs)
+
+    @cached_property
+    def notions(self) -> notions.NotionsResourceWithRawResponse:
+        from .resources.notions import NotionsResourceWithRawResponse
+
+        return NotionsResourceWithRawResponse(self._client.notions)
+
 
 class AsyncQaipWithRawResponse:
     _client: AsyncQaip
@@ -1082,6 +1305,72 @@ class AsyncQaipWithRawResponse:
         self.tags = async_to_raw_response_wrapper(
             client.tags,
         )
+
+    @cached_property
+    def agent(self) -> agent.AsyncAgentResourceWithRawResponse:
+        """(Experimental) Agent operations"""
+        from .resources.agent import AsyncAgentResourceWithRawResponse
+
+        return AsyncAgentResourceWithRawResponse(self._client.agent)
+
+    @cached_property
+    def tag_source_groups(self) -> tag_source_groups.AsyncTagSourceGroupsResourceWithRawResponse:
+        """Tag and source group associations"""
+        from .resources.tag_source_groups import AsyncTagSourceGroupsResourceWithRawResponse
+
+        return AsyncTagSourceGroupsResourceWithRawResponse(self._client.tag_source_groups)
+
+    @cached_property
+    def source_groups(self) -> source_groups.AsyncSourceGroupsResourceWithRawResponse:
+        """Source group (job) management and metadata"""
+        from .resources.source_groups import AsyncSourceGroupsResourceWithRawResponse
+
+        return AsyncSourceGroupsResourceWithRawResponse(self._client.source_groups)
+
+    @cached_property
+    def sources(self) -> sources.AsyncSourcesResourceWithRawResponse:
+        """Sources management and metadata"""
+        from .resources.sources import AsyncSourcesResourceWithRawResponse
+
+        return AsyncSourcesResourceWithRawResponse(self._client.sources)
+
+    @cached_property
+    def local_file_groups(self) -> local_file_groups.AsyncLocalFileGroupsResourceWithRawResponse:
+        """Local file group management"""
+        from .resources.local_file_groups import AsyncLocalFileGroupsResourceWithRawResponse
+
+        return AsyncLocalFileGroupsResourceWithRawResponse(self._client.local_file_groups)
+
+    @cached_property
+    def secrets(self) -> secrets.AsyncSecretsResourceWithRawResponse:
+        """Secret management"""
+        from .resources.secrets import AsyncSecretsResourceWithRawResponse
+
+        return AsyncSecretsResourceWithRawResponse(self._client.secrets)
+
+    @cached_property
+    def google_drives(self) -> google_drives.AsyncGoogleDrivesResourceWithRawResponse:
+        from .resources.google_drives import AsyncGoogleDrivesResourceWithRawResponse
+
+        return AsyncGoogleDrivesResourceWithRawResponse(self._client.google_drives)
+
+    @cached_property
+    def crawls(self) -> crawls.AsyncCrawlsResourceWithRawResponse:
+        from .resources.crawls import AsyncCrawlsResourceWithRawResponse
+
+        return AsyncCrawlsResourceWithRawResponse(self._client.crawls)
+
+    @cached_property
+    def githubs(self) -> githubs.AsyncGithubsResourceWithRawResponse:
+        from .resources.githubs import AsyncGithubsResourceWithRawResponse
+
+        return AsyncGithubsResourceWithRawResponse(self._client.githubs)
+
+    @cached_property
+    def notions(self) -> notions.AsyncNotionsResourceWithRawResponse:
+        from .resources.notions import AsyncNotionsResourceWithRawResponse
+
+        return AsyncNotionsResourceWithRawResponse(self._client.notions)
 
 
 class QaipWithStreamedResponse:
@@ -1106,6 +1395,72 @@ class QaipWithStreamedResponse:
             client.tags,
         )
 
+    @cached_property
+    def agent(self) -> agent.AgentResourceWithStreamingResponse:
+        """(Experimental) Agent operations"""
+        from .resources.agent import AgentResourceWithStreamingResponse
+
+        return AgentResourceWithStreamingResponse(self._client.agent)
+
+    @cached_property
+    def tag_source_groups(self) -> tag_source_groups.TagSourceGroupsResourceWithStreamingResponse:
+        """Tag and source group associations"""
+        from .resources.tag_source_groups import TagSourceGroupsResourceWithStreamingResponse
+
+        return TagSourceGroupsResourceWithStreamingResponse(self._client.tag_source_groups)
+
+    @cached_property
+    def source_groups(self) -> source_groups.SourceGroupsResourceWithStreamingResponse:
+        """Source group (job) management and metadata"""
+        from .resources.source_groups import SourceGroupsResourceWithStreamingResponse
+
+        return SourceGroupsResourceWithStreamingResponse(self._client.source_groups)
+
+    @cached_property
+    def sources(self) -> sources.SourcesResourceWithStreamingResponse:
+        """Sources management and metadata"""
+        from .resources.sources import SourcesResourceWithStreamingResponse
+
+        return SourcesResourceWithStreamingResponse(self._client.sources)
+
+    @cached_property
+    def local_file_groups(self) -> local_file_groups.LocalFileGroupsResourceWithStreamingResponse:
+        """Local file group management"""
+        from .resources.local_file_groups import LocalFileGroupsResourceWithStreamingResponse
+
+        return LocalFileGroupsResourceWithStreamingResponse(self._client.local_file_groups)
+
+    @cached_property
+    def secrets(self) -> secrets.SecretsResourceWithStreamingResponse:
+        """Secret management"""
+        from .resources.secrets import SecretsResourceWithStreamingResponse
+
+        return SecretsResourceWithStreamingResponse(self._client.secrets)
+
+    @cached_property
+    def google_drives(self) -> google_drives.GoogleDrivesResourceWithStreamingResponse:
+        from .resources.google_drives import GoogleDrivesResourceWithStreamingResponse
+
+        return GoogleDrivesResourceWithStreamingResponse(self._client.google_drives)
+
+    @cached_property
+    def crawls(self) -> crawls.CrawlsResourceWithStreamingResponse:
+        from .resources.crawls import CrawlsResourceWithStreamingResponse
+
+        return CrawlsResourceWithStreamingResponse(self._client.crawls)
+
+    @cached_property
+    def githubs(self) -> githubs.GithubsResourceWithStreamingResponse:
+        from .resources.githubs import GithubsResourceWithStreamingResponse
+
+        return GithubsResourceWithStreamingResponse(self._client.githubs)
+
+    @cached_property
+    def notions(self) -> notions.NotionsResourceWithStreamingResponse:
+        from .resources.notions import NotionsResourceWithStreamingResponse
+
+        return NotionsResourceWithStreamingResponse(self._client.notions)
+
 
 class AsyncQaipWithStreamedResponse:
     _client: AsyncQaip
@@ -1128,6 +1483,72 @@ class AsyncQaipWithStreamedResponse:
         self.tags = async_to_streamed_response_wrapper(
             client.tags,
         )
+
+    @cached_property
+    def agent(self) -> agent.AsyncAgentResourceWithStreamingResponse:
+        """(Experimental) Agent operations"""
+        from .resources.agent import AsyncAgentResourceWithStreamingResponse
+
+        return AsyncAgentResourceWithStreamingResponse(self._client.agent)
+
+    @cached_property
+    def tag_source_groups(self) -> tag_source_groups.AsyncTagSourceGroupsResourceWithStreamingResponse:
+        """Tag and source group associations"""
+        from .resources.tag_source_groups import AsyncTagSourceGroupsResourceWithStreamingResponse
+
+        return AsyncTagSourceGroupsResourceWithStreamingResponse(self._client.tag_source_groups)
+
+    @cached_property
+    def source_groups(self) -> source_groups.AsyncSourceGroupsResourceWithStreamingResponse:
+        """Source group (job) management and metadata"""
+        from .resources.source_groups import AsyncSourceGroupsResourceWithStreamingResponse
+
+        return AsyncSourceGroupsResourceWithStreamingResponse(self._client.source_groups)
+
+    @cached_property
+    def sources(self) -> sources.AsyncSourcesResourceWithStreamingResponse:
+        """Sources management and metadata"""
+        from .resources.sources import AsyncSourcesResourceWithStreamingResponse
+
+        return AsyncSourcesResourceWithStreamingResponse(self._client.sources)
+
+    @cached_property
+    def local_file_groups(self) -> local_file_groups.AsyncLocalFileGroupsResourceWithStreamingResponse:
+        """Local file group management"""
+        from .resources.local_file_groups import AsyncLocalFileGroupsResourceWithStreamingResponse
+
+        return AsyncLocalFileGroupsResourceWithStreamingResponse(self._client.local_file_groups)
+
+    @cached_property
+    def secrets(self) -> secrets.AsyncSecretsResourceWithStreamingResponse:
+        """Secret management"""
+        from .resources.secrets import AsyncSecretsResourceWithStreamingResponse
+
+        return AsyncSecretsResourceWithStreamingResponse(self._client.secrets)
+
+    @cached_property
+    def google_drives(self) -> google_drives.AsyncGoogleDrivesResourceWithStreamingResponse:
+        from .resources.google_drives import AsyncGoogleDrivesResourceWithStreamingResponse
+
+        return AsyncGoogleDrivesResourceWithStreamingResponse(self._client.google_drives)
+
+    @cached_property
+    def crawls(self) -> crawls.AsyncCrawlsResourceWithStreamingResponse:
+        from .resources.crawls import AsyncCrawlsResourceWithStreamingResponse
+
+        return AsyncCrawlsResourceWithStreamingResponse(self._client.crawls)
+
+    @cached_property
+    def githubs(self) -> githubs.AsyncGithubsResourceWithStreamingResponse:
+        from .resources.githubs import AsyncGithubsResourceWithStreamingResponse
+
+        return AsyncGithubsResourceWithStreamingResponse(self._client.githubs)
+
+    @cached_property
+    def notions(self) -> notions.AsyncNotionsResourceWithStreamingResponse:
+        from .resources.notions import AsyncNotionsResourceWithStreamingResponse
+
+        return AsyncNotionsResourceWithStreamingResponse(self._client.notions)
 
 
 Client = Qaip
