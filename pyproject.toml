@@ -37,8 +37,10 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/qlonolink/qaip-python"
+Homepage = "https://developer.qaip.com/"
 Repository = "https://github.com/qlonolink/qaip-python"
+Documentation = "https://developer.qaip.com/docs/"
+Tracker = "https://github.com/qlonolink/qaip-python/issues"
 
 [project.optional-dependencies]
 aiohttp = ["aiohttp", "httpx_aiohttp>=0.1.9"]
