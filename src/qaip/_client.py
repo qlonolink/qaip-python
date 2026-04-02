@@ -198,6 +198,7 @@ class Qaip(SyncAPIClient):
         self,
         *,
         messages: Iterable[client_completion_params.Message],
+        chunk_metadata: MetadataFilterGroup | Omit = omit,
         citation: bool | Omit = omit,
         date_from: int | Omit = omit,
         date_to: int | Omit = omit,
@@ -223,6 +224,8 @@ class Qaip(SyncAPIClient):
 
         Args:
           messages: The messages to generate completion for
+
+          chunk_metadata: Filter by chunk-level metadata from chunk_metadatas table
 
           citation: Whether to include citations in the response
 
@@ -259,6 +262,7 @@ class Qaip(SyncAPIClient):
             body=maybe_transform(
                 {
                     "messages": messages,
+                    "chunk_metadata": chunk_metadata,
                     "citation": citation,
                     "date_from": date_from,
                     "date_to": date_to,
@@ -318,6 +322,7 @@ class Qaip(SyncAPIClient):
         self,
         *,
         schema: object,
+        chunk_metadata: MetadataFilterGroup | Omit = omit,
         date_from: int | Omit = omit,
         date_to: int | Omit = omit,
         domains: SequenceNotStr[str] | Omit = omit,
@@ -345,6 +350,8 @@ class Qaip(SyncAPIClient):
 
         Args:
           schema: JSON Schema for the data to be extracted.
+
+          chunk_metadata: Filter by chunk-level metadata from chunk_metadatas table
 
           date_from: Start date for content search (Unix timestamp in seconds)
 
@@ -375,6 +382,7 @@ class Qaip(SyncAPIClient):
             body=maybe_transform(
                 {
                     "schema": schema,
+                    "chunk_metadata": chunk_metadata,
                     "date_from": date_from,
                     "date_to": date_to,
                     "domains": domains,
@@ -403,6 +411,7 @@ class Qaip(SyncAPIClient):
         self,
         *,
         query: str,
+        chunk_metadata: MetadataFilterGroup | Omit = omit,
         date_from: int | Omit = omit,
         date_to: int | Omit = omit,
         domains: SequenceNotStr[str] | Omit = omit,
@@ -428,6 +437,8 @@ class Qaip(SyncAPIClient):
 
         Args:
           query: Search query string
+
+          chunk_metadata: Filter by chunk-level metadata from chunk_metadatas table
 
           date_from: Start date for content search (Unix timestamp in seconds)
 
@@ -463,6 +474,7 @@ class Qaip(SyncAPIClient):
             body=maybe_transform(
                 {
                     "query": query,
+                    "chunk_metadata": chunk_metadata,
                     "date_from": date_from,
                     "date_to": date_to,
                     "domains": domains,
@@ -675,6 +687,7 @@ class AsyncQaip(AsyncAPIClient):
         self,
         *,
         messages: Iterable[client_completion_params.Message],
+        chunk_metadata: MetadataFilterGroup | Omit = omit,
         citation: bool | Omit = omit,
         date_from: int | Omit = omit,
         date_to: int | Omit = omit,
@@ -700,6 +713,8 @@ class AsyncQaip(AsyncAPIClient):
 
         Args:
           messages: The messages to generate completion for
+
+          chunk_metadata: Filter by chunk-level metadata from chunk_metadatas table
 
           citation: Whether to include citations in the response
 
@@ -736,6 +751,7 @@ class AsyncQaip(AsyncAPIClient):
             body=await async_maybe_transform(
                 {
                     "messages": messages,
+                    "chunk_metadata": chunk_metadata,
                     "citation": citation,
                     "date_from": date_from,
                     "date_to": date_to,
@@ -795,6 +811,7 @@ class AsyncQaip(AsyncAPIClient):
         self,
         *,
         schema: object,
+        chunk_metadata: MetadataFilterGroup | Omit = omit,
         date_from: int | Omit = omit,
         date_to: int | Omit = omit,
         domains: SequenceNotStr[str] | Omit = omit,
@@ -822,6 +839,8 @@ class AsyncQaip(AsyncAPIClient):
 
         Args:
           schema: JSON Schema for the data to be extracted.
+
+          chunk_metadata: Filter by chunk-level metadata from chunk_metadatas table
 
           date_from: Start date for content search (Unix timestamp in seconds)
 
@@ -852,6 +871,7 @@ class AsyncQaip(AsyncAPIClient):
             body=await async_maybe_transform(
                 {
                     "schema": schema,
+                    "chunk_metadata": chunk_metadata,
                     "date_from": date_from,
                     "date_to": date_to,
                     "domains": domains,
@@ -880,6 +900,7 @@ class AsyncQaip(AsyncAPIClient):
         self,
         *,
         query: str,
+        chunk_metadata: MetadataFilterGroup | Omit = omit,
         date_from: int | Omit = omit,
         date_to: int | Omit = omit,
         domains: SequenceNotStr[str] | Omit = omit,
@@ -905,6 +926,8 @@ class AsyncQaip(AsyncAPIClient):
 
         Args:
           query: Search query string
+
+          chunk_metadata: Filter by chunk-level metadata from chunk_metadatas table
 
           date_from: Start date for content search (Unix timestamp in seconds)
 
@@ -940,6 +963,7 @@ class AsyncQaip(AsyncAPIClient):
             body=await async_maybe_transform(
                 {
                     "query": query,
+                    "chunk_metadata": chunk_metadata,
                     "date_from": date_from,
                     "date_to": date_to,
                     "domains": domains,

@@ -16,6 +16,9 @@ class ClientCompletionParams(TypedDict, total=False):
     messages: Required[Iterable[Message]]
     """The messages to generate completion for"""
 
+    chunk_metadata: "MetadataFilterGroup"
+    """Filter by chunk-level metadata from chunk_metadatas table"""
+
     citation: bool
     """Whether to include citations in the response"""
 
