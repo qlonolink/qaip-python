@@ -3,19 +3,9 @@
 from typing import List, Optional
 
 from .._models import BaseModel
+from .shared.tag import Tag
 
-__all__ = ["TagsResponse", "Tag"]
-
-
-class Tag(BaseModel):
-    id: str
-    """Tag ID"""
-
-    description: str
-    """Tag description"""
-
-    name: str
-    """Tag name"""
+__all__ = ["TagsResponse"]
 
 
 class TagsResponse(BaseModel):

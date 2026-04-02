@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 from typing import List
-from typing_extensions import Literal, Required, TypedDict
+from typing_extensions import Required, TypedDict
 
 from .._types import SequenceNotStr
 from .shared.file_type import FileType
 from .shared.source_type import SourceType
+from .shared.logical_operator import LogicalOperator
 
 __all__ = ["ClientSearchParams"]
 
@@ -47,7 +48,7 @@ class ClientSearchParams(TypedDict, total=False):
 
     source_types: List[SourceType]
 
-    tag_filter_logic: Literal["AND", "OR"]
+    tag_filter_logic: LogicalOperator
     """Logical operator for combining filter conditions"""
 
     tag_ids: SequenceNotStr[str]
