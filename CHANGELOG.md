@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.1 (2026-04-03)
+
+Full Changelog: [v0.6.0...v0.6.1](https://github.com/qlonolink/qaip-python/compare/v0.6.0...v0.6.1)
+
+### Bug Fixes
+
+* /contents/{id} で UUID形式でないIDに400を返す ([2a35e53](https://github.com/qlonolink/qaip-python/commit/2a35e536b923ce43457131b461459f7001288f68))
+
 ## 0.6.0 (2026-04-02)
 
 Full Changelog: [v0.5.1...v0.6.0](https://github.com/qlonolink/qaip-python/compare/v0.5.1...v0.6.0)
