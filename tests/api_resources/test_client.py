@@ -141,7 +141,7 @@ class TestClient:
     @parametrize
     def test_method_content(self, client: Qaip) -> None:
         client_ = client.content(
-            "id",
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(Content, client_, path=["response"])
 
@@ -149,7 +149,7 @@ class TestClient:
     @parametrize
     def test_raw_response_content(self, client: Qaip) -> None:
         response = client.with_raw_response.content(
-            "id",
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert response.is_closed is True
@@ -161,7 +161,7 @@ class TestClient:
     @parametrize
     def test_streaming_response_content(self, client: Qaip) -> None:
         with client.with_streaming_response.content(
-            "id",
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -575,7 +575,7 @@ class TestAsyncClient:
     @parametrize
     async def test_method_content(self, async_client: AsyncQaip) -> None:
         client = await async_client.content(
-            "id",
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert_matches_type(Content, client, path=["response"])
 
@@ -583,7 +583,7 @@ class TestAsyncClient:
     @parametrize
     async def test_raw_response_content(self, async_client: AsyncQaip) -> None:
         response = await async_client.with_raw_response.content(
-            "id",
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert response.is_closed is True
@@ -595,7 +595,7 @@ class TestAsyncClient:
     @parametrize
     async def test_streaming_response_content(self, async_client: AsyncQaip) -> None:
         async with async_client.with_streaming_response.content(
-            "id",
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
