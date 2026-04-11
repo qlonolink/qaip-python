@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.2 (2026-04-11)
+
+Full Changelog: [v0.6.1...v0.6.2](https://github.com/qlonolink/qaip-python/compare/v0.6.1...v0.6.2)
+
+### Bug Fixes
+
+* **client:** preserve hardcoded query params when merging with user params ([b93bd67](https://github.com/qlonolink/qaip-python/commit/b93bd672dd2e61a02cab4c9e8d839711732b040c))
+* ensure file data are only sent as 1 parameter ([4134636](https://github.com/qlonolink/qaip-python/commit/41346366a3bdee4aeffb3b25a296b5d1f022fdc0))
+
 ## 0.6.1 (2026-04-03)
 
 Full Changelog: [v0.6.0...v0.6.1](https://github.com/qlonolink/qaip-python/compare/v0.6.0...v0.6.1)
