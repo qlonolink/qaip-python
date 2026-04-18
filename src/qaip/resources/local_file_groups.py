@@ -7,8 +7,9 @@ from typing import Mapping, cast
 import httpx
 
 from ..types import local_file_group_list_params, local_file_group_create_params
+from .._files import deepcopy_with_paths
 from .._types import Body, Omit, Query, Headers, NotGiven, FileTypes, SequenceNotStr, omit, not_given
-from .._utils import extract_files, path_template, maybe_transform, deepcopy_minimal, async_maybe_transform
+from .._utils import extract_files, path_template, maybe_transform, async_maybe_transform
 from .._compat import cached_property
 from .._resource import SyncAPIResource, AsyncAPIResource
 from .._response import (
@@ -87,13 +88,14 @@ class LocalFileGroupsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        body = deepcopy_minimal(
+        body = deepcopy_with_paths(
             {
                 "files": files,
                 "last_modified": last_modified,
                 "name": name,
                 "chunk_metadata_keys": chunk_metadata_keys,
-            }
+            },
+            [["files", "<array>"]],
         )
         extracted_files = extract_files(cast(Mapping[str, object], body), paths=[["files", "<array>"]])
         # It should be noted that the actual Content-Type header that will be
@@ -287,13 +289,14 @@ class AsyncLocalFileGroupsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        body = deepcopy_minimal(
+        body = deepcopy_with_paths(
             {
                 "files": files,
                 "last_modified": last_modified,
                 "name": name,
                 "chunk_metadata_keys": chunk_metadata_keys,
-            }
+            },
+            [["files", "<array>"]],
         )
         extracted_files = extract_files(cast(Mapping[str, object], body), paths=[["files", "<array>"]])
         # It should be noted that the actual Content-Type header that will be
