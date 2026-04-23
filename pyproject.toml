@@ -1,6 +1,6 @@
 [project]
 name = "qaip"
-version = "0.6.1"
+version = "0.7.0"
 description = "The official Python library for the qaip API"
 dynamic = ["readme"]
 license = "Apache-2.0"
@@ -35,6 +35,9 @@ classifiers = [
   "Topic :: Software Development :: Libraries :: Python Modules",
   "License :: OSI Approved :: Apache Software License"
 ]
+
+[project.scripts]
+qaip = "qaip.cli:main"
 
 [project.urls]
 Homepage = "https://developer.qaip.com/"
@@ -269,3 +272,4 @@ known-first-party = ["qaip", "tests"]
 "scripts/**.py" = ["T201", "T203"]
 "tests/**.py" = ["T201", "T203"]
 "examples/**.py" = ["T201", "T203"]
+"src/qaip/cli/**.py" = ["T201", "T203"]
