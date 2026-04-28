@@ -27,6 +27,7 @@ from ._types import (
 )
 from ._utils import (
     is_given,
+    is_mapping_t,
     path_template,
     maybe_transform,
     get_async_library,
@@ -128,6 +129,15 @@ class Qaip(SyncAPIClient):
             base_url = os.environ.get("QAIP_BASE_URL")
         if base_url is None:
             base_url = f"https://developer.qaip.com/api/v1"
+
+        custom_headers_env = os.environ.get("QAIP_CUSTOM_HEADERS")
+        if custom_headers_env is not None:
+            parsed: dict[str, str] = {}
+            for line in custom_headers_env.split("\n"):
+                colon = line.find(":")
+                if colon >= 0:
+                    parsed[line[:colon].strip()] = line[colon + 1 :].strip()
+            default_headers = {**parsed, **(default_headers if is_mapping_t(default_headers) else {})}
 
         super().__init__(
             version=__version__,
@@ -683,6 +693,15 @@ class AsyncQaip(AsyncAPIClient):
             base_url = os.environ.get("QAIP_BASE_URL")
         if base_url is None:
             base_url = f"https://developer.qaip.com/api/v1"
+
+        custom_headers_env = os.environ.get("QAIP_CUSTOM_HEADERS")
+        if custom_headers_env is not None:
+            parsed: dict[str, str] = {}
+            for line in custom_headers_env.split("\n"):
+                colon = line.find(":")
+                if colon >= 0:
+                    parsed[line[:colon].strip()] = line[colon + 1 :].strip()
+            default_headers = {**parsed, **(default_headers if is_mapping_t(default_headers) else {})}
 
         super().__init__(
             version=__version__,
