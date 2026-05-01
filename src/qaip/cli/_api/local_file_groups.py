@@ -4,7 +4,15 @@ from typing import TYPE_CHECKING, Any
 from argparse import ArgumentParser
 
 from .._utils import get_client
-from ._common import add_fields, add_dry_run, print_result, print_dry_run
+from ._common import (
+    add_yes,
+    add_fields,
+    add_dry_run,
+    require_yes,
+    validate_id,
+    print_result,
+    print_dry_run,
+)
 from ..._types import omit
 from .._errors import CLIError
 
@@ -52,6 +60,7 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
     sub = subparser.add_parser("local-file-groups.delete", help="Delete a local file group")
     sub.add_argument("-i", "--id", required=True, help="Local file group ID")
     add_dry_run(sub)
+    add_yes(sub)
     sub.set_defaults(func=_delete)
 
 
@@ -118,6 +127,7 @@ def _retrieve(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("GET", f"/local-file-groups/{args.id}")
         return
+    validate_id(args.id, label="id")
     client = get_client(args)
     result = client.local_file_groups.retrieve(args.id)
     print_result(result.model_dump(), args)
@@ -147,6 +157,8 @@ def _delete(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("DELETE", f"/local-file-groups/{args.id}")
         return
+    validate_id(args.id, label="id")
+    require_yes(args, action="local-file-groups.delete")
     client = get_client(args)
     result = client.local_file_groups.delete(args.id)
     print_result(result.model_dump(), args)

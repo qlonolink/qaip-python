@@ -59,8 +59,9 @@ class TestSchemaCommand:
     def test_schema_unknown_resource(self) -> None:
         parser = _build_parser()
         args = parser.parse_args(["schema", "nonexistent"])
-        with pytest.raises(SystemExit):
+        with pytest.raises(CLIError) as exc_info:
             args.func(args)
+        assert exc_info.value.code == "invalid_argument"
 
 
 class TestDryRun:
@@ -548,14 +549,25 @@ class TestClientCredentials:
             get_client(Namespace(api_key="AK", base_url="https://example.com"))
             mock_qaip.assert_called_once_with(api_key="AK", base_url="https://example.com")
 
-    def test_get_client_without_args(self) -> None:
+    def test_get_client_uses_env_api_key(self, monkeypatch: pytest.MonkeyPatch) -> None:
         from unittest.mock import patch as _patch
 
         from qaip.cli._utils import get_client
 
+        monkeypatch.setenv("QAIP_API_KEY", "env-key")
         with _patch("qaip.cli._utils.qaip.Qaip") as mock_qaip:
             get_client()
             mock_qaip.assert_called_once_with()
+
+    def test_get_client_missing_credentials_raises(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from qaip.cli._utils import get_client
+
+        monkeypatch.delenv("QAIP_API_KEY", raising=False)
+        with pytest.raises(CLIError) as exc_info:
+            get_client()
+        assert exc_info.value.code == "missing_credentials"
 
 
 class TestInvalidJsonArgs:
@@ -621,34 +633,42 @@ class TestLocalFileGroupsMissingFile:
             args.func(args)
 
 
+_VALID_UUID = "11111111-1111-1111-1111-111111111111"
+
+
 class TestMainTypeErrorHandling:
     def test_main_converts_unexpected_kwarg_typeerror(
-        self, capsys: pytest.CaptureFixture[str]
+        self, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
     ) -> None:
         """SDK 呼び出しで unexpected keyword argument の TypeError が発生した場合、
         スタックトレースではなくユーザー向けエラーに変換される。
         """
         from unittest.mock import MagicMock, patch as _patch
 
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
         mock_client = MagicMock()
         mock_client.content.side_effect = TypeError(
             "content() got an unexpected keyword argument 'foo'"
         )
         with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
-            with patch("sys.argv", ["qaip", "api", "content.retrieve", "--id", "abc"]):
+            with patch("sys.argv", ["qaip", "api", "content.retrieve", "--id", _VALID_UUID]):
                 rc = main()
-        assert rc == 1
+        # invalid_argument は validation エラーとして exit code 4 を返す
+        assert rc == 4
         captured = capsys.readouterr()
         assert "Invalid argument" in captured.err
 
-    def test_main_reraises_unrelated_typeerror(self) -> None:
+    def test_main_reraises_unrelated_typeerror(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """SDK 呼び出し起因ではない TypeError は握り潰さない。"""
         from unittest.mock import MagicMock, patch as _patch
 
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
         mock_client = MagicMock()
         mock_client.content.side_effect = TypeError("not an sdk arg error")
         with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
-            with patch("sys.argv", ["qaip", "api", "content.retrieve", "--id", "abc"]):
+            with patch("sys.argv", ["qaip", "api", "content.retrieve", "--id", _VALID_UUID]):
                 with pytest.raises(TypeError, match="not an sdk arg error"):
                     main()
 
@@ -675,3 +695,507 @@ class TestMainEntrypoint:
         with patch("sys.argv", ["qaip", "api", "search.create"]):
             result = main()
             assert result == 1
+
+
+class TestStartupAuthCheck:
+    """`qaip api ...` を未認証で叩くと API コール前に missing_credentials で死ぬ。
+
+    `qaip schema` / `--dry-run` は資格情報なしでも動くべきなので、その path
+    では auth check が走らないことも確認する。
+    """
+
+    def test_missing_credentials_exits_with_auth_code(
+        self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        monkeypatch.delenv("QAIP_API_KEY", raising=False)
+        with patch("sys.argv", ["qaip", "api", "tags.list"]):
+            rc = main()
+        assert rc == 3  # EXIT_AUTH
+        captured = capsys.readouterr()
+        assert "API key is required" in captured.err
+
+    def test_missing_credentials_in_json_format(
+        self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        monkeypatch.delenv("QAIP_API_KEY", raising=False)
+        with patch("sys.argv", ["qaip", "--error-format", "json", "api", "tags.list"]):
+            rc = main()
+        assert rc == 3
+        captured = capsys.readouterr()
+        payload = json.loads(captured.err)
+        assert payload["error"]["code"] == "missing_credentials"
+        assert payload["error"]["retryable"] is False
+        assert "hint" in payload["error"]
+
+    def test_schema_works_without_credentials(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.delenv("QAIP_API_KEY", raising=False)
+        with patch("sys.argv", ["qaip", "schema"]):
+            rc = main()
+        assert rc == 0
+
+    def test_dry_run_works_without_credentials(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.delenv("QAIP_API_KEY", raising=False)
+        with patch("sys.argv", ["qaip", "api", "search.create", "--query", "x", "--dry-run"]):
+            rc = main()
+        assert rc == 0
+
+
+class TestStructuredErrorOutput:
+    """`--error-format json` および QAIP_ERROR_FORMAT=json で stderr が
+    `{error:{code,message,retryable,...}}` の JSON になる。"""
+
+    def test_json_error_for_missing_required_arg(
+        self, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        with patch("sys.argv", ["qaip", "--error-format", "json", "api", "search.create"]):
+            rc = main()
+        assert rc == 1  # generic CLIError (code=cli_error)
+        captured = capsys.readouterr()
+        payload = json.loads(captured.err)
+        assert payload["error"]["code"] == "cli_error"
+        assert "--query" in payload["error"]["message"]
+
+    def test_json_error_for_invalid_id(
+        self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        with patch(
+            "sys.argv",
+            ["qaip", "--error-format", "json", "api", "content.retrieve", "--id", "not-uuid"],
+        ):
+            rc = main()
+        assert rc == 4  # EXIT_VALIDATION
+        captured = capsys.readouterr()
+        payload = json.loads(captured.err)
+        assert payload["error"]["code"] == "invalid_id"
+        assert "UUID" in payload["error"]["message"]
+
+    def test_env_var_selects_json_format(
+        self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        monkeypatch.setenv("QAIP_ERROR_FORMAT", "json")
+        with patch("sys.argv", ["qaip", "api", "search.create"]):
+            rc = main()
+        assert rc == 1
+        captured = capsys.readouterr()
+        # JSON として読めること
+        json.loads(captured.err)
+
+
+class TestIdValidation:
+    """ID 引数は本実行時のみ UUID 形式に限定される。dry-run では緩和される。"""
+
+    def test_invalid_id_rejected_at_real_call(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        parser = _build_parser()
+        args = parser.parse_args(["api", "content.retrieve", "--id", "https://x.example/foo"])
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+        assert exc_info.value.code == "invalid_id"
+
+    def test_path_traversal_rejected(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        parser = _build_parser()
+        args = parser.parse_args(["api", "sources.retrieve", "--id", "../../etc/passwd"])
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+        assert exc_info.value.code == "invalid_id"
+
+    def test_uuid_passes(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        from unittest.mock import MagicMock, patch as _patch
+
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        mock_client = MagicMock()
+        mock_client.content.return_value.model_dump.return_value = {"id": _VALID_UUID}
+        with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
+            parser = _build_parser()
+            args = parser.parse_args([
+                "--error-format", "json",
+                "api", "content.retrieve", "--id", _VALID_UUID,
+            ])
+            args.func(args)  # 例外が出なければ OK
+
+    def test_dry_run_does_not_validate_id(self) -> None:
+        # dry-run はテンプレ確認なので非UUIDでも素通し（既存テストとの互換性も担保）
+        parser = _build_parser()
+        args = parser.parse_args([
+            "api", "content.retrieve", "--id", "abc", "--dry-run",
+        ])
+        args.func(args)  # 例外が出なければ OK
+
+
+class TestDestructiveYesGuard:
+    """destructive コマンドは `--yes` 必須。`--dry-run` 経由は不要。"""
+
+    def test_secrets_delete_without_yes_blocks(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        parser = _build_parser()
+        args = parser.parse_args(["api", "secrets.delete", "--id", _VALID_UUID])
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+        assert exc_info.value.code == "confirmation_required"
+
+    def test_crawls_delete_without_yes_blocks(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        parser = _build_parser()
+        args = parser.parse_args(["api", "crawls.delete", "--id", _VALID_UUID])
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+        assert exc_info.value.code == "confirmation_required"
+
+    def test_dry_run_does_not_require_yes(
+        self, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        parser = _build_parser()
+        args = parser.parse_args([
+            "api", "secrets.delete", "--id", _VALID_UUID, "--dry-run",
+        ])
+        args.func(args)
+        captured = capsys.readouterr()
+        data = json.loads(captured.out)
+        assert data["method"] == "DELETE"
+
+    def test_yes_flag_allows_execution(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        from unittest.mock import MagicMock, patch as _patch
+
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        mock_client = MagicMock()
+        mock_client.secrets.delete.return_value.model_dump.return_value = {"id": _VALID_UUID}
+        with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
+            parser = _build_parser()
+            args = parser.parse_args([
+                "api", "secrets.delete", "--id", _VALID_UUID, "--yes",
+            ])
+            args.func(args)
+        mock_client.secrets.delete.assert_called_once_with(_VALID_UUID)
+
+    def test_tag_source_groups_delete_without_yes_blocks(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        parser = _build_parser()
+        args = parser.parse_args([
+            "api", "tag-source-groups.delete",
+            "--tag-id", _VALID_UUID,
+            "--source-group-id", _VALID_UUID,
+        ])
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+        assert exc_info.value.code == "confirmation_required"
+
+    def test_tag_source_groups_delete_invalid_id_before_yes(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """validate_id が require_yes より先に走り、不正 ID の場合は破壊操作の
+        確認を求める前に invalid_id で弾く。"""
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        parser = _build_parser()
+        args = parser.parse_args([
+            "api", "tag-source-groups.delete",
+            "--tag-id", "not-a-uuid",
+            "--source-group-id", _VALID_UUID,
+        ])
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+        assert exc_info.value.code == "invalid_id"
+
+    @pytest.mark.parametrize(
+        "argv",
+        [
+            ["api", "secrets.delete", "--id", "not-a-uuid"],
+            ["api", "crawls.delete", "--id", "not-a-uuid"],
+            ["api", "githubs.delete", "--id", "not-a-uuid"],
+            ["api", "google-drives.delete", "--id", "not-a-uuid"],
+            ["api", "notions.delete", "--id", "not-a-uuid"],
+            ["api", "local-file-groups.delete", "--id", "not-a-uuid"],
+            ["api", "sources.delete_metadata", "--id", "not-a-uuid"],
+            ["api", "source-groups.delete_metadata", "--id", "not-a-uuid"],
+        ],
+    )
+    def test_destructive_invalid_id_rejected_before_yes(
+        self, argv: list[str], monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """全 destructive コマンドで `validate_id → require_yes` の順序を保証する。
+        不正 ID と `--yes` 抜きを同時に渡したとき、確認要求ではなく invalid_id が先に出る。"""
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        parser = _build_parser()
+        args = parser.parse_args(argv)
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+        assert exc_info.value.code == "invalid_id"
+
+
+class TestAgentRunIdAcceptsCustomString:
+    """agent.* の retrieve/cancel/result/events は caller 発行 ID を許容する。
+
+    `agent.create_run` は input.run_id に任意の文字列を渡せる仕様のため、
+    follow-up コマンドで UUID 強制すると regression になる。
+    """
+
+    def test_retrieve_run_accepts_non_uuid_id(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from unittest.mock import MagicMock, patch as _patch
+
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        mock_client = MagicMock()
+        mock_client.agent.retrieve_run.return_value.model_dump.return_value = {"id": "my-run-1"}
+        with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
+            parser = _build_parser()
+            args = parser.parse_args(["api", "agent.retrieve_run", "--id", "my-run-1"])
+            args.func(args)
+        mock_client.agent.retrieve_run.assert_called_once_with("my-run-1")
+
+    def test_cancel_run_accepts_non_uuid_id(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from unittest.mock import MagicMock, patch as _patch
+
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        mock_client = MagicMock()
+        mock_client.agent.cancel_run.return_value.model_dump.return_value = {}
+        with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
+            parser = _build_parser()
+            args = parser.parse_args(["api", "agent.cancel_run", "--id", "user-supplied-run"])
+            args.func(args)
+        mock_client.agent.cancel_run.assert_called_once_with("user-supplied-run")
+
+    def test_list_run_events_accepts_non_uuid_id(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from unittest.mock import MagicMock, patch as _patch
+
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        mock_client = MagicMock()
+        mock_client.agent.list_run_events.return_value.model_dump.return_value = {"events": []}
+        with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
+            parser = _build_parser()
+            args = parser.parse_args(["api", "agent.list_run_events", "--id", "run-x"])
+            args.func(args)
+        # run_id が SDK にそのまま渡っていることを位置引数で確認する。
+        assert mock_client.agent.list_run_events.call_args.args == ("run-x",)
+
+    @pytest.mark.parametrize(
+        "subcommand",
+        [
+            "agent.retrieve_run",
+            "agent.cancel_run",
+            "agent.retrieve_run_result",
+            "agent.list_run_events",
+        ],
+    )
+    @pytest.mark.parametrize(
+        "bad_id",
+        ["", "  ", ".", "..", "../etc", "foo/bar", "foo\\bar", "foo%2e", "\x07ctl"],
+    )
+    def test_followup_commands_reject_invalid_run_id(
+        self,
+        subcommand: str,
+        bad_id: str,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """4 つの follow-up コマンドが揃って不正 run_id を弾くことを保証する。
+        将来 validate_loose_id 呼び出しがどれか 1 つから消えても気付ける。"""
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        parser = _build_parser()
+        args = parser.parse_args(["api", subcommand, "--id", bad_id])
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+        assert exc_info.value.code == "invalid_id"
+
+    def test_create_run_rejects_invalid_run_id(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """creation 側でも同じ loose_id 検証をかけないと、create で受け付けた
+        run_id が follow-up で拒否される非対称が起きる。"""
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        parser = _build_parser()
+        args = parser.parse_args([
+            "api", "agent.create_run",
+            "--messages", json.dumps([{"role": "user", "content": "hi"}]),
+            "--run-id", "../etc",
+            "--dry-run",
+        ])
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+        assert exc_info.value.code == "invalid_id"
+
+    def test_run_rejects_invalid_thread_id(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        parser = _build_parser()
+        args = parser.parse_args([
+            "api", "agent.run",
+            "--messages", json.dumps([{"role": "user", "content": "hi"}]),
+            "--thread-id", "../etc",
+            "--dry-run",
+        ])
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+        assert exc_info.value.code == "invalid_id"
+
+    def test_main_returns_validation_exit_for_empty_run_id(
+        self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        """`--id ''` が SDK の ValueError として露出せず、構造化エラーになる。"""
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        with patch(
+            "sys.argv",
+            ["qaip", "--error-format", "json", "api", "agent.retrieve_run", "--id", ""],
+        ):
+            rc = main()
+        assert rc == 4
+        captured = capsys.readouterr()
+        payload = json.loads(captured.err)
+        assert payload["error"]["code"] == "invalid_id"
+
+
+class TestApiErrorExitCodeMapping:
+    """APIStatusError の status_code に応じた exit code 分化。"""
+
+    def _run_with_api_error(
+        self,
+        status_code: int,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> int:
+        from unittest.mock import MagicMock, patch as _patch
+
+        import httpx
+
+        from qaip._exceptions import APIStatusError
+
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        request = httpx.Request("GET", "https://example.com/")
+        response = httpx.Response(status_code, request=request)
+
+        class _Err(APIStatusError):
+            pass
+
+        err = _Err(f"status {status_code}", response=response, body=None)
+
+        mock_client = MagicMock()
+        mock_client.tags.side_effect = err
+
+        with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
+            with patch("sys.argv", ["qaip", "api", "tags.list"]):
+                return main()
+
+    def test_400_maps_to_validation(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        rc = self._run_with_api_error(400, monkeypatch)
+        assert rc == 4
+
+    def test_422_maps_to_validation(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        rc = self._run_with_api_error(422, monkeypatch)
+        assert rc == 4
+
+    def test_500_maps_to_api(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        rc = self._run_with_api_error(500, monkeypatch)
+        assert rc == 5
+
+    def test_401_maps_to_auth(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        rc = self._run_with_api_error(401, monkeypatch)
+        assert rc == 3
+
+
+class TestSchemaUnknownStructured:
+    """schema 失敗が --error-format json で構造化エラーになる。"""
+
+    def test_unknown_resource_is_structured(
+        self, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        with patch(
+            "sys.argv",
+            ["qaip", "--error-format", "json", "schema", "nonexistent"],
+        ):
+            rc = main()
+        assert rc == 4  # invalid_argument → EXIT_VALIDATION
+        captured = capsys.readouterr()
+        payload = json.loads(captured.err)
+        assert payload["error"]["code"] == "invalid_argument"
+        assert "nonexistent" in payload["error"]["message"]
+        assert "hint" in payload["error"]
+
+
+class TestSecretsUpdateSecretValueGuard:
+    """secrets.update で secret キーが body にある場合のみ --yes 必須。"""
+
+    def test_update_secret_value_without_yes_blocks(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        parser = _build_parser()
+        args = parser.parse_args([
+            "api", "secrets.update",
+            "--id", _VALID_UUID,
+            "--name", "n",
+            "--json", json.dumps({"secret": "rotated"}),
+        ])
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+        assert exc_info.value.code == "confirmation_required"
+
+    def test_update_name_only_does_not_require_yes(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from unittest.mock import MagicMock, patch as _patch
+
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        mock_client = MagicMock()
+        mock_client.secrets.update.return_value.model_dump.return_value = {"id": _VALID_UUID}
+        with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
+            parser = _build_parser()
+            args = parser.parse_args([
+                "api", "secrets.update",
+                "--id", _VALID_UUID,
+                "--name", "renamed",
+            ])
+            args.func(args)
+        mock_client.secrets.update.assert_called_once()
+
+    def test_update_invalid_id_before_yes(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """validate_id が require_yes より先。不正な secret_id の場合は破壊操作の
+        確認を求める前に invalid_id で弾く。"""
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        parser = _build_parser()
+        args = parser.parse_args([
+            "api", "secrets.update",
+            "--id", "not-a-uuid",
+            "--name", "n",
+            "--json", json.dumps({"secret": "rotated"}),
+        ])
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+        assert exc_info.value.code == "invalid_id"
+
+    def test_update_secret_value_with_yes_passes(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from unittest.mock import MagicMock, patch as _patch
+
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        mock_client = MagicMock()
+        mock_client.secrets.update.return_value.model_dump.return_value = {"id": _VALID_UUID}
+        with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
+            parser = _build_parser()
+            args = parser.parse_args([
+                "api", "secrets.update",
+                "--id", _VALID_UUID,
+                "--name", "n",
+                "--yes",
+                "--json", json.dumps({"secret": "rotated"}),
+            ])
+            args.func(args)
+        mock_client.secrets.update.assert_called_once()

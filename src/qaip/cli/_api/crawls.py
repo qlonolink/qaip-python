@@ -4,7 +4,17 @@ from typing import TYPE_CHECKING, Any
 from argparse import ArgumentParser
 
 from .._utils import get_client
-from ._common import add_fields, add_dry_run, print_result, print_dry_run, add_json_param, parse_json_body
+from ._common import (
+    add_yes,
+    add_fields,
+    add_dry_run,
+    require_yes,
+    validate_id,
+    print_result,
+    print_dry_run,
+    add_json_param,
+    parse_json_body,
+)
 from ..._types import omit
 from .._errors import CLIError
 
@@ -45,6 +55,7 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
     sub = subparser.add_parser("crawls.delete", help="Delete a crawl")
     sub.add_argument("-i", "--id", required=True, help="Crawl ID")
     add_dry_run(sub)
+    add_yes(sub)
     sub.set_defaults(func=_delete)
 
     sub = subparser.add_parser("crawls.retrieve_setting", help="Get crawl settings")
@@ -113,6 +124,7 @@ def _retrieve(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("GET", f"/crawls/{args.id}")
         return
+    validate_id(args.id, label="id")
     client = get_client(args)
     result = client.crawls.retrieve(args.id)
     print_result(result.model_dump(), args)
@@ -142,6 +154,8 @@ def _delete(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("DELETE", f"/crawls/{args.id}")
         return
+    validate_id(args.id, label="id")
+    require_yes(args, action="crawls.delete")
     client = get_client(args)
     result = client.crawls.delete(args.id)
     print_result(result.model_dump(), args)
@@ -151,6 +165,7 @@ def _retrieve_setting(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("GET", f"/crawl-settings/{args.id}")
         return
+    validate_id(args.id, label="id")
     client = get_client(args)
     result = client.crawls.retrieve_setting(args.id)
     print_result(result.model_dump(), args)
@@ -163,6 +178,7 @@ def _update_setting(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("PUT", f"/crawl-settings/{args.id}", body)
         return
+    validate_id(args.id, label="id")
     client = get_client(args)
     result = client.crawls.update_setting(args.id, **body)
     print_result(result.model_dump(), args)

@@ -4,7 +4,17 @@ from typing import TYPE_CHECKING
 from argparse import ArgumentParser
 
 from .._utils import get_client
-from ._common import add_fields, add_dry_run, print_result, print_dry_run, add_json_param, parse_json_body
+from ._common import (
+    add_yes,
+    add_fields,
+    add_dry_run,
+    require_yes,
+    validate_id,
+    print_result,
+    print_dry_run,
+    add_json_param,
+    parse_json_body,
+)
 from .._errors import CLIError
 
 if TYPE_CHECKING:
@@ -25,6 +35,7 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
     sub.add_argument("--tag-id", help="Tag ID")
     sub.add_argument("--source-group-id", help="Source group ID")
     add_dry_run(sub)
+    add_yes(sub)
     add_fields(sub)
     sub.set_defaults(func=_delete)
 
@@ -43,6 +54,8 @@ def _create(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("POST", "/tag-source-groups", body)
         return
+    validate_id(body["tag_id"], label="tag_id")
+    validate_id(body["source_group_id"], label="source_group_id")
     client = get_client(args)
     result = client.tag_source_groups.create(**body)
     print_result(result.model_dump(), args)
@@ -62,6 +75,11 @@ def _delete(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("DELETE", "/tag-source-groups", body)
         return
+    # 入力サニティを confirmation より先に取る。誤った ID への破壊操作確認を
+    # ユーザーに求める前段を消す。
+    validate_id(body["tag_id"], label="tag_id")
+    validate_id(body["source_group_id"], label="source_group_id")
+    require_yes(args, action="tag-source-groups.delete")
     client = get_client(args)
     result = client.tag_source_groups.delete(**body)
     print_result(result.model_dump(), args)

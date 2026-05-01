@@ -4,8 +4,7 @@ from typing import TYPE_CHECKING
 from argparse import ArgumentParser
 
 from .._utils import get_client
-from ._common import add_fields, add_dry_run, print_result, print_dry_run
-from .._errors import CLIError
+from ._common import add_fields, add_dry_run, validate_id, print_result, print_dry_run
 
 if TYPE_CHECKING:
     from argparse import Namespace, _SubParsersAction
@@ -20,13 +19,11 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
 
 
 def _retrieve(args: Namespace) -> None:
-    if not args.id:
-        raise CLIError("--id is required")
-
     if args.dry_run:
         print_dry_run("GET", f"/contents/{args.id}")
         return
 
+    validate_id(args.id, label="id")
     client = get_client(args)
     result = client.content(args.id)
     print_result(result.model_dump(), args)

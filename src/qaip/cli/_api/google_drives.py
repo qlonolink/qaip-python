@@ -4,7 +4,17 @@ from typing import TYPE_CHECKING, Any
 from argparse import ArgumentParser
 
 from .._utils import get_client
-from ._common import add_fields, add_dry_run, print_result, print_dry_run, add_json_param, parse_json_body
+from ._common import (
+    add_yes,
+    add_fields,
+    add_dry_run,
+    require_yes,
+    validate_id,
+    print_result,
+    print_dry_run,
+    add_json_param,
+    parse_json_body,
+)
 from ..._types import omit
 from .._errors import CLIError
 
@@ -46,6 +56,7 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
     sub = subparser.add_parser("google-drives.delete", help="Delete a Google Drive integration")
     sub.add_argument("-i", "--id", required=True, help="Google Drive ID")
     add_dry_run(sub)
+    add_yes(sub)
     sub.set_defaults(func=_delete)
 
     sub = subparser.add_parser("google-drives.retrieve_setting", help="Get Google Drive settings")
@@ -91,6 +102,7 @@ def _retrieve(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("GET", f"/google-drives/{args.id}")
         return
+    validate_id(args.id, label="id")
     client = get_client(args)
     result = client.google_drives.retrieve(args.id)
     print_result(result.model_dump(), args)
@@ -120,6 +132,8 @@ def _delete(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("DELETE", f"/google-drives/{args.id}")
         return
+    validate_id(args.id, label="id")
+    require_yes(args, action="google-drives.delete")
     client = get_client(args)
     result = client.google_drives.delete(args.id)
     print_result(result.model_dump(), args)
@@ -129,6 +143,7 @@ def _retrieve_setting(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("GET", f"/google-drive-settings/{args.id}")
         return
+    validate_id(args.id, label="id")
     client = get_client(args)
     result = client.google_drives.retrieve_setting(args.id)
     print_result(result.model_dump(), args)
@@ -141,6 +156,7 @@ def _update_setting(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("PUT", f"/google-drive-settings/{args.id}", body)
         return
+    validate_id(args.id, label="id")
     client = get_client(args)
     result = client.google_drives.update_setting(args.id, **body)
     print_result(result.model_dump(), args)

@@ -13,6 +13,7 @@ from ._common import (
     add_json_param,
     parse_json_arg,
     parse_json_body,
+    validate_loose_id,
 )
 from ..._types import omit
 from .._errors import CLIError
@@ -86,9 +87,9 @@ def _collect_agent_input_fields(args: Namespace, target: dict[str, Any]) -> None
     if args.messages and "messages" not in target:
         target["messages"] = parse_json_arg(args.messages, label="--messages")
     if args.run_id and "run_id" not in target:
-        target["run_id"] = args.run_id
+        target["run_id"] = validate_loose_id(args.run_id, label="run_id")
     if args.thread_id and "thread_id" not in target:
-        target["thread_id"] = args.thread_id
+        target["thread_id"] = validate_loose_id(args.thread_id, label="thread_id")
     if args.forwarded_props and "forwarded_props" not in target:
         target["forwarded_props"] = parse_json_arg(
             args.forwarded_props, label="--forwarded-props"
@@ -146,6 +147,7 @@ def _retrieve_run(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("GET", f"/agent/runs/{args.run_id}")
         return
+    validate_loose_id(args.run_id, label="run_id")
     client = get_client(args)
     result = client.agent.retrieve_run(args.run_id)
     print_result(result.model_dump(), args)
@@ -155,6 +157,7 @@ def _cancel_run(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("POST", f"/agent/runs/{args.run_id}/cancel")
         return
+    validate_loose_id(args.run_id, label="run_id")
     client = get_client(args)
     result = client.agent.cancel_run(args.run_id)
     print_result(result.model_dump(), args)
@@ -164,6 +167,7 @@ def _retrieve_run_result(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("GET", f"/agent/runs/{args.run_id}/result")
         return
+    validate_loose_id(args.run_id, label="run_id")
     client = get_client(args)
     result = client.agent.retrieve_run_result(args.run_id)
     print_result(result.model_dump(), args)
@@ -181,6 +185,7 @@ def _list_run_events(args: Namespace) -> None:
             params["after"] = after
         print_dry_run("GET", f"/agent/runs/{args.run_id}/events", params if params else None)
         return
+    validate_loose_id(args.run_id, label="run_id")
     client = get_client(args)
     result = client.agent.list_run_events(
         args.run_id,

@@ -4,7 +4,17 @@ from typing import TYPE_CHECKING, Any
 from argparse import ArgumentParser
 
 from .._utils import get_client
-from ._common import add_fields, add_dry_run, print_result, print_dry_run, add_json_param, parse_json_body
+from ._common import (
+    add_yes,
+    add_fields,
+    add_dry_run,
+    require_yes,
+    validate_id,
+    print_result,
+    print_dry_run,
+    add_json_param,
+    parse_json_body,
+)
 from ..._types import omit
 from .._errors import CLIError
 
@@ -35,6 +45,7 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
     sub.add_argument("--name", help="Secret name")
     sub.add_argument("--description", help="Secret description")
     add_dry_run(sub)
+    add_yes(sub)
     add_fields(sub)
     sub.set_defaults(func=_update)
 
@@ -49,6 +60,7 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
     sub = subparser.add_parser("secrets.delete", help="Delete a secret")
     sub.add_argument("-i", "--id", required=True, dest="secret_id", help="Secret ID")
     add_dry_run(sub)
+    add_yes(sub)
     sub.set_defaults(func=_delete)
 
 
@@ -79,6 +91,7 @@ def _retrieve(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("GET", f"/secrets/{args.secret_id}")
         return
+    validate_id(args.secret_id, label="secret_id")
     client = get_client(args)
     result = client.secrets.retrieve(args.secret_id)
     print_result(result.model_dump(), args)
@@ -97,6 +110,13 @@ def _update(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("PUT", f"/secrets/{args.secret_id}", body, sensitive_keys=("secret",))
         return
+    # 不正な secret_id への破壊操作の確認をユーザーに先に求めないよう、
+    # 入力サニティを require_yes の前に取る。
+    validate_id(args.secret_id, label="secret_id")
+    # secret 値の上書きは取り返しがつかないので削除と同等の重要度として扱う。
+    # name / description のみの更新では --yes 不要。
+    if "secret" in body:
+        require_yes(args, action="secrets.update (rotating secret value)")
     client = get_client(args)
     result = client.secrets.update(args.secret_id, **body)
     print_result(result.model_dump(), args)
@@ -130,6 +150,8 @@ def _delete(args: Namespace) -> None:
     if args.dry_run:
         print_dry_run("DELETE", f"/secrets/{args.secret_id}")
         return
+    validate_id(args.secret_id, label="secret_id")
+    require_yes(args, action="secrets.delete")
     client = get_client(args)
     result = client.secrets.delete(args.secret_id)
     print_result(result.model_dump(), args)
