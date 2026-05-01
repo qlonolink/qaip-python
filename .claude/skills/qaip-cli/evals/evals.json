@@ -1,0 +1,26 @@
+{
+  "skill_name": "qaip-cli",
+  "evals": [
+    {
+      "id": 0,
+      "name": "crawl-create-dry-run",
+      "prompt": "qaip の CLI で、以下の Web クロールを新規作成したい。name=\"dev-docs\", start_url=\"https://developer.qaip.com\", max_depth=2, max_num_files=50、.html と .md だけを対象。まず dry-run で body を確認してから本実行したい。必要な CLI コマンドを順に書いて。引数名に自信が無いなら必ず一次情報で検算すること。",
+      "expected_output": "qaip schema crawls で引数名を確認し、qaip api crawls.create ... --dry-run を示し、その後 --dry-run を外した本実行コマンドを示す。--file-extensions .html,.md のようなカンマ区切りで渡している。",
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "secret-create-safely",
+      "prompt": "qaip に GitHub アカウント用のシークレットを 1 つ登録したい。name は \"gh-readonly\"、type は qaip の SecretType enum（`src/qaip/types/secret_type.py` で定義されている `google_drive` / `github` / `notion` のいずれか）。token の値はダミー文字列 EXAMPLE_TOKEN_DO_NOT_USE とする。シェル履歴・`ps` 出力・dry-run 出力のいずれにも生の値が残らないように CLI コマンドを書いて。",
+      "expected_output": "以下を全て満たす:\n- type は \"github\"（\"github_token\" のような綴りを使っていない）。\n- secret を qaip CLI の argv に載せていない（`--secret <値>` を使わない）。\n- secret を jq プロセスの argv に載せていない（`jq -n --arg secret <値>` を使わない）。\n- here-string による改行混入を起こしていない（`jq -Rs . <<<\"$VAR\"` を使わない）。\n- secret を stdin か `--rawfile` / `@file` の形で jq / qaip に渡している。\n- dry-run を先に実行し、`body.secret` が `\"***\"` にマスクされる点に言及している。\n- 実行後に `unset` で secret 変数を破棄している。",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "search-and-completion-rag",
+      "prompt": "qaip に取り込み済みの \"docs\" タグのコンテンツに対して、「認証の仕組み」を RAG で説明させたい。まず search で関連チャンクを確認してから、completion で citation 付きの回答を得たい。CLI コマンドを流れで書いて。レスポンスは必要最小限に絞ること。",
+      "expected_output": "qaip api search.create -q \"...\" --tags docs --limit N --fields ... と、qaip api completion.create --messages '[...]' --tags docs --citation --fields ... を提示。--fields でレスポンスを絞っている。",
+      "files": []
+    }
+  ]
+}
