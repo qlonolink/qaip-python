@@ -4,6 +4,8 @@ import sys
 import json
 from typing import Any
 
+from ._errors import CLIError
+
 RESOURCES: dict[str, dict[str, Any]] = {
     "completion": {
         "description": "Generate AI completions from indexed content",
@@ -519,10 +521,13 @@ def show_schema(resource: str | None) -> None:
             for name, info in RESOURCES.items()
         }
         sys.stdout.write(json.dumps(result, indent=2, ensure_ascii=False) + "\n")
-    else:
-        if resource not in RESOURCES:
-            sys.stderr.write(
-                "Unknown resource: {}\nAvailable: {}\n".format(resource, ", ".join(sorted(RESOURCES.keys())))
-            )
-            sys.exit(1)
-        sys.stdout.write(json.dumps(RESOURCES[resource], indent=2, ensure_ascii=False) + "\n")
+        return
+
+    if resource not in RESOURCES:
+        available = ", ".join(sorted(RESOURCES.keys()))
+        raise CLIError(
+            f"Unknown resource: {resource}",
+            code="invalid_argument",
+            hint=f"Available resources: {available}",
+        )
+    sys.stdout.write(json.dumps(RESOURCES[resource], indent=2, ensure_ascii=False) + "\n")

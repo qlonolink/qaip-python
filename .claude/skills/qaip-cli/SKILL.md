@@ -39,11 +39,20 @@ PyPI からインストールされた環境では **`qaip` コマンドが PATH
 - 既定では環境変数 `QAIP_API_KEY` を読む。
 - ベース URL は `QAIP_BASE_URL`、または `-b/--base-url` で上書き。
 - CLI 引数に API キーを渡すとシェル履歴に残る。ユーザーに具体的な指示が無い限り **`-k` は使わず、環境変数経由を前提**にすること。新しくキーを発行して渡してきた場合は、そのキーを会話や commit に混ぜないこと（secrets と同じ扱い）。
+- **起動時に setup check が走る**。`api_key`（引数 or env）が一切無い状態で `qaip api ...` を叩くと、API コールに到達する前に `missing_credentials` エラーで即終了する（exit code 3）。`qaip schema` と `--dry-run` は資格情報なしでも動くので、未認証時の偵察に使える。
 
 ### 出力と終了コード
 
 - 成功時は stdout に **JSON（pretty）**、末尾改行 1 つ。パースして扱う前提で、目視 grep に頼らない。
-- 失敗時は stderr に `Error: <メッセージ>` の 1 行＋終了コード非 0。
+- 失敗時は stderr にエラー文字列＋終了コード非 0。**`--error-format json`（または `QAIP_ERROR_FORMAT=json`）を付けると、エラーが `{"error":{"code","message","retryable","hint?","http_status?"}}` の構造化 JSON で stderr に出る**。エージェント側で分岐するなら json モードを推奨。
+- 終了コード:
+  - `0` 成功
+  - `1` 一般エラー
+  - `2` argparse usage（不明なフラグなど）。**この経路は `--error-format json` の対象外**で、stderr にプレーンテキストの usage が出る。stderr を JSON parse する前に exit code が 2 でないことを確認すること。
+  - `3` 認証エラー（`missing_credentials` / API 401, 403）
+  - `4` バリデーション（`invalid_id` / `invalid_argument` / `validation_error` / `confirmation_required` / API 400, 422）
+  - `5` API エラー（上記以外の 4xx / 5xx）
+- 主な error code: `missing_credentials`, `invalid_id`, `invalid_argument`, `validation_error`, `confirmation_required`, `api_error`, `cli_error`, `internal_error`。
 - `agent.run` だけは特殊で、AG-UI の event-stream を「1 イベント＝1 行」で stdout に流す（JSON のブロックではない）。
 
 ---
@@ -71,7 +80,31 @@ qaip api crawls.create --name demo --start-url https://example.com \
 # => {"method":"POST","path":"/crawls","body":{...}} を目視/再処理
 ```
 
-**Why:** 引数名ミスは `--dry-run` で `body` を見ればすぐ気づく。destructive な操作（`*.delete`、`*.delete_metadata`、`crawls.create_url_list` のような既存設定を上書きしうる操作）は、ユーザーの明示同意が無いまま本実行しない。
+**Why:** 引数名ミスは `--dry-run` で `body` を見ればすぐ気づく。destructive な操作（`*.delete`、`*.delete_metadata`）や上書き系（`*.update_setting`、`*.update_metadata`、`*.batch_set_metadata` など）は、ユーザーの明示同意が無いまま本実行しない。
+
+#### 承認必須コマンド（`--yes` ガード）
+
+以下の **destructive コマンドは CLI 側で `--yes` を要求**する。`--yes` 無しで本実行すると `confirmation_required` エラー（exit code 4）で拒否される。`--dry-run` 時は不要。
+
+| コマンド | 操作 |
+| --- | --- |
+| `crawls.delete` | クロールを削除 |
+| `secrets.delete` | secret を削除 |
+| `secrets.update` (`secret` 値を含む body) | secret 値のローテーション。`name` / `description` のみの更新では不要 |
+| `githubs.delete` | GitHub 連携を削除 |
+| `google-drives.delete` | Google Drive 連携を削除 |
+| `notions.delete` | Notion 連携を削除 |
+| `local-file-groups.delete` | local file group を削除 |
+| `sources.delete_metadata` | source のメタデータを削除 |
+| `source-groups.delete_metadata` | source group のメタデータを削除 |
+| `tag-source-groups.delete` | タグと source group の関連を削除 |
+
+運用フロー:
+
+1. まず `--dry-run` で `{method, path}` を確認する。
+2. ユーザーの明示同意を得てから `--yes` を付けて本実行する。
+
+`*.update_setting` / `*.update_metadata` / `*.batch_set_metadata` は上書きで destructive 寄りだが現状 `--yes` 必須にはしていない。とはいえ既存値を壊しうるので、エージェントは **destructive と同じ扱いで dry-run → 同意 → 本実行** を守ること。
 
 ### 3. secret 値は stdin / ファイル経由。dry-run のマスクを信用する
 
@@ -135,6 +168,10 @@ done
 ### 7. ID は UUID 形式を渡す
 
 `/contents/{id}` や `/sources/{id}` のような `{id}` 入りエンドポイントは、UUID でない文字列を渡すとサーバ側で 400 になる。`qaip schema` で `required_params` に `id` / `source_id` / `secret_id` / `run_id` が並んでいるものは全て UUID 前提。Claude が生成した ダミー ID（`"abc123"` 等）で叩かないこと。
+
+**CLI 側でも本実行時に UUID 形式を強制している**ので、URL や path traversal を ID に渡すと `invalid_id`（exit code 4）で即拒否される。`--dry-run` 経由では緩和されるので、テンプレ確認時はダミー ID で OK。
+
+**例外:** `agent.retrieve_run` / `agent.cancel_run` / `agent.retrieve_run_result` / `agent.list_run_events` の `--id`（= run_id）は **caller が `agent.create_run` / `agent.run` 呼び出し時に任意の文字列で発行できる**仕様のため、CLI 側では UUID 強制をかけていない。サーバ側の検証に委ねる。
 
 ### 8. ファイルアップロードは順序一致で
 
