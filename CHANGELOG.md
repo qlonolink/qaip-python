@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.7.0 (2026-05-01)
+
+Full Changelog: [v0.6.1...v0.7.0](https://github.com/qlonolink/qaip-python/compare/v0.6.1...v0.7.0)
+
+### Features
+
+* agent/run Vertex AI (Gemini) 対応 ([ad6a73a](https://github.com/qlonolink/qaip-python/commit/ad6a73a8a06b1ce882911b275e87636ccce6604c))
+* REST APIを呼び出すCLIを実装 ([#1](https://github.com/qlonolink/qaip-python/issues/1)) ([0806eb8](https://github.com/qlonolink/qaip-python/commit/0806eb859640d2f1260589dcaad2b7a04ab86bdc))
+* support setting headers via env ([e1d2753](https://github.com/qlonolink/qaip-python/commit/e1d27538853dac86a2c4e84cb0b4a0d0397bd419))
+
+
+### Bug Fixes
+
+* **client:** preserve hardcoded query params when merging with user params ([b93bd67](https://github.com/qlonolink/qaip-python/commit/b93bd672dd2e61a02cab4c9e8d839711732b040c))
+* ensure file data are only sent as 1 parameter ([4134636](https://github.com/qlonolink/qaip-python/commit/41346366a3bdee4aeffb3b25a296b5d1f022fdc0))
+* use correct field name format for multipart file arrays ([f0e6727](https://github.com/qlonolink/qaip-python/commit/f0e6727d6270234127ec1a8493bb60af180bea3b))
+
+
+### Performance Improvements
+
+* **client:** optimize file structure copying in multipart requests ([9b5c3c7](https://github.com/qlonolink/qaip-python/commit/9b5c3c72fab91305f312fd43cd8465e37e2e23c7))
+
+
+### Chores
+
+* **internal:** more robust bootstrap script ([206ce24](https://github.com/qlonolink/qaip-python/commit/206ce24edeff21560021c55680d1d567f008f59e))
+* **internal:** reformat pyproject.toml ([50fbf80](https://github.com/qlonolink/qaip-python/commit/50fbf8063788d79a178c124cc1ff763987d7838e))
+
 ## 0.6.1 (2026-04-03)
 
 Full Changelog: [v0.6.0...v0.6.1](https://github.com/qlonolink/qaip-python/compare/v0.6.0...v0.6.1)
