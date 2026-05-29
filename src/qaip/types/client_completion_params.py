@@ -61,6 +61,14 @@ class ClientCompletionParams(TypedDict, total=False):
     tags: SequenceNotStr[str]
     """target tag names to be obtained"""
 
+    use_postfilter: bool
+    """
+    Whether to bypass LanceDB prefilter and apply WHERE after the vector search
+    (IVF_PQ) returns top-K. Significantly faster for broad filters that cover most
+    of the table, but may return fewer than `limit` results when the hit rate is
+    low.
+    """
+
 
 class Message(TypedDict, total=False):
     content: Required[str]
