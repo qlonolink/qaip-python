@@ -98,6 +98,7 @@ class TestClient:
             tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
+            use_postfilter=True,
         )
         assert_matches_type(CompletionResponse, client_, path=["response"])
 
@@ -278,6 +279,7 @@ class TestClient:
                 "tag_filter_logic": "AND",
                 "tag_ids": ["string"],
                 "tags": ["string"],
+                "use_postfilter": True,
                 "limit": 1,
                 "offset": 0,
             },
@@ -299,6 +301,7 @@ class TestClient:
             tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
+            use_postfilter=True,
             use_related=True,
         )
         assert_matches_type(ExtractResponse, client_, path=["response"])
@@ -394,6 +397,7 @@ class TestClient:
             tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
+            use_postfilter=True,
         )
         assert_matches_type(SearchResponse, client_, path=["response"])
 
@@ -532,6 +536,7 @@ class TestAsyncClient:
             tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
+            use_postfilter=True,
         )
         assert_matches_type(CompletionResponse, client, path=["response"])
 
@@ -712,6 +717,7 @@ class TestAsyncClient:
                 "tag_filter_logic": "AND",
                 "tag_ids": ["string"],
                 "tags": ["string"],
+                "use_postfilter": True,
                 "limit": 1,
                 "offset": 0,
             },
@@ -733,6 +739,7 @@ class TestAsyncClient:
             tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
+            use_postfilter=True,
             use_related=True,
         )
         assert_matches_type(ExtractResponse, client, path=["response"])
@@ -828,6 +835,7 @@ class TestAsyncClient:
             tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
+            use_postfilter=True,
         )
         assert_matches_type(SearchResponse, client, path=["response"])
 
