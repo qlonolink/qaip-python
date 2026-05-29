@@ -97,6 +97,7 @@ class TestAgent:
                         "date_to": 1735639200,
                         "domains": ["string"],
                         "file_types": ["html"],
+                        "limit": 1,
                         "metadata": {
                             "filters": [
                                 {
@@ -338,6 +339,7 @@ class TestAgent:
                     "date_to": 1735639200,
                     "domains": ["string"],
                     "file_types": ["html"],
+                    "limit": 1,
                     "metadata": {
                         "filters": [
                             {
@@ -487,6 +489,7 @@ class TestAsyncAgent:
                         "date_to": 1735639200,
                         "domains": ["string"],
                         "file_types": ["html"],
+                        "limit": 1,
                         "metadata": {
                             "filters": [
                                 {
@@ -728,6 +731,7 @@ class TestAsyncAgent:
                     "date_to": 1735639200,
                     "domains": ["string"],
                     "file_types": ["html"],
+                    "limit": 1,
                     "metadata": {
                         "filters": [
                             {

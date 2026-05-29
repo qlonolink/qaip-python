@@ -305,6 +305,7 @@ class Qaip(SyncAPIClient):
         date_to: int | Omit = omit,
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
+        limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
@@ -336,6 +337,8 @@ class Qaip(SyncAPIClient):
           date_to: End date for content search (Unix timestamp in seconds)
 
           domains: Array of domains to search within (supports partial matching)
+
+          limit: Maximum number of chunks to retrieve as context for completion
 
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
@@ -375,6 +378,7 @@ class Qaip(SyncAPIClient):
                     "date_to": date_to,
                     "domains": domains,
                     "file_types": file_types,
+                    "limit": limit,
                     "metadata": metadata,
                     "source_metadata": source_metadata,
                     "source_types": source_types,
@@ -890,6 +894,7 @@ class AsyncQaip(AsyncAPIClient):
         date_to: int | Omit = omit,
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
+        limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
@@ -921,6 +926,8 @@ class AsyncQaip(AsyncAPIClient):
           date_to: End date for content search (Unix timestamp in seconds)
 
           domains: Array of domains to search within (supports partial matching)
+
+          limit: Maximum number of chunks to retrieve as context for completion
 
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
@@ -960,6 +967,7 @@ class AsyncQaip(AsyncAPIClient):
                     "date_to": date_to,
                     "domains": domains,
                     "file_types": file_types,
+                    "limit": limit,
                     "metadata": metadata,
                     "source_metadata": source_metadata,
                     "source_types": source_types,

@@ -33,6 +33,9 @@ class AgentFiltersParam(TypedDict, total=False):
 
     file_types: List[FileType]
 
+    limit: int
+    """Maximum number of chunks to retrieve as context for the agent"""
+
     metadata: "MetadataFilterGroup"
     """(reserved for future use) Filter group with nested structure.
 
