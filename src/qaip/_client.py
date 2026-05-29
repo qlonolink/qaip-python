@@ -312,6 +312,7 @@ class Qaip(SyncAPIClient):
         tag_filter_logic: LogicalOperator | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
+        use_postfilter: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -350,6 +351,11 @@ class Qaip(SyncAPIClient):
 
           tags: target tag names to be obtained
 
+          use_postfilter: Whether to bypass LanceDB prefilter and apply WHERE after the vector search
+              (IVF_PQ) returns top-K. Significantly faster for broad filters that cover most
+              of the table, but may return fewer than `limit` results when the hit rate is
+              low.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -376,6 +382,7 @@ class Qaip(SyncAPIClient):
                     "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
+                    "use_postfilter": use_postfilter,
                 },
                 client_completion_params.ClientCompletionParams,
             ),
@@ -438,6 +445,7 @@ class Qaip(SyncAPIClient):
         tag_filter_logic: LogicalOperator | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
+        use_postfilter: bool | Omit = omit,
         use_related: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -467,6 +475,11 @@ class Qaip(SyncAPIClient):
           source_metadata: Filter by individual source/file metadata from source_metadatas table
 
           tag_filter_logic: Logical operator for combining filter conditions
+
+          use_postfilter: Whether to bypass LanceDB prefilter and apply WHERE after the vector search
+              (IVF_PQ) returns top-K. Significantly faster for broad filters that cover most
+              of the table, but may return fewer than `limit` results when the hit rate is
+              low.
 
           use_related: Whether to search for and use related content
 
@@ -498,6 +511,7 @@ class Qaip(SyncAPIClient):
                     "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
+                    "use_postfilter": use_postfilter,
                     "use_related": use_related,
                 },
                 client_extract_params.ClientExtractParams,
@@ -525,6 +539,7 @@ class Qaip(SyncAPIClient):
         tag_filter_logic: LogicalOperator | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
+        use_postfilter: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -562,6 +577,11 @@ class Qaip(SyncAPIClient):
 
           tags: target tag names to be obtained
 
+          use_postfilter: Whether to bypass LanceDB prefilter and apply WHERE after the vector search
+              (IVF_PQ) returns top-K. Significantly faster for broad filters that cover most
+              of the table, but may return fewer than `limit` results when the hit rate is
+              low.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -588,6 +608,7 @@ class Qaip(SyncAPIClient):
                     "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
+                    "use_postfilter": use_postfilter,
                 },
                 client_search_params.ClientSearchParams,
             ),
@@ -876,6 +897,7 @@ class AsyncQaip(AsyncAPIClient):
         tag_filter_logic: LogicalOperator | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
+        use_postfilter: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -914,6 +936,11 @@ class AsyncQaip(AsyncAPIClient):
 
           tags: target tag names to be obtained
 
+          use_postfilter: Whether to bypass LanceDB prefilter and apply WHERE after the vector search
+              (IVF_PQ) returns top-K. Significantly faster for broad filters that cover most
+              of the table, but may return fewer than `limit` results when the hit rate is
+              low.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -940,6 +967,7 @@ class AsyncQaip(AsyncAPIClient):
                     "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
+                    "use_postfilter": use_postfilter,
                 },
                 client_completion_params.ClientCompletionParams,
             ),
@@ -1002,6 +1030,7 @@ class AsyncQaip(AsyncAPIClient):
         tag_filter_logic: LogicalOperator | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
+        use_postfilter: bool | Omit = omit,
         use_related: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1031,6 +1060,11 @@ class AsyncQaip(AsyncAPIClient):
           source_metadata: Filter by individual source/file metadata from source_metadatas table
 
           tag_filter_logic: Logical operator for combining filter conditions
+
+          use_postfilter: Whether to bypass LanceDB prefilter and apply WHERE after the vector search
+              (IVF_PQ) returns top-K. Significantly faster for broad filters that cover most
+              of the table, but may return fewer than `limit` results when the hit rate is
+              low.
 
           use_related: Whether to search for and use related content
 
@@ -1062,6 +1096,7 @@ class AsyncQaip(AsyncAPIClient):
                     "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
+                    "use_postfilter": use_postfilter,
                     "use_related": use_related,
                 },
                 client_extract_params.ClientExtractParams,
@@ -1089,6 +1124,7 @@ class AsyncQaip(AsyncAPIClient):
         tag_filter_logic: LogicalOperator | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
+        use_postfilter: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1126,6 +1162,11 @@ class AsyncQaip(AsyncAPIClient):
 
           tags: target tag names to be obtained
 
+          use_postfilter: Whether to bypass LanceDB prefilter and apply WHERE after the vector search
+              (IVF_PQ) returns top-K. Significantly faster for broad filters that cover most
+              of the table, but may return fewer than `limit` results when the hit rate is
+              low.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -1152,6 +1193,7 @@ class AsyncQaip(AsyncAPIClient):
                     "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
+                    "use_postfilter": use_postfilter,
                 },
                 client_search_params.ClientSearchParams,
             ),

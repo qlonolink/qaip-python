@@ -129,6 +129,7 @@ class TestAgent:
                         "tag_filter_logic": "AND",
                         "tag_ids": ["string"],
                         "tags": ["string"],
+                        "use_postfilter": True,
                     }
                 },
                 "messages": [
@@ -369,6 +370,7 @@ class TestAgent:
                     "tag_filter_logic": "AND",
                     "tag_ids": ["string"],
                     "tags": ["string"],
+                    "use_postfilter": True,
                 }
             },
             messages=[
@@ -517,6 +519,7 @@ class TestAsyncAgent:
                         "tag_filter_logic": "AND",
                         "tag_ids": ["string"],
                         "tags": ["string"],
+                        "use_postfilter": True,
                     }
                 },
                 "messages": [
@@ -757,6 +760,7 @@ class TestAsyncAgent:
                     "tag_filter_logic": "AND",
                     "tag_ids": ["string"],
                     "tags": ["string"],
+                    "use_postfilter": True,
                 }
             },
             messages=[
