@@ -10,7 +10,7 @@ import httpx
 
 from . import _exceptions
 from ._qs import Querystring
-from .types import client_search_params, client_extract_params, client_completion_params
+from .types import client_search_params, client_content_params, client_extract_params, client_completion_params
 from ._types import (
     Body,
     Omit,
@@ -299,6 +299,7 @@ class Qaip(SyncAPIClient):
         self,
         *,
         messages: Iterable[client_completion_params.Message],
+        authz_policy: str | Omit = omit,
         chunk_metadata: MetadataFilterGroup | Omit = omit,
         citation: bool | Omit = omit,
         date_from: int | Omit = omit,
@@ -307,6 +308,7 @@ class Qaip(SyncAPIClient):
         file_types: List[FileType] | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
+        principal_id: str | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         stream: bool | Omit = omit,
@@ -328,6 +330,10 @@ class Qaip(SyncAPIClient):
         Args:
           messages: The messages to generate completion for
 
+          authz_policy: (reserved for future use) Name of the registered authz policy to evaluate when
+              retrieving context. Defaults to the reserved "default" policy when omitted.
+              Ignored when authz is disabled.
+
           chunk_metadata: Filter by chunk-level metadata from chunk_metadatas table
 
           citation: Whether to include citations in the response
@@ -342,6 +348,11 @@ class Qaip(SyncAPIClient):
 
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
+
+          principal_id: Identifier of the end-user (principal) on whose behalf this request is made.
+              Used to look up the principal's authz subject attributes for policy evaluation.
+              When omitted, subject attributes are empty (most restrictive). Ignored when
+              authz is disabled.
 
           source_metadata: Filter by individual source/file metadata from source_metadatas table
 
@@ -372,6 +383,7 @@ class Qaip(SyncAPIClient):
             body=maybe_transform(
                 {
                     "messages": messages,
+                    "authz_policy": authz_policy,
                     "chunk_metadata": chunk_metadata,
                     "citation": citation,
                     "date_from": date_from,
@@ -380,6 +392,7 @@ class Qaip(SyncAPIClient):
                     "file_types": file_types,
                     "limit": limit,
                     "metadata": metadata,
+                    "principal_id": principal_id,
                     "source_metadata": source_metadata,
                     "source_types": source_types,
                     "stream": stream,
@@ -400,6 +413,8 @@ class Qaip(SyncAPIClient):
         self,
         id: str,
         *,
+        authz_policy: str | Omit = omit,
+        principal_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -412,6 +427,14 @@ class Qaip(SyncAPIClient):
         </p> <p> Required roles: All, App </p>
 
         Args:
+          authz_policy: (reserved for future use) Name of the registered authz policy to evaluate when
+              fetching the content. Defaults to the reserved "default" policy when omitted.
+              Ignored when authz is disabled.
+
+          principal_id: Identifier of the end-user (principal) on whose behalf the content is fetched.
+              Used to look up authz subject attributes. Empty subject when omitted. Ignored
+              when authz disabled.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -425,7 +448,17 @@ class Qaip(SyncAPIClient):
         return self.get(
             path_template("/contents/{id}", id=id),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform(
+                    {
+                        "authz_policy": authz_policy,
+                        "principal_id": principal_id,
+                    },
+                    client_content_params.ClientContentParams,
+                ),
             ),
             cast_to=Content,
         )
@@ -434,6 +467,7 @@ class Qaip(SyncAPIClient):
         self,
         *,
         schema: object,
+        authz_policy: str | Omit = omit,
         chunk_metadata: MetadataFilterGroup | Omit = omit,
         date_from: int | Omit = omit,
         date_to: int | Omit = omit,
@@ -442,6 +476,7 @@ class Qaip(SyncAPIClient):
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
+        principal_id: str | Omit = omit,
         prompt: str | Omit = omit,
         related_filter: client_extract_params.RelatedFilter | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
@@ -464,6 +499,10 @@ class Qaip(SyncAPIClient):
         Args:
           schema: JSON Schema for the data to be extracted.
 
+          authz_policy: (reserved for future use) Name of the registered authz policy to evaluate when
+              retrieving content. Defaults to the reserved "default" policy when omitted.
+              Ignored when authz is disabled.
+
           chunk_metadata: Filter by chunk-level metadata from chunk_metadatas table
 
           date_from: Start date for content search (Unix timestamp in seconds)
@@ -472,6 +511,11 @@ class Qaip(SyncAPIClient):
 
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
+
+          principal_id: Identifier of the end-user (principal) on whose behalf this request is made.
+              Used to look up the principal's authz subject attributes for policy evaluation.
+              When omitted, subject attributes are empty (most restrictive). Ignored when
+              authz is disabled.
 
           prompt: Additional prompt for the LLM (optional, if not specified, a default prompt in
               Japanese will be used).
@@ -500,6 +544,7 @@ class Qaip(SyncAPIClient):
             body=maybe_transform(
                 {
                     "schema": schema,
+                    "authz_policy": authz_policy,
                     "chunk_metadata": chunk_metadata,
                     "date_from": date_from,
                     "date_to": date_to,
@@ -508,6 +553,7 @@ class Qaip(SyncAPIClient):
                     "limit": limit,
                     "metadata": metadata,
                     "offset": offset,
+                    "principal_id": principal_id,
                     "prompt": prompt,
                     "related_filter": related_filter,
                     "source_metadata": source_metadata,
@@ -530,6 +576,7 @@ class Qaip(SyncAPIClient):
         self,
         *,
         query: str,
+        authz_policy: str | Omit = omit,
         chunk_metadata: MetadataFilterGroup | Omit = omit,
         date_from: int | Omit = omit,
         date_to: int | Omit = omit,
@@ -537,7 +584,9 @@ class Qaip(SyncAPIClient):
         file_types: List[FileType] | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
+        metadata_filter: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
+        principal_id: str | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         tag_filter_logic: LogicalOperator | Omit = omit,
@@ -558,6 +607,10 @@ class Qaip(SyncAPIClient):
         Args:
           query: Search query string
 
+          authz_policy: (reserved for future use) Name of the registered authz policy to evaluate for
+              this request. Defaults to the reserved "default" policy when omitted. Ignored
+              when authz is disabled. An unknown or malformed name returns 400.
+
           chunk_metadata: Filter by chunk-level metadata from chunk_metadatas table
 
           date_from: Start date for content search (Unix timestamp in seconds)
@@ -571,7 +624,16 @@ class Qaip(SyncAPIClient):
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
 
+          metadata_filter: Filter by declared metadata columns (see /metadata_columns) pushed down directly
+              to LanceDB (no PostgreSQL round-trip). Targets string/integer typed columns.
+              Keys must be declared via /metadata_columns or the request is rejected (400).
+
           offset: Number of results to skip
+
+          principal_id: Identifier of the end-user (principal) on whose behalf this request is made.
+              Used to look up the principal's authz subject attributes for policy evaluation.
+              When omitted, subject attributes are empty (most restrictive). Ignored when
+              authz is disabled.
 
           source_metadata: Filter by individual source/file metadata from source_metadatas table
 
@@ -599,6 +661,7 @@ class Qaip(SyncAPIClient):
             body=maybe_transform(
                 {
                     "query": query,
+                    "authz_policy": authz_policy,
                     "chunk_metadata": chunk_metadata,
                     "date_from": date_from,
                     "date_to": date_to,
@@ -606,7 +669,9 @@ class Qaip(SyncAPIClient):
                     "file_types": file_types,
                     "limit": limit,
                     "metadata": metadata,
+                    "metadata_filter": metadata_filter,
                     "offset": offset,
+                    "principal_id": principal_id,
                     "source_metadata": source_metadata,
                     "source_types": source_types,
                     "tag_filter_logic": tag_filter_logic,
@@ -888,6 +953,7 @@ class AsyncQaip(AsyncAPIClient):
         self,
         *,
         messages: Iterable[client_completion_params.Message],
+        authz_policy: str | Omit = omit,
         chunk_metadata: MetadataFilterGroup | Omit = omit,
         citation: bool | Omit = omit,
         date_from: int | Omit = omit,
@@ -896,6 +962,7 @@ class AsyncQaip(AsyncAPIClient):
         file_types: List[FileType] | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
+        principal_id: str | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         stream: bool | Omit = omit,
@@ -917,6 +984,10 @@ class AsyncQaip(AsyncAPIClient):
         Args:
           messages: The messages to generate completion for
 
+          authz_policy: (reserved for future use) Name of the registered authz policy to evaluate when
+              retrieving context. Defaults to the reserved "default" policy when omitted.
+              Ignored when authz is disabled.
+
           chunk_metadata: Filter by chunk-level metadata from chunk_metadatas table
 
           citation: Whether to include citations in the response
@@ -931,6 +1002,11 @@ class AsyncQaip(AsyncAPIClient):
 
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
+
+          principal_id: Identifier of the end-user (principal) on whose behalf this request is made.
+              Used to look up the principal's authz subject attributes for policy evaluation.
+              When omitted, subject attributes are empty (most restrictive). Ignored when
+              authz is disabled.
 
           source_metadata: Filter by individual source/file metadata from source_metadatas table
 
@@ -961,6 +1037,7 @@ class AsyncQaip(AsyncAPIClient):
             body=await async_maybe_transform(
                 {
                     "messages": messages,
+                    "authz_policy": authz_policy,
                     "chunk_metadata": chunk_metadata,
                     "citation": citation,
                     "date_from": date_from,
@@ -969,6 +1046,7 @@ class AsyncQaip(AsyncAPIClient):
                     "file_types": file_types,
                     "limit": limit,
                     "metadata": metadata,
+                    "principal_id": principal_id,
                     "source_metadata": source_metadata,
                     "source_types": source_types,
                     "stream": stream,
@@ -989,6 +1067,8 @@ class AsyncQaip(AsyncAPIClient):
         self,
         id: str,
         *,
+        authz_policy: str | Omit = omit,
+        principal_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1001,6 +1081,14 @@ class AsyncQaip(AsyncAPIClient):
         </p> <p> Required roles: All, App </p>
 
         Args:
+          authz_policy: (reserved for future use) Name of the registered authz policy to evaluate when
+              fetching the content. Defaults to the reserved "default" policy when omitted.
+              Ignored when authz is disabled.
+
+          principal_id: Identifier of the end-user (principal) on whose behalf the content is fetched.
+              Used to look up authz subject attributes. Empty subject when omitted. Ignored
+              when authz disabled.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -1014,7 +1102,17 @@ class AsyncQaip(AsyncAPIClient):
         return await self.get(
             path_template("/contents/{id}", id=id),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {
+                        "authz_policy": authz_policy,
+                        "principal_id": principal_id,
+                    },
+                    client_content_params.ClientContentParams,
+                ),
             ),
             cast_to=Content,
         )
@@ -1023,6 +1121,7 @@ class AsyncQaip(AsyncAPIClient):
         self,
         *,
         schema: object,
+        authz_policy: str | Omit = omit,
         chunk_metadata: MetadataFilterGroup | Omit = omit,
         date_from: int | Omit = omit,
         date_to: int | Omit = omit,
@@ -1031,6 +1130,7 @@ class AsyncQaip(AsyncAPIClient):
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
+        principal_id: str | Omit = omit,
         prompt: str | Omit = omit,
         related_filter: client_extract_params.RelatedFilter | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
@@ -1053,6 +1153,10 @@ class AsyncQaip(AsyncAPIClient):
         Args:
           schema: JSON Schema for the data to be extracted.
 
+          authz_policy: (reserved for future use) Name of the registered authz policy to evaluate when
+              retrieving content. Defaults to the reserved "default" policy when omitted.
+              Ignored when authz is disabled.
+
           chunk_metadata: Filter by chunk-level metadata from chunk_metadatas table
 
           date_from: Start date for content search (Unix timestamp in seconds)
@@ -1061,6 +1165,11 @@ class AsyncQaip(AsyncAPIClient):
 
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
+
+          principal_id: Identifier of the end-user (principal) on whose behalf this request is made.
+              Used to look up the principal's authz subject attributes for policy evaluation.
+              When omitted, subject attributes are empty (most restrictive). Ignored when
+              authz is disabled.
 
           prompt: Additional prompt for the LLM (optional, if not specified, a default prompt in
               Japanese will be used).
@@ -1089,6 +1198,7 @@ class AsyncQaip(AsyncAPIClient):
             body=await async_maybe_transform(
                 {
                     "schema": schema,
+                    "authz_policy": authz_policy,
                     "chunk_metadata": chunk_metadata,
                     "date_from": date_from,
                     "date_to": date_to,
@@ -1097,6 +1207,7 @@ class AsyncQaip(AsyncAPIClient):
                     "limit": limit,
                     "metadata": metadata,
                     "offset": offset,
+                    "principal_id": principal_id,
                     "prompt": prompt,
                     "related_filter": related_filter,
                     "source_metadata": source_metadata,
@@ -1119,6 +1230,7 @@ class AsyncQaip(AsyncAPIClient):
         self,
         *,
         query: str,
+        authz_policy: str | Omit = omit,
         chunk_metadata: MetadataFilterGroup | Omit = omit,
         date_from: int | Omit = omit,
         date_to: int | Omit = omit,
@@ -1126,7 +1238,9 @@ class AsyncQaip(AsyncAPIClient):
         file_types: List[FileType] | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
+        metadata_filter: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
+        principal_id: str | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         tag_filter_logic: LogicalOperator | Omit = omit,
@@ -1147,6 +1261,10 @@ class AsyncQaip(AsyncAPIClient):
         Args:
           query: Search query string
 
+          authz_policy: (reserved for future use) Name of the registered authz policy to evaluate for
+              this request. Defaults to the reserved "default" policy when omitted. Ignored
+              when authz is disabled. An unknown or malformed name returns 400.
+
           chunk_metadata: Filter by chunk-level metadata from chunk_metadatas table
 
           date_from: Start date for content search (Unix timestamp in seconds)
@@ -1160,7 +1278,16 @@ class AsyncQaip(AsyncAPIClient):
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
 
+          metadata_filter: Filter by declared metadata columns (see /metadata_columns) pushed down directly
+              to LanceDB (no PostgreSQL round-trip). Targets string/integer typed columns.
+              Keys must be declared via /metadata_columns or the request is rejected (400).
+
           offset: Number of results to skip
+
+          principal_id: Identifier of the end-user (principal) on whose behalf this request is made.
+              Used to look up the principal's authz subject attributes for policy evaluation.
+              When omitted, subject attributes are empty (most restrictive). Ignored when
+              authz is disabled.
 
           source_metadata: Filter by individual source/file metadata from source_metadatas table
 
@@ -1188,6 +1315,7 @@ class AsyncQaip(AsyncAPIClient):
             body=await async_maybe_transform(
                 {
                     "query": query,
+                    "authz_policy": authz_policy,
                     "chunk_metadata": chunk_metadata,
                     "date_from": date_from,
                     "date_to": date_to,
@@ -1195,7 +1323,9 @@ class AsyncQaip(AsyncAPIClient):
                     "file_types": file_types,
                     "limit": limit,
                     "metadata": metadata,
+                    "metadata_filter": metadata_filter,
                     "offset": offset,
+                    "principal_id": principal_id,
                     "source_metadata": source_metadata,
                     "source_types": source_types,
                     "tag_filter_logic": tag_filter_logic,

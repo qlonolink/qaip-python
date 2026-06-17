@@ -18,6 +18,13 @@ class ClientExtractParams(TypedDict, total=False):
     schema: Required[object]
     """JSON Schema for the data to be extracted."""
 
+    authz_policy: str
+    """
+    (reserved for future use) Name of the registered authz policy to evaluate when
+    retrieving content. Defaults to the reserved "default" policy when omitted.
+    Ignored when authz is disabled.
+    """
+
     chunk_metadata: "MetadataFilterGroup"
     """Filter by chunk-level metadata from chunk_metadatas table"""
 
@@ -40,6 +47,14 @@ class ClientExtractParams(TypedDict, total=False):
     """
 
     offset: int
+
+    principal_id: str
+    """Identifier of the end-user (principal) on whose behalf this request is made.
+
+    Used to look up the principal's authz subject attributes for policy evaluation.
+    When omitted, subject attributes are empty (most restrictive). Ignored when
+    authz is disabled.
+    """
 
     prompt: str
     """

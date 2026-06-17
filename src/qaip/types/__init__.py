@@ -66,6 +66,7 @@ from .secret_create_params import SecretCreateParams as SecretCreateParams
 from .secret_list_response import SecretListResponse as SecretListResponse
 from .secret_update_params import SecretUpdateParams as SecretUpdateParams
 from .source_list_response import SourceListResponse as SourceListResponse
+from .client_content_params import ClientContentParams as ClientContentParams
 from .client_extract_params import ClientExtractParams as ClientExtractParams
 from .github_reference_type import GitHubReferenceType as GitHubReferenceType
 from .agent_create_run_params import AgentCreateRunParams as AgentCreateRunParams
