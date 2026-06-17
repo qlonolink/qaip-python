@@ -17,6 +17,13 @@ class ClientSearchParams(TypedDict, total=False):
     query: Required[str]
     """Search query string"""
 
+    authz_policy: str
+    """
+    (reserved for future use) Name of the registered authz policy to evaluate for
+    this request. Defaults to the reserved "default" policy when omitted. Ignored
+    when authz is disabled. An unknown or malformed name returns 400.
+    """
+
     chunk_metadata: "MetadataFilterGroup"
     """Filter by chunk-level metadata from chunk_metadatas table"""
 
@@ -40,8 +47,23 @@ class ClientSearchParams(TypedDict, total=False):
     Supports combining filters with AND/OR logic.
     """
 
+    metadata_filter: "MetadataFilterGroup"
+    """
+    Filter by declared metadata columns (see /metadata_columns) pushed down directly
+    to LanceDB (no PostgreSQL round-trip). Targets string/integer typed columns.
+    Keys must be declared via /metadata_columns or the request is rejected (400).
+    """
+
     offset: int
     """Number of results to skip"""
+
+    principal_id: str
+    """Identifier of the end-user (principal) on whose behalf this request is made.
+
+    Used to look up the principal's authz subject attributes for policy evaluation.
+    When omitted, subject attributes are empty (most restrictive). Ignored when
+    authz is disabled.
+    """
 
     source_metadata: "MetadataFilterGroup"
     """Filter by individual source/file metadata from source_metadatas table"""

@@ -18,6 +18,13 @@ class ClientCompletionParams(TypedDict, total=False):
     messages: Required[Iterable[Message]]
     """The messages to generate completion for"""
 
+    authz_policy: str
+    """
+    (reserved for future use) Name of the registered authz policy to evaluate when
+    retrieving context. Defaults to the reserved "default" policy when omitted.
+    Ignored when authz is disabled.
+    """
+
     chunk_metadata: "MetadataFilterGroup"
     """Filter by chunk-level metadata from chunk_metadatas table"""
 
@@ -42,6 +49,14 @@ class ClientCompletionParams(TypedDict, total=False):
     """(reserved for future use) Filter group with nested structure.
 
     Supports combining filters with AND/OR logic.
+    """
+
+    principal_id: str
+    """Identifier of the end-user (principal) on whose behalf this request is made.
+
+    Used to look up the principal's authz subject attributes for policy evaluation.
+    When omitted, subject attributes are empty (most restrictive). Ignored when
+    authz is disabled.
     """
 
     source_metadata: "MetadataFilterGroup"

@@ -46,6 +46,7 @@ class TestClient:
                     "role": "system",
                 }
             ],
+            authz_policy="external-chatbot",
             chunk_metadata={
                 "filters": [
                     {
@@ -80,6 +81,7 @@ class TestClient:
                 "groups": [],
                 "logic": "AND",
             },
+            principal_id="user-123",
             source_metadata={
                 "filters": [
                     {
@@ -143,7 +145,17 @@ class TestClient:
     @parametrize
     def test_method_content(self, client: Qaip) -> None:
         client_ = client.content(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(Content, client_, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_content_with_all_params(self, client: Qaip) -> None:
+        client_ = client.content(
+            id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            authz_policy="authz_policy",
+            principal_id="principal_id",
         )
         assert_matches_type(Content, client_, path=["response"])
 
@@ -151,7 +163,7 @@ class TestClient:
     @parametrize
     def test_raw_response_content(self, client: Qaip) -> None:
         response = client.with_raw_response.content(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert response.is_closed is True
@@ -163,7 +175,7 @@ class TestClient:
     @parametrize
     def test_streaming_response_content(self, client: Qaip) -> None:
         with client.with_streaming_response.content(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -178,7 +190,7 @@ class TestClient:
     def test_path_params_content(self, client: Qaip) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.with_raw_response.content(
-                "",
+                id="",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
@@ -194,6 +206,7 @@ class TestClient:
     def test_method_extract_with_all_params(self, client: Qaip) -> None:
         client_ = client.extract(
             schema={},
+            authz_policy="external-chatbot",
             chunk_metadata={
                 "filters": [
                     {
@@ -228,6 +241,7 @@ class TestClient:
                 "logic": "AND",
             },
             offset=0,
+            principal_id="user-123",
             prompt="prompt",
             related_filter={
                 "chunk_metadata": {
@@ -346,6 +360,7 @@ class TestClient:
     def test_method_search_with_all_params(self, client: Qaip) -> None:
         client_ = client.search(
             query="machine learning and artificial intelligence",
+            authz_policy="external-chatbot",
             chunk_metadata={
                 "filters": [
                     {
@@ -379,7 +394,22 @@ class TestClient:
                 "groups": [],
                 "logic": "AND",
             },
+            metadata_filter={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             offset=0,
+            principal_id="user-123",
             source_metadata={
                 "filters": [
                     {
@@ -485,6 +515,7 @@ class TestAsyncClient:
                     "role": "system",
                 }
             ],
+            authz_policy="external-chatbot",
             chunk_metadata={
                 "filters": [
                     {
@@ -519,6 +550,7 @@ class TestAsyncClient:
                 "groups": [],
                 "logic": "AND",
             },
+            principal_id="user-123",
             source_metadata={
                 "filters": [
                     {
@@ -582,7 +614,17 @@ class TestAsyncClient:
     @parametrize
     async def test_method_content(self, async_client: AsyncQaip) -> None:
         client = await async_client.content(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert_matches_type(Content, client, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_content_with_all_params(self, async_client: AsyncQaip) -> None:
+        client = await async_client.content(
+            id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            authz_policy="authz_policy",
+            principal_id="principal_id",
         )
         assert_matches_type(Content, client, path=["response"])
 
@@ -590,7 +632,7 @@ class TestAsyncClient:
     @parametrize
     async def test_raw_response_content(self, async_client: AsyncQaip) -> None:
         response = await async_client.with_raw_response.content(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert response.is_closed is True
@@ -602,7 +644,7 @@ class TestAsyncClient:
     @parametrize
     async def test_streaming_response_content(self, async_client: AsyncQaip) -> None:
         async with async_client.with_streaming_response.content(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -617,7 +659,7 @@ class TestAsyncClient:
     async def test_path_params_content(self, async_client: AsyncQaip) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.with_raw_response.content(
-                "",
+                id="",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
@@ -633,6 +675,7 @@ class TestAsyncClient:
     async def test_method_extract_with_all_params(self, async_client: AsyncQaip) -> None:
         client = await async_client.extract(
             schema={},
+            authz_policy="external-chatbot",
             chunk_metadata={
                 "filters": [
                     {
@@ -667,6 +710,7 @@ class TestAsyncClient:
                 "logic": "AND",
             },
             offset=0,
+            principal_id="user-123",
             prompt="prompt",
             related_filter={
                 "chunk_metadata": {
@@ -785,6 +829,7 @@ class TestAsyncClient:
     async def test_method_search_with_all_params(self, async_client: AsyncQaip) -> None:
         client = await async_client.search(
             query="machine learning and artificial intelligence",
+            authz_policy="external-chatbot",
             chunk_metadata={
                 "filters": [
                     {
@@ -818,7 +863,22 @@ class TestAsyncClient:
                 "groups": [],
                 "logic": "AND",
             },
+            metadata_filter={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             offset=0,
+            principal_id="user-123",
             source_metadata={
                 "filters": [
                     {
