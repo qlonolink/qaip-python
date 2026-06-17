@@ -77,6 +77,7 @@ class TestAgent:
         agent = client.agent.create_run(
             input={
                 "forwarded_props": {
+                    "authz_policy": "authz_policy",
                     "filters": {
                         "chunk_metadata": {
                             "filters": [
@@ -131,7 +132,8 @@ class TestAgent:
                         "tag_ids": ["string"],
                         "tags": ["string"],
                         "use_postfilter": True,
-                    }
+                    },
+                    "principal_id": "user-123",
                 },
                 "messages": [
                     {
@@ -319,6 +321,7 @@ class TestAgent:
     def test_method_run_with_all_params(self, client: Qaip) -> None:
         agent_stream = client.agent.run(
             forwarded_props={
+                "authz_policy": "authz_policy",
                 "filters": {
                     "chunk_metadata": {
                         "filters": [
@@ -373,7 +376,8 @@ class TestAgent:
                     "tag_ids": ["string"],
                     "tags": ["string"],
                     "use_postfilter": True,
-                }
+                },
+                "principal_id": "user-123",
             },
             messages=[
                 {
@@ -469,6 +473,7 @@ class TestAsyncAgent:
         agent = await async_client.agent.create_run(
             input={
                 "forwarded_props": {
+                    "authz_policy": "authz_policy",
                     "filters": {
                         "chunk_metadata": {
                             "filters": [
@@ -523,7 +528,8 @@ class TestAsyncAgent:
                         "tag_ids": ["string"],
                         "tags": ["string"],
                         "use_postfilter": True,
-                    }
+                    },
+                    "principal_id": "user-123",
                 },
                 "messages": [
                     {
@@ -711,6 +717,7 @@ class TestAsyncAgent:
     async def test_method_run_with_all_params(self, async_client: AsyncQaip) -> None:
         agent_stream = await async_client.agent.run(
             forwarded_props={
+                "authz_policy": "authz_policy",
                 "filters": {
                     "chunk_metadata": {
                         "filters": [
@@ -765,7 +772,8 @@ class TestAsyncAgent:
                     "tag_ids": ["string"],
                     "tags": ["string"],
                     "use_postfilter": True,
-                }
+                },
+                "principal_id": "user-123",
             },
             messages=[
                 {

@@ -27,8 +27,23 @@ class AgentRunParams(TypedDict, total=False):
 class ForwardedProps(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]
     """Forwarded properties for the run (AG-UI standard)"""
 
+    authz_policy: str
+    """
+    (reserved for future use) Name of the registered authz policy to evaluate when
+    the agent retrieves context. Defaults to the reserved "default" policy when
+    omitted. Ignored when authz is disabled.
+    """
+
     filters: "AgentFiltersParam"
     """Filters for agent search and completion"""
+
+    principal_id: str
+    """Identifier of the end-user (principal) on whose behalf this request is made.
+
+    Used to look up the principal's authz subject attributes for policy evaluation.
+    When omitted, subject attributes are empty (most restrictive). Ignored when
+    authz is disabled.
+    """
 
 
 from .agent_filters_param import AgentFiltersParam
