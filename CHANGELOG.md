@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.8.0 (2026-06-19)
+
+Full Changelog: [v0.7.1...v0.8.0](https://github.com/qlonolink/qaip-python/compare/v0.7.1...v0.8.0)
+
+### Features
+
+* **app:** /completions と /agent/run で参照する chunk 数の上限を指定可能にする ([3651c69](https://github.com/qlonolink/qaip-python/commit/3651c69152b9734cf0bd608667a344a85202b7ee))
+* **app:** vectordb.retrieve に use_postfilter を追加し API でも指定可能にする ([#5465](https://github.com/qlonolink/qaip-python/issues/5465)) ([9937b0e](https://github.com/qlonolink/qaip-python/commit/9937b0e342d8d3e41b488e41040cfda514537761))
+* **authz:** metadata_columns API + 直接 metadata_filter (row-level authz 再設計) ([a90cb49](https://github.com/qlonolink/qaip-python/commit/a90cb49a3e5bdb52e574c5166f1aa929f207a83e))
+* **internal/types:** support eagerly validating pydantic iterators ([990e392](https://github.com/qlonolink/qaip-python/commit/990e3921e7a6affffb64ee85d78d7cbf3834145e))
+
+
+### Bug Fixes
+
+* **client:** add missing f-string prefix in file type error message ([badf4be](https://github.com/qlonolink/qaip-python/commit/badf4bef6c0e8577be592be819bd23ea249714ec))
+
 ## 0.7.1 (2026-05-01)
 
 Full Changelog: [v0.7.0...v0.7.1](https://github.com/qlonolink/qaip-python/compare/v0.7.0...v0.7.1)
