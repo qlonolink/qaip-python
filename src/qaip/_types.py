@@ -124,6 +124,7 @@ class RequestOptions(TypedDict, total=False):
     extra_json: AnyMapping
     idempotency_key: str
     follow_redirects: bool
+    multipart_form_array_format: ArrayFormat
 
 
 # Sentinel class used until PEP 0661 is accepted
