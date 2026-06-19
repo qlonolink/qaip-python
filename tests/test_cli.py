@@ -3,8 +3,10 @@ from __future__ import annotations
 import json
 from unittest.mock import patch
 
+import httpx
 import pytest
 
+from qaip import Qaip
 from qaip.cli._cli import main, _build_parser
 from qaip.cli._errors import CLIError
 from qaip.cli._api._common import filter_fields
@@ -631,6 +633,48 @@ class TestLocalFileGroupsMissingFile:
         ])
         with pytest.raises(CLIError, match="File not found"):
             args.func(args)
+
+    def test_create_sends_file_as_files_multipart_field(
+        self,
+        capsys: pytest.CaptureFixture[str],
+        tmp_path: pytest.TempPathFactory,
+    ) -> None:
+        from pathlib import Path
+
+        assert isinstance(tmp_path, Path)
+        file_path = tmp_path / "etl.md"
+        file_path.write_text("hello")
+        captured_bodies: list[bytes] = []
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            captured_bodies.append(request.read())
+            return httpx.Response(200, json={"source_group_id": "019ede24-8c8a-7b95-a5c6-36fff2574cbe"})
+
+        parser = _build_parser()
+        args = parser.parse_args([
+            "api", "local-file-groups.create",
+            "--name", "lfg",
+            "--file", str(file_path),
+            "--last-modified", "1000",
+        ])
+
+        transport = httpx.MockTransport(handler)
+        with Qaip(
+            base_url="http://test.local",
+            api_key="test-key",
+            http_client=httpx.Client(transport=transport),
+        ) as client:
+            with patch("qaip.cli._api.local_file_groups.get_client", return_value=client):
+                args.func(args)
+
+        captured = capsys.readouterr()
+        assert json.loads(captured.out) == {"source_group_id": "019ede24-8c8a-7b95-a5c6-36fff2574cbe"}
+        assert len(captured_bodies) == 1
+        body = captured_bodies[0]
+        assert b'name="files[]"' not in body
+        assert b'name="files"; filename="etl.md"' in body
+        assert b'name="last_modified[]"' not in body
+        assert b'name="last_modified"\r\n\r\n1000' in body
 
 
 _VALID_UUID = "11111111-1111-1111-1111-111111111111"

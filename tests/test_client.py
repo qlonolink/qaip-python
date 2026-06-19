@@ -56,6 +56,18 @@ def mirror_request_content(request: httpx.Request) -> httpx.Response:
     return httpx.Response(200, content=request.content)
 
 
+def assert_local_file_group_multipart_fields(body: bytes) -> None:
+    assert b'name="files[]"' not in body
+    assert b'name="last_modified[]"' not in body
+    assert body.count(b'name="files"; filename=') == 2
+    assert b'name="files"; filename="a.txt"' in body
+    assert b'name="files"; filename="b.txt"' in body
+    assert body.count(b'name="last_modified"') == 2
+    assert b'name="last_modified"\r\n\r\n1000' in body
+    assert b'name="last_modified"\r\n\r\n2000' in body
+    assert b'name="name"\r\n\r\nlfg' in body
+
+
 # note: we can't use the httpx.MockTransport class as it consumes the request
 #       body itself, which means we can't test that the body is read lazily
 class MockTransport(httpx.BaseTransport, httpx.AsyncBaseTransport):
@@ -570,6 +582,30 @@ class TestQaip:
             b"--6b7ba517decee4a450543ea6ae821c82--",
             b"",
         ]
+
+    @pytest.mark.respx(base_url=base_url)
+    def test_local_file_groups_create_uses_repeat_multipart_fields(
+        self,
+        respx_mock: MockRouter,
+        client: Qaip,
+    ) -> None:
+        captured_bodies: list[bytes] = []
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            captured_bodies.append(request.read())
+            return httpx.Response(200, json={"source_group_id": "019ede24-8c8a-7b95-a5c6-36fff2574cbe"})
+
+        respx_mock.post("/local-file-groups").mock(side_effect=handler)
+
+        result = client.local_file_groups.create(
+            files=[("a.txt", b"hello"), ("b.txt", b"world")],
+            last_modified=["1000", "2000"],
+            name="lfg",
+        )
+
+        assert result.source_group_id == "019ede24-8c8a-7b95-a5c6-36fff2574cbe"
+        assert len(captured_bodies) == 1
+        assert_local_file_group_multipart_fields(captured_bodies[0])
 
     @pytest.mark.respx(base_url=base_url)
     def test_binary_content_upload(self, respx_mock: MockRouter, client: Qaip) -> None:
@@ -1520,6 +1556,30 @@ class TestAsyncQaip:
             b"--6b7ba517decee4a450543ea6ae821c82--",
             b"",
         ]
+
+    @pytest.mark.respx(base_url=base_url)
+    async def test_local_file_groups_create_uses_repeat_multipart_fields(
+        self,
+        respx_mock: MockRouter,
+        async_client: AsyncQaip,
+    ) -> None:
+        captured_bodies: list[bytes] = []
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            captured_bodies.append(request.read())
+            return httpx.Response(200, json={"source_group_id": "019ede24-8c8a-7b95-a5c6-36fff2574cbe"})
+
+        respx_mock.post("/local-file-groups").mock(side_effect=handler)
+
+        result = await async_client.local_file_groups.create(
+            files=[("a.txt", b"hello"), ("b.txt", b"world")],
+            last_modified=["1000", "2000"],
+            name="lfg",
+        )
+
+        assert result.source_group_id == "019ede24-8c8a-7b95-a5c6-36fff2574cbe"
+        assert len(captured_bodies) == 1
+        assert_local_file_group_multipart_fields(captured_bodies[0])
 
     @pytest.mark.respx(base_url=base_url)
     async def test_binary_content_upload(self, respx_mock: MockRouter, async_client: AsyncQaip) -> None:

@@ -47,6 +47,7 @@ from ._types import (
     Timeout,
     NotGiven,
     AnyMapping,
+    ArrayFormat,
     HttpxRequestFiles,
 )
 from ._utils import (
@@ -884,6 +885,7 @@ class FinalRequestOptionsInput(TypedDict, total=False):
     json_data: Body
     extra_json: AnyMapping
     follow_redirects: bool
+    multipart_form_array_format: ArrayFormat
 
 
 @final
@@ -904,6 +906,7 @@ class FinalRequestOptions(pydantic.BaseModel):
     # a BaseModel method in an incompatible fashion.
     json_data: Union[Body, None] = None
     extra_json: Union[AnyMapping, None] = None
+    multipart_form_array_format: ArrayFormat = "brackets"
 
     if PYDANTIC_V1:
 
