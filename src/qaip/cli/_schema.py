@@ -230,6 +230,52 @@ RESOURCES: dict[str, dict[str, Any]] = {
             },
         },
     },
+    "keywords": {
+        "description": "Keyword management",
+        "methods": {
+            "create": {
+                "http_method": "POST",
+                "path": "/keywords",
+                "required_params": ["name"],
+                "optional_params": ["meaning"],
+            },
+            "retrieve": {
+                "http_method": "GET",
+                "path": "/keywords/{id}",
+                "required_params": ["id"],
+                "optional_params": [],
+            },
+            "update": {
+                "http_method": "PUT",
+                "path": "/keywords/{id}",
+                "required_params": ["id", "name"],
+                "optional_params": ["meaning"],
+            },
+            "list": {
+                "http_method": "GET",
+                "path": "/keywords",
+                "required_params": [],
+                "optional_params": ["offset", "page_size", "sort_field", "sort_order"],
+            },
+            "delete": {
+                "http_method": "DELETE",
+                "path": "/keywords/{id}",
+                "required_params": ["id"],
+                "optional_params": [],
+            },
+        },
+    },
+    "user-keyword-snapshots": {
+        "description": "User keyword snapshot management",
+        "methods": {
+            "create": {
+                "http_method": "POST",
+                "path": "/user-keyword-snapshots",
+                "required_params": [],
+                "optional_params": [],
+            },
+        },
+    },
     "crawls": {
         "description": "Web crawl management",
         "methods": {

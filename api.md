@@ -152,6 +152,34 @@ Methods:
 - <code title="get /secrets">client.secrets.<a href="./src/qaip/resources/secrets.py">list</a>(\*\*<a href="src/qaip/types/secret_list_params.py">params</a>) -> <a href="./src/qaip/types/secret_list_response.py">SecretListResponse</a></code>
 - <code title="delete /secrets/{secret_id}">client.secrets.<a href="./src/qaip/resources/secrets.py">delete</a>(secret_id) -> <a href="./src/qaip/types/secret.py">Secret</a></code>
 
+# Keywords
+
+Types:
+
+```python
+from qaip.types import Keyword, KeywordListResponse
+```
+
+Methods:
+
+- <code title="post /keywords">client.keywords.<a href="./src/qaip/resources/keywords.py">create</a>(\*\*<a href="src/qaip/types/keyword_create_params.py">params</a>) -> <a href="./src/qaip/types/keyword.py">Keyword</a></code>
+- <code title="get /keywords/{id}">client.keywords.<a href="./src/qaip/resources/keywords.py">retrieve</a>(id) -> <a href="./src/qaip/types/keyword.py">Keyword</a></code>
+- <code title="put /keywords/{id}">client.keywords.<a href="./src/qaip/resources/keywords.py">update</a>(id, \*\*<a href="src/qaip/types/keyword_update_params.py">params</a>) -> <a href="./src/qaip/types/keyword.py">Keyword</a></code>
+- <code title="get /keywords">client.keywords.<a href="./src/qaip/resources/keywords.py">list</a>(\*\*<a href="src/qaip/types/keyword_list_params.py">params</a>) -> <a href="./src/qaip/types/keyword_list_response.py">KeywordListResponse</a></code>
+- <code title="delete /keywords/{id}">client.keywords.<a href="./src/qaip/resources/keywords.py">delete</a>(id) -> <a href="./src/qaip/types/keyword.py">Keyword</a></code>
+
+# UserKeywordSnapshots
+
+Types:
+
+```python
+from qaip.types import UserKeywordSnapshot
+```
+
+Methods:
+
+- <code title="post /user-keyword-snapshots">client.user_keyword_snapshots.<a href="./src/qaip/resources/user_keyword_snapshots.py">create</a>() -> <a href="./src/qaip/types/user_keyword_snapshot.py">UserKeywordSnapshot</a></code>
+
 # GoogleDrives
 
 Types:
