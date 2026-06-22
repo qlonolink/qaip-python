@@ -48,6 +48,14 @@ from .sources import (
     SourcesResourceWithStreamingResponse,
     AsyncSourcesResourceWithStreamingResponse,
 )
+from .keywords import (
+    KeywordsResource,
+    AsyncKeywordsResource,
+    KeywordsResourceWithRawResponse,
+    AsyncKeywordsResourceWithRawResponse,
+    KeywordsResourceWithStreamingResponse,
+    AsyncKeywordsResourceWithStreamingResponse,
+)
 from .google_drives import (
     GoogleDrivesResource,
     AsyncGoogleDrivesResource,
@@ -79,6 +87,14 @@ from .tag_source_groups import (
     AsyncTagSourceGroupsResourceWithRawResponse,
     TagSourceGroupsResourceWithStreamingResponse,
     AsyncTagSourceGroupsResourceWithStreamingResponse,
+)
+from .user_keyword_snapshots import (
+    UserKeywordSnapshotsResource,
+    AsyncUserKeywordSnapshotsResource,
+    UserKeywordSnapshotsResourceWithRawResponse,
+    AsyncUserKeywordSnapshotsResourceWithRawResponse,
+    UserKeywordSnapshotsResourceWithStreamingResponse,
+    AsyncUserKeywordSnapshotsResourceWithStreamingResponse,
 )
 
 __all__ = [
@@ -130,6 +146,18 @@ __all__ = [
     "AsyncCrawlsResourceWithRawResponse",
     "CrawlsResourceWithStreamingResponse",
     "AsyncCrawlsResourceWithStreamingResponse",
+    "KeywordsResource",
+    "AsyncKeywordsResource",
+    "KeywordsResourceWithRawResponse",
+    "AsyncKeywordsResourceWithRawResponse",
+    "KeywordsResourceWithStreamingResponse",
+    "AsyncKeywordsResourceWithStreamingResponse",
+    "UserKeywordSnapshotsResource",
+    "AsyncUserKeywordSnapshotsResource",
+    "UserKeywordSnapshotsResourceWithRawResponse",
+    "AsyncUserKeywordSnapshotsResourceWithRawResponse",
+    "UserKeywordSnapshotsResourceWithStreamingResponse",
+    "AsyncUserKeywordSnapshotsResourceWithStreamingResponse",
     "GithubsResource",
     "AsyncGithubsResource",
     "GithubsResourceWithRawResponse",

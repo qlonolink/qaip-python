@@ -29,6 +29,7 @@ from .shared import (
     BatchSetMetadataResponse as BatchSetMetadataResponse,
 )
 from .source import Source as Source
+from .keyword import Keyword as Keyword
 from .agent_run import AgentRun as AgentRun
 from .secret_type import SecretType as SecretType
 from .google_drive import GoogleDrive as GoogleDrive
@@ -55,6 +56,7 @@ from .agent_message_param import AgentMessageParam as AgentMessageParam
 from .completion_response import CompletionResponse as CompletionResponse
 from .crawl_create_params import CrawlCreateParams as CrawlCreateParams
 from .crawl_list_response import CrawlListResponse as CrawlListResponse
+from .keyword_list_params import KeywordListParams as KeywordListParams
 from .agent_execution_mode import AgentExecutionMode as AgentExecutionMode
 from .client_search_params import ClientSearchParams as ClientSearchParams
 from .github_create_params import GitHubCreateParams as GitHubCreateParams
@@ -69,6 +71,10 @@ from .source_list_response import SourceListResponse as SourceListResponse
 from .client_content_params import ClientContentParams as ClientContentParams
 from .client_extract_params import ClientExtractParams as ClientExtractParams
 from .github_reference_type import GitHubReferenceType as GitHubReferenceType
+from .keyword_create_params import KeywordCreateParams as KeywordCreateParams
+from .keyword_list_response import KeywordListResponse as KeywordListResponse
+from .keyword_update_params import KeywordUpdateParams as KeywordUpdateParams
+from .user_keyword_snapshot import UserKeywordSnapshot as UserKeywordSnapshot
 from .agent_create_run_params import AgentCreateRunParams as AgentCreateRunParams
 from .client_completion_params import ClientCompletionParams as ClientCompletionParams
 from .google_drive_list_params import GoogleDriveListParams as GoogleDriveListParams
