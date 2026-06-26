@@ -37,6 +37,14 @@ class ForwardedProps(TypedDict, total=False, extra_items=object):  # type: ignor
     filters: "AgentFiltersParam"
     """Filters for agent search and completion"""
 
+    grounding: bool
+    """Whether to enable Gemini's Google Search grounding during the agent run.
+
+    Only effective when the agent model is a Gemini model and the `gemini_grounding`
+    feature is enabled on the server; otherwise this flag is ignored. Mirrors the
+    `/completions` `grounding` parameter.
+    """
+
     principal_id: str
     """Identifier of the end-user (principal) on whose behalf this request is made.
 

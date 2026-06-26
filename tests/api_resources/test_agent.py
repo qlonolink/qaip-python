@@ -133,6 +133,7 @@ class TestAgent:
                         "tags": ["string"],
                         "use_postfilter": True,
                     },
+                    "grounding": True,
                     "principal_id": "user-123",
                 },
                 "messages": [
@@ -377,6 +378,7 @@ class TestAgent:
                     "tags": ["string"],
                     "use_postfilter": True,
                 },
+                "grounding": True,
                 "principal_id": "user-123",
             },
             messages=[
@@ -529,6 +531,7 @@ class TestAsyncAgent:
                         "tags": ["string"],
                         "use_postfilter": True,
                     },
+                    "grounding": True,
                     "principal_id": "user-123",
                 },
                 "messages": [
@@ -773,6 +776,7 @@ class TestAsyncAgent:
                     "tags": ["string"],
                     "use_postfilter": True,
                 },
+                "grounding": True,
                 "principal_id": "user-123",
             },
             messages=[
