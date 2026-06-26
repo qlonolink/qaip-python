@@ -327,6 +327,7 @@ class Qaip(SyncAPIClient):
         date_to: int | Omit = omit,
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
+        grounding: bool | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
         principal_id: str | Omit = omit,
@@ -364,6 +365,11 @@ class Qaip(SyncAPIClient):
           date_to: End date for content search (Unix timestamp in seconds)
 
           domains: Array of domains to search within (supports partial matching)
+
+          grounding: Whether to enable Gemini's Google Search grounding during answer generation.
+              Only effective when the completion model is a Gemini model and the
+              `gemini_grounding` feature is enabled on the server; otherwise this flag is
+              ignored.
 
           limit: Maximum number of chunks to retrieve as context for completion
 
@@ -411,6 +417,7 @@ class Qaip(SyncAPIClient):
                     "date_to": date_to,
                     "domains": domains,
                     "file_types": file_types,
+                    "grounding": grounding,
                     "limit": limit,
                     "metadata": metadata,
                     "principal_id": principal_id,
@@ -995,6 +1002,7 @@ class AsyncQaip(AsyncAPIClient):
         date_to: int | Omit = omit,
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
+        grounding: bool | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
         principal_id: str | Omit = omit,
@@ -1032,6 +1040,11 @@ class AsyncQaip(AsyncAPIClient):
           date_to: End date for content search (Unix timestamp in seconds)
 
           domains: Array of domains to search within (supports partial matching)
+
+          grounding: Whether to enable Gemini's Google Search grounding during answer generation.
+              Only effective when the completion model is a Gemini model and the
+              `gemini_grounding` feature is enabled on the server; otherwise this flag is
+              ignored.
 
           limit: Maximum number of chunks to retrieve as context for completion
 
@@ -1079,6 +1092,7 @@ class AsyncQaip(AsyncAPIClient):
                     "date_to": date_to,
                     "domains": domains,
                     "file_types": file_types,
+                    "grounding": grounding,
                     "limit": limit,
                     "metadata": metadata,
                     "principal_id": principal_id,

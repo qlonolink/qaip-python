@@ -42,6 +42,14 @@ class ClientCompletionParams(TypedDict, total=False):
 
     file_types: List[FileType]
 
+    grounding: bool
+    """Whether to enable Gemini's Google Search grounding during answer generation.
+
+    Only effective when the completion model is a Gemini model and the
+    `gemini_grounding` feature is enabled on the server; otherwise this flag is
+    ignored.
+    """
+
     limit: int
     """Maximum number of chunks to retrieve as context for completion"""
 

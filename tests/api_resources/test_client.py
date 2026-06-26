@@ -66,6 +66,7 @@ class TestClient:
             date_to=1735639200,
             domains=["string"],
             file_types=["html"],
+            grounding=True,
             limit=1,
             metadata={
                 "filters": [
@@ -535,6 +536,7 @@ class TestAsyncClient:
             date_to=1735639200,
             domains=["string"],
             file_types=["html"],
+            grounding=True,
             limit=1,
             metadata={
                 "filters": [
