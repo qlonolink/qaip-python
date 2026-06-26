@@ -6,7 +6,7 @@ from typing_extensions import Literal
 from .._models import BaseModel
 from .shared.content import Content
 
-__all__ = ["CompletionResponse", "Choice", "ChoiceMessage"]
+__all__ = ["CompletionResponse", "Choice", "ChoiceMessage", "ChoiceWebCitation"]
 
 
 class ChoiceMessage(BaseModel):
@@ -15,6 +15,19 @@ class ChoiceMessage(BaseModel):
 
     role: Literal["assistant"]
     """The role of the message sender"""
+
+
+class ChoiceWebCitation(BaseModel):
+    """A web source returned by Gemini's Google Search grounding.
+
+    Distinct from Content (internal knowledge base citations); surfaced separately so clients can render web references apart from internal document citations.
+    """
+
+    title: str
+    """Title of the grounded web source"""
+
+    url: str
+    """URL of the grounded web source"""
 
 
 class Choice(BaseModel):
@@ -28,6 +41,27 @@ class Choice(BaseModel):
 
     citations: Optional[List[Content]] = None
     """Array of search results"""
+
+    search_suggestion: Optional[str] = None
+    """
+    Google Search Suggestions HTML (searchEntryPoint.renderedContent) from Gemini
+    grounding. Per Google's "Grounding with Google Search" terms, clients MUST
+    display this content as provided whenever it is present. Present only when
+    grounding produced search suggestions.
+    """
+
+    web_citations: Optional[List[ChoiceWebCitation]] = None
+    """
+    Web sources from Gemini's Google Search grounding, returned separately from
+    `citations`. Present only when grounding was enabled and the model used web
+    results.
+    """
+
+    web_search_queries: Optional[List[str]] = None
+    """The Google Search queries Gemini issued for grounding.
+
+    Present only when grounding was used.
+    """
 
 
 class CompletionResponse(BaseModel):
