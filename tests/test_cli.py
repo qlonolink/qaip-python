@@ -106,6 +106,45 @@ class TestDryRun:
         assert data["method"] == "GET"
         assert data["path"] == "/tags"
 
+    def test_tags_create_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
+        parser = _build_parser()
+        args = parser.parse_args([
+            "api", "tags.create",
+            "--name", "important",
+            "--description", "重要タグ",
+            "--dry-run",
+        ])
+        args.func(args)
+        captured = capsys.readouterr()
+        data = json.loads(captured.out)
+        assert data["method"] == "POST"
+        assert data["path"] == "/tags"
+        assert data["body"] == {"name": "important", "description": "重要タグ"}
+
+    def test_tags_update_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
+        parser = _build_parser()
+        args = parser.parse_args([
+            "api", "tags.update",
+            "--id", "tag-1",
+            "--name", "renamed",
+            "--dry-run",
+        ])
+        args.func(args)
+        captured = capsys.readouterr()
+        data = json.loads(captured.out)
+        assert data["method"] == "PUT"
+        assert data["path"] == "/tags/tag-1"
+        assert data["body"] == {"name": "renamed"}
+
+    def test_tags_delete_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(["api", "tags.delete", "--id", "tag-1", "--dry-run"])
+        args.func(args)
+        captured = capsys.readouterr()
+        data = json.loads(captured.out)
+        assert data["method"] == "DELETE"
+        assert data["path"] == "/tags/tag-1"
+
     def test_sources_retrieve_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
         args = parser.parse_args(["api", "sources.retrieve", "--id", "src-1", "--dry-run"])
@@ -471,6 +510,18 @@ class TestValidation:
         parser = _build_parser()
         args = parser.parse_args(["api", "crawls.create_url_list", "--name", "x", "--dry-run"])
         with pytest.raises(CLIError, match="--urls"):
+            args.func(args)
+
+    def test_tags_create_missing_name(self) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(["api", "tags.create", "--description", "d", "--dry-run"])
+        with pytest.raises(CLIError, match="--name"):
+            args.func(args)
+
+    def test_tags_update_requires_a_field(self) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(["api", "tags.update", "--id", "tag-1", "--dry-run"])
+        with pytest.raises(CLIError, match="at least one"):
             args.func(args)
 
 
@@ -923,6 +974,16 @@ class TestDestructiveYesGuard:
             args.func(args)
         mock_client.secrets.delete.assert_called_once_with(_VALID_UUID)
 
+    def test_tags_delete_without_yes_blocks(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        parser = _build_parser()
+        args = parser.parse_args(["api", "tags.delete", "--id", _VALID_UUID])
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+        assert exc_info.value.code == "confirmation_required"
+
     def test_tag_source_groups_delete_without_yes_blocks(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
@@ -964,6 +1025,7 @@ class TestDestructiveYesGuard:
             ["api", "local-file-groups.delete", "--id", "not-a-uuid"],
             ["api", "sources.delete_metadata", "--id", "not-a-uuid"],
             ["api", "source-groups.delete_metadata", "--id", "not-a-uuid"],
+            ["api", "tags.delete", "--id", "not-a-uuid"],
         ],
     )
     def test_destructive_invalid_id_rejected_before_yes(
@@ -977,6 +1039,55 @@ class TestDestructiveYesGuard:
         with pytest.raises(CLIError) as exc_info:
             args.func(args)
         assert exc_info.value.code == "invalid_id"
+
+
+class TestTagsExecution:
+    """tags.create / update / delete は低レベル HTTP メソッド経由で実行される。"""
+
+    def test_create_executes_post(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        from unittest.mock import MagicMock, patch as _patch
+
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        mock_client = MagicMock()
+        mock_client.post.return_value.model_dump.return_value = {"id": _VALID_UUID}
+        with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
+            parser = _build_parser()
+            args = parser.parse_args([
+                "api", "tags.create", "--name", "important", "--description", "d",
+            ])
+            args.func(args)
+        path, kwargs = mock_client.post.call_args[0], mock_client.post.call_args[1]
+        assert path == ("/tags",)
+        assert kwargs["body"] == {"name": "important", "description": "d"}
+
+    def test_update_executes_put(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        from unittest.mock import MagicMock, patch as _patch
+
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        mock_client = MagicMock()
+        mock_client.put.return_value.model_dump.return_value = {"id": _VALID_UUID}
+        with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
+            parser = _build_parser()
+            args = parser.parse_args([
+                "api", "tags.update", "--id", _VALID_UUID, "--name", "renamed",
+            ])
+            args.func(args)
+        assert mock_client.put.call_args[0] == (f"/tags/{_VALID_UUID}",)
+        assert mock_client.put.call_args[1]["body"] == {"name": "renamed"}
+
+    def test_delete_executes_delete_with_yes(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        from unittest.mock import MagicMock, patch as _patch
+
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        mock_client = MagicMock()
+        mock_client.delete.return_value.model_dump.return_value = {"id": _VALID_UUID}
+        with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
+            parser = _build_parser()
+            args = parser.parse_args([
+                "api", "tags.delete", "--id", _VALID_UUID, "--yes",
+            ])
+            args.func(args)
+        assert mock_client.delete.call_args[0] == (f"/tags/{_VALID_UUID}",)
 
 
 class TestAgentRunIdAcceptsCustomString:
