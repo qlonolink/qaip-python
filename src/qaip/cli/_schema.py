@@ -97,14 +97,32 @@ RESOURCES: dict[str, dict[str, Any]] = {
         },
     },
     "tags": {
-        "description": "List tags",
+        "description": "Tag management",
         "methods": {
             "list": {
                 "http_method": "GET",
                 "path": "/tags",
                 "required_params": [],
                 "optional_params": [],
-            }
+            },
+            "create": {
+                "http_method": "POST",
+                "path": "/tags",
+                "required_params": ["name"],
+                "optional_params": ["description"],
+            },
+            "update": {
+                "http_method": "PUT",
+                "path": "/tags/{id}",
+                "required_params": ["id"],
+                "optional_params": ["name", "description"],
+            },
+            "delete": {
+                "http_method": "DELETE",
+                "path": "/tags/{id}",
+                "required_params": ["id"],
+                "optional_params": [],
+            },
         },
     },
     "sources": {
