@@ -1,4 +1,4 @@
 configured_endpoints: 60
-openapi_spec_url: https://storage.googleapis.com/stainless-sdk-openapi-specs/qlonolink/qaip-ea842cc6bb172c63add681da2ad5410289ea58e1d8dfa98a776a7051bfc94c62.yml
-openapi_spec_hash: 66e6688086a44cdab28c80b848342755
+openapi_spec_url: https://storage.googleapis.com/stainless-sdk-openapi-specs/qlonolink/qaip-c3a183901ac7ecf12a6a107bc26fb988bc249f366eb46d251f7bb40d416a10c7.yml
+openapi_spec_hash: 1efc961e3c588d45138bd11aea76aa6e
 config_hash: aabfb7483e70362015ce79e26b0b6091
