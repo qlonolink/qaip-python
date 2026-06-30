@@ -18,7 +18,11 @@ class AgentCreateRunParams(TypedDict, total=False):
     """Optional idempotency key for reusing an existing asynchronous run."""
 
 
-class InputForwardedProps(TypedDict, total=False, extra_items=object):  # type: ignore[call-arg]
+class InputForwardedProps(  # type: ignore[call-arg]
+    TypedDict,
+    total=False,
+    extra_items=object,  # pyright: ignore[reportGeneralTypeIssues]
+):
     """Forwarded properties for the run (AG-UI standard)"""
 
     authz_policy: str
