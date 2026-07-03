@@ -12,10 +12,18 @@ from .._utils import path_template, maybe_transform, async_maybe_transform
 from .._compat import cached_property
 from .._resource import SyncAPIResource, AsyncAPIResource
 from .._response import (
+    BinaryAPIResponse,
+    AsyncBinaryAPIResponse,
+    StreamedBinaryAPIResponse,
+    AsyncStreamedBinaryAPIResponse,
     to_raw_response_wrapper,
     to_streamed_response_wrapper,
     async_to_raw_response_wrapper,
+    to_custom_raw_response_wrapper,
     async_to_streamed_response_wrapper,
+    to_custom_streamed_response_wrapper,
+    async_to_custom_raw_response_wrapper,
+    async_to_custom_streamed_response_wrapper,
 )
 from .._base_client import make_request_options
 from ..types.source import Source
@@ -164,6 +172,43 @@ class SourcesResource(SyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=BatchSetMetadataResponse,
+        )
+
+    def download_raw(
+        self,
+        source_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> bytes:
+        """<p> Downloads the original file fetched by crawl.
+
+        Only crawl source IDs returned as content.source_id from /search,
+        GET /contents/{id}, or POST /completions citations are valid. Local file
+        source IDs accepted by GET /sources/{source_id} return 404 here. </p>
+        <p> Required roles: All, App </p>
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not source_id:
+            raise ValueError(f"Expected a non-empty value for `source_id` but received {source_id!r}")
+        return self._get(
+            path_template("/sources/{source_id}/raw", source_id=source_id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=bytes,
         )
 
     def delete_metadata(
@@ -411,6 +456,43 @@ class AsyncSourcesResource(AsyncAPIResource):
             cast_to=BatchSetMetadataResponse,
         )
 
+    async def download_raw(
+        self,
+        source_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> bytes:
+        """<p> Downloads the original file fetched by crawl.
+
+        Only crawl source IDs returned as content.source_id from /search,
+        GET /contents/{id}, or POST /completions citations are valid. Local file
+        source IDs accepted by GET /sources/{source_id} return 404 here. </p>
+        <p> Required roles: All, App </p>
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not source_id:
+            raise ValueError(f"Expected a non-empty value for `source_id` but received {source_id!r}")
+        return await self._get(
+            path_template("/sources/{source_id}/raw", source_id=source_id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=bytes,
+        )
+
     async def delete_metadata(
         self,
         source_id: str,
@@ -531,6 +613,10 @@ class SourcesResourceWithRawResponse:
         self.batch_set_metadata = to_raw_response_wrapper(
             sources.batch_set_metadata,
         )
+        self.download_raw = to_custom_raw_response_wrapper(
+            sources.download_raw,
+            BinaryAPIResponse,
+        )
         self.delete_metadata = to_raw_response_wrapper(
             sources.delete_metadata,
         )
@@ -554,6 +640,10 @@ class AsyncSourcesResourceWithRawResponse:
         )
         self.batch_set_metadata = async_to_raw_response_wrapper(
             sources.batch_set_metadata,
+        )
+        self.download_raw = async_to_custom_raw_response_wrapper(
+            sources.download_raw,
+            AsyncBinaryAPIResponse,
         )
         self.delete_metadata = async_to_raw_response_wrapper(
             sources.delete_metadata,
@@ -579,6 +669,10 @@ class SourcesResourceWithStreamingResponse:
         self.batch_set_metadata = to_streamed_response_wrapper(
             sources.batch_set_metadata,
         )
+        self.download_raw = to_custom_streamed_response_wrapper(
+            sources.download_raw,
+            StreamedBinaryAPIResponse,
+        )
         self.delete_metadata = to_streamed_response_wrapper(
             sources.delete_metadata,
         )
@@ -602,6 +696,10 @@ class AsyncSourcesResourceWithStreamingResponse:
         )
         self.batch_set_metadata = async_to_streamed_response_wrapper(
             sources.batch_set_metadata,
+        )
+        self.download_raw = async_to_custom_streamed_response_wrapper(
+            sources.download_raw,
+            AsyncStreamedBinaryAPIResponse,
         )
         self.delete_metadata = async_to_streamed_response_wrapper(
             sources.delete_metadata,

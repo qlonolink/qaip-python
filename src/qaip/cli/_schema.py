@@ -164,6 +164,16 @@ RESOURCES: dict[str, dict[str, Any]] = {
                 "required_params": ["items"],
                 "optional_params": [],
             },
+            "download_raw": {
+                "http_method": "GET",
+                "path": "/sources/{source_id}/raw",
+                "required_params": ["source_id"],
+                "optional_params": ["output", "stdout", "force", "fields"],
+                "required_one_of": [["output", "stdout"]],
+                "mutually_exclusive": [["output", "stdout"], ["stdout", "force"], ["stdout", "fields"]],
+                "stdout_kind": "binary",
+                "result_kind": "file_metadata_json",
+            },
         },
     },
     "source-groups": {
