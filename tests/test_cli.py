@@ -165,12 +165,17 @@ class TestDryRun:
 
     def test_source_groups_list_with_source_type(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "source-groups.list",
-            "--limit", "5",
-            "--source-type", "crawl",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "source-groups.list",
+                "--limit",
+                "5",
+                "--source-type",
+                "crawl",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -180,13 +185,19 @@ class TestDryRun:
 
     def test_secrets_create_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "secrets.create",
-            "--name", "my-secret",
-            "--secret", "val",
-            "--type", "github_pat",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "secrets.create",
+                "--name",
+                "my-secret",
+                "--secret",
+                "val",
+                "--type",
+                "github_pat",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -205,17 +216,26 @@ class TestDryRun:
 
     def test_crawls_create_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "crawls.create",
-            "--name", "test-crawl",
-            "--start-url", "https://example.com",
-            "--max-depth", "3",
-            "--max-num-files", "100",
-            "--file-extensions", ".pdf,.docx",
-            "--rrule", "FREQ=DAILY",
-            "--html-only",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "crawls.create",
+                "--name",
+                "test-crawl",
+                "--start-url",
+                "https://example.com",
+                "--max-depth",
+                "3",
+                "--max-num-files",
+                "100",
+                "--file-extensions",
+                ".pdf,.docx",
+                "--rrule",
+                "FREQ=DAILY",
+                "--html-only",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -229,12 +249,17 @@ class TestDryRun:
 
     def test_crawls_create_url_list_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "crawls.create_url_list",
-            "--name", "url-list",
-            "--urls", "https://a.example.com,https://b.example.com",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "crawls.create_url_list",
+                "--name",
+                "url-list",
+                "--urls",
+                "https://a.example.com,https://b.example.com",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -246,12 +271,17 @@ class TestDryRun:
     def test_agent_run_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
         messages = json.dumps([{"role": "user", "content": "hi"}])
-        args = parser.parse_args([
-            "api", "agent.run",
-            "--messages", messages,
-            "--run-id", "run-x",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "agent.run",
+                "--messages",
+                messages,
+                "--run-id",
+                "run-x",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -263,13 +293,19 @@ class TestDryRun:
     def test_agent_create_run_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
         messages = json.dumps([{"role": "user", "content": "hi"}])
-        args = parser.parse_args([
-            "api", "agent.create_run",
-            "--messages", messages,
-            "--thread-id", "t-1",
-            "--idempotency-key", "abc",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "agent.create_run",
+                "--messages",
+                messages,
+                "--thread-id",
+                "t-1",
+                "--idempotency-key",
+                "abc",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -290,13 +326,19 @@ class TestDryRun:
 
     def test_agent_list_run_events_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "agent.list_run_events",
-            "--id", "run-1",
-            "--limit", "5",
-            "--after", "42",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "agent.list_run_events",
+                "--id",
+                "run-1",
+                "--limit",
+                "5",
+                "--after",
+                "42",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -307,14 +349,21 @@ class TestDryRun:
 
     def test_githubs_create_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "githubs.create",
-            "--name", "gh-1",
-            "--repository", "octocat/Hello-World",
-            "--reference", "main",
-            "--reference-type", "branch",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "githubs.create",
+                "--name",
+                "gh-1",
+                "--repository",
+                "octocat/Hello-World",
+                "--reference",
+                "main",
+                "--reference-type",
+                "branch",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -326,13 +375,19 @@ class TestDryRun:
 
     def test_google_drives_create_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "google-drives.create",
-            "--name", "gd-1",
-            "--folder-url", "https://drive.google.com/drive/folders/abc",
-            "--secret-id", "sec-1",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "google-drives.create",
+                "--name",
+                "gd-1",
+                "--folder-url",
+                "https://drive.google.com/drive/folders/abc",
+                "--secret-id",
+                "sec-1",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -343,13 +398,19 @@ class TestDryRun:
 
     def test_notions_create_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "notions.create",
-            "--name", "notion-1",
-            "--page-id", "22cf90c7c8aa80098050fa40c6ebab1e",
-            "--notion-token", "secret_xxx",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "notions.create",
+                "--name",
+                "notion-1",
+                "--page-id",
+                "22cf90c7c8aa80098050fa40c6ebab1e",
+                "--notion-token",
+                "secret_xxx",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -404,13 +465,19 @@ class TestDryRun:
         f1 = tmp_path / "a.txt"
         f1.write_text("hello")
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "local-file-groups.create",
-            "--name", "lfg",
-            "--file", str(f1),
-            "--last-modified", "1775000000000",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "local-file-groups.create",
+                "--name",
+                "lfg",
+                "--file",
+                str(f1),
+                "--last-modified",
+                "1775000000000",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -421,12 +488,17 @@ class TestDryRun:
 
     def test_tag_source_groups_create_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "tag-source-groups.create",
-            "--tag-id", "tag-1",
-            "--source-group-id", "sg-1",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "tag-source-groups.create",
+                "--tag-id",
+                "tag-1",
+                "--source-group-id",
+                "sg-1",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -528,13 +600,19 @@ class TestValidation:
 class TestSensitiveMasking:
     def test_secrets_create_dry_run_masks_secret(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "secrets.create",
-            "--name", "s",
-            "--secret", "SHOULD_NOT_APPEAR",
-            "--type", "github_pat",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "secrets.create",
+                "--name",
+                "s",
+                "--secret",
+                "SHOULD_NOT_APPEAR",
+                "--type",
+                "github_pat",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         assert "SHOULD_NOT_APPEAR" not in captured.out
@@ -543,13 +621,19 @@ class TestSensitiveMasking:
 
     def test_secrets_update_dry_run_masks_secret(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "secrets.update",
-            "--id", "sec-1",
-            "--name", "s",
-            "--json", json.dumps({"secret": "ROT_SHOULD_NOT_APPEAR"}),
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "secrets.update",
+                "--id",
+                "sec-1",
+                "--name",
+                "s",
+                "--json",
+                json.dumps({"secret": "ROT_SHOULD_NOT_APPEAR"}),
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         assert "ROT_SHOULD_NOT_APPEAR" not in captured.out
@@ -558,30 +642,40 @@ class TestSensitiveMasking:
 
     def test_githubs_create_dry_run_masks_token(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "githubs.create",
-            "--name", "g",
-            "--repository", "o/r",
-            "--github-token", "GHP_SHOULD_NOT_APPEAR",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "githubs.create",
+                "--name",
+                "g",
+                "--repository",
+                "o/r",
+                "--github-token",
+                "GHP_SHOULD_NOT_APPEAR",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         assert "GHP_SHOULD_NOT_APPEAR" not in captured.out
         data = json.loads(captured.out)
         assert data["body"]["github_token"] == "***"
 
-    def test_google_drives_create_dry_run_masks_service_account_key(
-        self, capsys: pytest.CaptureFixture[str]
-    ) -> None:
+    def test_google_drives_create_dry_run_masks_service_account_key(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "google-drives.create",
-            "--name", "gd",
-            "--folder-url", "https://drive.google.com/drive/folders/x",
-            "--service-account-key", "KEY_SHOULD_NOT_APPEAR",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "google-drives.create",
+                "--name",
+                "gd",
+                "--folder-url",
+                "https://drive.google.com/drive/folders/x",
+                "--service-account-key",
+                "KEY_SHOULD_NOT_APPEAR",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         assert "KEY_SHOULD_NOT_APPEAR" not in captured.out
@@ -612,9 +706,7 @@ class TestClientCredentials:
             get_client()
             mock_qaip.assert_called_once_with()
 
-    def test_get_client_missing_credentials_raises(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_get_client_missing_credentials_raises(self, monkeypatch: pytest.MonkeyPatch) -> None:
         from qaip.cli._utils import get_client
 
         monkeypatch.delenv("QAIP_API_KEY", raising=False)
@@ -623,48 +715,189 @@ class TestClientCredentials:
         assert exc_info.value.code == "missing_credentials"
 
 
+class TestHeaderOption:
+    """グローバル -H/--header が default_headers として全リクエストに乗ることを確認する。"""
+
+    def test_get_client_passes_default_headers(self) -> None:
+        from argparse import Namespace
+        from unittest.mock import patch as _patch
+
+        from qaip.cli._utils import get_client
+
+        with _patch("qaip.cli._utils.qaip.Qaip") as mock_qaip:
+            get_client(
+                Namespace(
+                    api_key="AK",
+                    base_url=None,
+                    headers=["X-Request-Id: req-123", "X-Foo:bar"],
+                )
+            )
+            mock_qaip.assert_called_once_with(
+                api_key="AK",
+                default_headers={"X-Request-Id": "req-123", "X-Foo": "bar"},
+            )
+
+    def test_get_client_no_headers_omits_default_headers(self) -> None:
+        from argparse import Namespace
+        from unittest.mock import patch as _patch
+
+        from qaip.cli._utils import get_client
+
+        with _patch("qaip.cli._utils.qaip.Qaip") as mock_qaip:
+            get_client(Namespace(api_key="AK", base_url=None, headers=None))
+            mock_qaip.assert_called_once_with(api_key="AK")
+
+    def test_parse_headers_invalid_raises(self) -> None:
+        from qaip.cli._utils import parse_headers
+
+        with pytest.raises(CLIError) as exc_info:
+            parse_headers(["NoColonHere"])
+        assert exc_info.value.code == "invalid_argument"
+        assert "NoColonHere" not in str(exc_info.value)
+
+        with pytest.raises(CLIError) as exc_info:
+            parse_headers([": SECRET_SHOULD_NOT_APPEAR"])
+        assert exc_info.value.code == "invalid_argument"
+        assert "SECRET_SHOULD_NOT_APPEAR" not in str(exc_info.value)
+
+    @pytest.mark.parametrize(
+        "header",
+        [
+            "X-Api-Key: SECRET_SHOULD_NOT_APPEAR",
+            "Authorization: SECRET_SHOULD_NOT_APPEAR",
+            "Content-Type: application/json",
+            "Host: example.com",
+            "X-Stainless-Raw-Response: raw",
+        ],
+    )
+    def test_parse_headers_rejects_managed_headers(self, header: str) -> None:
+        from qaip.cli._utils import parse_headers
+
+        with pytest.raises(CLIError) as exc_info:
+            parse_headers([header])
+        assert exc_info.value.code == "invalid_argument"
+        assert "SECRET_SHOULD_NOT_APPEAR" not in str(exc_info.value)
+
+    @pytest.mark.parametrize(
+        "header",
+        [
+            "Bad Header: value",
+            "X-Test: \nok",
+            "X-Test: ok\nbad",
+            "X-Test: ok\rbad",
+            "X-Test: ok\r",
+            "X-Test: ok\x7fbad",
+            "X-Test: ok\x7f",
+            "X-Test: あ",
+        ],
+    )
+    def test_parse_headers_rejects_invalid_name_or_value(self, header: str) -> None:
+        from qaip.cli._utils import parse_headers
+
+        with pytest.raises(CLIError) as exc_info:
+            parse_headers([header])
+        assert exc_info.value.code == "invalid_argument"
+
+    def test_header_reaches_request(self) -> None:
+        # -H で渡したヘッダーが実際の HTTP リクエストに乗ることを MockTransport で確認する。
+        seen: dict[str, str] = {}
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            seen.update(request.headers)
+            return httpx.Response(
+                200,
+                json={
+                    "id": _VALID_UUID,
+                    "name": "t",
+                    "start_url": "https://example.com/",
+                    "status": 0,
+                },
+            )
+
+        transport = httpx.MockTransport(handler)
+        client = Qaip(api_key="test-key", http_client=httpx.Client(transport=transport))
+        # CLI 引数の -H が default_headers→クライアントへ流れる経路を模し、
+        # with_options で同じ default_headers を適用する。
+        client = client.with_options(default_headers={"X-Request-Id": "req-123"})
+
+        parser = _build_parser()
+        args = parser.parse_args(
+            [
+                "api",
+                "crawls.create",
+                "--name",
+                "t",
+                "--start-url",
+                "https://example.com/",
+                "--max-depth",
+                "1",
+                "--max-num-files",
+                "1",
+            ]
+        )
+        with patch("qaip.cli._api.crawls.get_client", return_value=client):
+            args.func(args)
+
+        assert seen.get("x-request-id") == "req-123"
+        assert seen.get("x-api-key") == "test-key"
+
+
 class TestInvalidJsonArgs:
     def test_completion_invalid_messages_json(self) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "completion.create",
-            "--messages", "not-json",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "completion.create",
+                "--messages",
+                "not-json",
+                "--dry-run",
+            ]
+        )
         with pytest.raises(CLIError, match="Invalid JSON for --messages"):
             args.func(args)
 
     def test_extract_invalid_schema_json(self) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "extract.create",
-            "--schema", "not-json",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "extract.create",
+                "--schema",
+                "not-json",
+                "--dry-run",
+            ]
+        )
         with pytest.raises(CLIError, match="Invalid JSON for --schema"):
             args.func(args)
 
     def test_agent_run_invalid_forwarded_props_json(self) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "agent.run",
-            "--forwarded-props", "not-json",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "agent.run",
+                "--forwarded-props",
+                "not-json",
+                "--dry-run",
+            ]
+        )
         with pytest.raises(CLIError, match="Invalid JSON for --forwarded-props"):
             args.func(args)
 
 
 class TestSecretsListDryRunKeyName:
-    def test_secrets_list_dry_run_uses_secret_type_key(
-        self, capsys: pytest.CaptureFixture[str]
-    ) -> None:
+    def test_secrets_list_dry_run_uses_secret_type_key(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "secrets.list",
-            "--type", "github",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "secrets.list",
+                "--type",
+                "github",
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -676,12 +909,17 @@ class TestSecretsListDryRunKeyName:
 class TestLocalFileGroupsMissingFile:
     def test_missing_file_raises_cli_error(self) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "local-file-groups.create",
-            "--name", "lfg",
-            "--file", "/nonexistent/path/does-not-exist.txt",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "local-file-groups.create",
+                "--name",
+                "lfg",
+                "--file",
+                "/nonexistent/path/does-not-exist.txt",
+                "--dry-run",
+            ]
+        )
         with pytest.raises(CLIError, match="File not found"):
             args.func(args)
 
@@ -702,12 +940,18 @@ class TestLocalFileGroupsMissingFile:
             return httpx.Response(200, json={"source_group_id": "019ede24-8c8a-7b95-a5c6-36fff2574cbe"})
 
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "local-file-groups.create",
-            "--name", "lfg",
-            "--file", str(file_path),
-            "--last-modified", "1000",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "local-file-groups.create",
+                "--name",
+                "lfg",
+                "--file",
+                str(file_path),
+                "--last-modified",
+                "1000",
+            ]
+        )
 
         transport = httpx.MockTransport(handler)
         with Qaip(
@@ -742,9 +986,7 @@ class TestMainTypeErrorHandling:
 
         monkeypatch.setenv("QAIP_API_KEY", "fake")
         mock_client = MagicMock()
-        mock_client.content.side_effect = TypeError(
-            "content() got an unexpected keyword argument 'foo'"
-        )
+        mock_client.content.side_effect = TypeError("content() got an unexpected keyword argument 'foo'")
         with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
             with patch("sys.argv", ["qaip", "api", "content.retrieve", "--id", _VALID_UUID]):
                 rc = main()
@@ -753,9 +995,7 @@ class TestMainTypeErrorHandling:
         captured = capsys.readouterr()
         assert "Invalid argument" in captured.err
 
-    def test_main_reraises_unrelated_typeerror(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_main_reraises_unrelated_typeerror(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """SDK 呼び出し起因ではない TypeError は握り潰さない。"""
         from unittest.mock import MagicMock, patch as _patch
 
@@ -771,11 +1011,15 @@ class TestMainTypeErrorHandling:
 class TestSecretsUpdateValidation:
     def test_secrets_update_requires_name(self) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "secrets.update",
-            "--id", "sec-1",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "secrets.update",
+                "--id",
+                "sec-1",
+                "--dry-run",
+            ]
+        )
         with pytest.raises(CLIError, match="--name"):
             args.func(args)
 
@@ -822,17 +1066,13 @@ class TestStartupAuthCheck:
         assert payload["error"]["retryable"] is False
         assert "hint" in payload["error"]
 
-    def test_schema_works_without_credentials(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_schema_works_without_credentials(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.delenv("QAIP_API_KEY", raising=False)
         with patch("sys.argv", ["qaip", "schema"]):
             rc = main()
         assert rc == 0
 
-    def test_dry_run_works_without_credentials(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_dry_run_works_without_credentials(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.delenv("QAIP_API_KEY", raising=False)
         with patch("sys.argv", ["qaip", "api", "search.create", "--query", "x", "--dry-run"]):
             rc = main()
@@ -843,9 +1083,7 @@ class TestStructuredErrorOutput:
     """`--error-format json` および QAIP_ERROR_FORMAT=json で stderr が
     `{error:{code,message,retryable,...}}` の JSON になる。"""
 
-    def test_json_error_for_missing_required_arg(
-        self, capsys: pytest.CaptureFixture[str]
-    ) -> None:
+    def test_json_error_for_missing_required_arg(self, capsys: pytest.CaptureFixture[str]) -> None:
         with patch("sys.argv", ["qaip", "--error-format", "json", "api", "search.create"]):
             rc = main()
         assert rc == 1  # generic CLIError (code=cli_error)
@@ -884,9 +1122,7 @@ class TestStructuredErrorOutput:
 class TestIdValidation:
     """ID 引数は本実行時のみ UUID 形式に限定される。dry-run では緩和される。"""
 
-    def test_invalid_id_rejected_at_real_call(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_invalid_id_rejected_at_real_call(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("QAIP_API_KEY", "fake")
         parser = _build_parser()
         args = parser.parse_args(["api", "content.retrieve", "--id", "https://x.example/foo"])
@@ -910,27 +1146,37 @@ class TestIdValidation:
         mock_client.content.return_value.model_dump.return_value = {"id": _VALID_UUID}
         with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
             parser = _build_parser()
-            args = parser.parse_args([
-                "--error-format", "json",
-                "api", "content.retrieve", "--id", _VALID_UUID,
-            ])
+            args = parser.parse_args(
+                [
+                    "--error-format",
+                    "json",
+                    "api",
+                    "content.retrieve",
+                    "--id",
+                    _VALID_UUID,
+                ]
+            )
             args.func(args)  # 例外が出なければ OK
 
     def test_dry_run_does_not_validate_id(self) -> None:
         # dry-run はテンプレ確認なので非UUIDでも素通し（既存テストとの互換性も担保）
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "content.retrieve", "--id", "abc", "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "content.retrieve",
+                "--id",
+                "abc",
+                "--dry-run",
+            ]
+        )
         args.func(args)  # 例外が出なければ OK
 
 
 class TestDestructiveYesGuard:
     """destructive コマンドは `--yes` 必須。`--dry-run` 経由は不要。"""
 
-    def test_secrets_delete_without_yes_blocks(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_secrets_delete_without_yes_blocks(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("QAIP_API_KEY", "fake")
         parser = _build_parser()
         args = parser.parse_args(["api", "secrets.delete", "--id", _VALID_UUID])
@@ -938,9 +1184,7 @@ class TestDestructiveYesGuard:
             args.func(args)
         assert exc_info.value.code == "confirmation_required"
 
-    def test_crawls_delete_without_yes_blocks(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_crawls_delete_without_yes_blocks(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("QAIP_API_KEY", "fake")
         parser = _build_parser()
         args = parser.parse_args(["api", "crawls.delete", "--id", _VALID_UUID])
@@ -948,13 +1192,17 @@ class TestDestructiveYesGuard:
             args.func(args)
         assert exc_info.value.code == "confirmation_required"
 
-    def test_dry_run_does_not_require_yes(
-        self, capsys: pytest.CaptureFixture[str]
-    ) -> None:
+    def test_dry_run_does_not_require_yes(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "secrets.delete", "--id", _VALID_UUID, "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "secrets.delete",
+                "--id",
+                _VALID_UUID,
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -968,9 +1216,15 @@ class TestDestructiveYesGuard:
         mock_client.secrets.delete.return_value.model_dump.return_value = {"id": _VALID_UUID}
         with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
             parser = _build_parser()
-            args = parser.parse_args([
-                "api", "secrets.delete", "--id", _VALID_UUID, "--yes",
-            ])
+            args = parser.parse_args(
+                [
+                    "api",
+                    "secrets.delete",
+                    "--id",
+                    _VALID_UUID,
+                    "--yes",
+                ]
+            )
             args.func(args)
         mock_client.secrets.delete.assert_called_once_with(_VALID_UUID)
 
@@ -989,27 +1243,35 @@ class TestDestructiveYesGuard:
     ) -> None:
         monkeypatch.setenv("QAIP_API_KEY", "fake")
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "tag-source-groups.delete",
-            "--tag-id", _VALID_UUID,
-            "--source-group-id", _VALID_UUID,
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "tag-source-groups.delete",
+                "--tag-id",
+                _VALID_UUID,
+                "--source-group-id",
+                _VALID_UUID,
+            ]
+        )
         with pytest.raises(CLIError) as exc_info:
             args.func(args)
         assert exc_info.value.code == "confirmation_required"
 
-    def test_tag_source_groups_delete_invalid_id_before_yes(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_tag_source_groups_delete_invalid_id_before_yes(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """validate_id が require_yes より先に走り、不正 ID の場合は破壊操作の
         確認を求める前に invalid_id で弾く。"""
         monkeypatch.setenv("QAIP_API_KEY", "fake")
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "tag-source-groups.delete",
-            "--tag-id", "not-a-uuid",
-            "--source-group-id", _VALID_UUID,
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "tag-source-groups.delete",
+                "--tag-id",
+                "not-a-uuid",
+                "--source-group-id",
+                _VALID_UUID,
+            ]
+        )
         with pytest.raises(CLIError) as exc_info:
             args.func(args)
         assert exc_info.value.code == "invalid_id"
@@ -1028,9 +1290,7 @@ class TestDestructiveYesGuard:
             ["api", "tags.delete", "--id", "not-a-uuid"],
         ],
     )
-    def test_destructive_invalid_id_rejected_before_yes(
-        self, argv: list[str], monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_destructive_invalid_id_rejected_before_yes(self, argv: list[str], monkeypatch: pytest.MonkeyPatch) -> None:
         """全 destructive コマンドで `validate_id → require_yes` の順序を保証する。
         不正 ID と `--yes` 抜きを同時に渡したとき、確認要求ではなく invalid_id が先に出る。"""
         monkeypatch.setenv("QAIP_API_KEY", "fake")
@@ -1097,9 +1357,7 @@ class TestAgentRunIdAcceptsCustomString:
     follow-up コマンドで UUID 強制すると regression になる。
     """
 
-    def test_retrieve_run_accepts_non_uuid_id(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_retrieve_run_accepts_non_uuid_id(self, monkeypatch: pytest.MonkeyPatch) -> None:
         from unittest.mock import MagicMock, patch as _patch
 
         monkeypatch.setenv("QAIP_API_KEY", "fake")
@@ -1111,9 +1369,7 @@ class TestAgentRunIdAcceptsCustomString:
             args.func(args)
         mock_client.agent.retrieve_run.assert_called_once_with("my-run-1")
 
-    def test_cancel_run_accepts_non_uuid_id(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_cancel_run_accepts_non_uuid_id(self, monkeypatch: pytest.MonkeyPatch) -> None:
         from unittest.mock import MagicMock, patch as _patch
 
         monkeypatch.setenv("QAIP_API_KEY", "fake")
@@ -1125,9 +1381,7 @@ class TestAgentRunIdAcceptsCustomString:
             args.func(args)
         mock_client.agent.cancel_run.assert_called_once_with("user-supplied-run")
 
-    def test_list_run_events_accepts_non_uuid_id(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_list_run_events_accepts_non_uuid_id(self, monkeypatch: pytest.MonkeyPatch) -> None:
         from unittest.mock import MagicMock, patch as _patch
 
         monkeypatch.setenv("QAIP_API_KEY", "fake")
@@ -1168,34 +1422,40 @@ class TestAgentRunIdAcceptsCustomString:
             args.func(args)
         assert exc_info.value.code == "invalid_id"
 
-    def test_create_run_rejects_invalid_run_id(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_create_run_rejects_invalid_run_id(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """creation 側でも同じ loose_id 検証をかけないと、create で受け付けた
         run_id が follow-up で拒否される非対称が起きる。"""
         monkeypatch.setenv("QAIP_API_KEY", "fake")
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "agent.create_run",
-            "--messages", json.dumps([{"role": "user", "content": "hi"}]),
-            "--run-id", "../etc",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "agent.create_run",
+                "--messages",
+                json.dumps([{"role": "user", "content": "hi"}]),
+                "--run-id",
+                "../etc",
+                "--dry-run",
+            ]
+        )
         with pytest.raises(CLIError) as exc_info:
             args.func(args)
         assert exc_info.value.code == "invalid_id"
 
-    def test_run_rejects_invalid_thread_id(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_run_rejects_invalid_thread_id(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("QAIP_API_KEY", "fake")
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "agent.run",
-            "--messages", json.dumps([{"role": "user", "content": "hi"}]),
-            "--thread-id", "../etc",
-            "--dry-run",
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "agent.run",
+                "--messages",
+                json.dumps([{"role": "user", "content": "hi"}]),
+                "--thread-id",
+                "../etc",
+                "--dry-run",
+            ]
+        )
         with pytest.raises(CLIError) as exc_info:
             args.func(args)
         assert exc_info.value.code == "invalid_id"
@@ -1266,9 +1526,7 @@ class TestApiErrorExitCodeMapping:
 class TestSchemaUnknownStructured:
     """schema 失敗が --error-format json で構造化エラーになる。"""
 
-    def test_unknown_resource_is_structured(
-        self, capsys: pytest.CaptureFixture[str]
-    ) -> None:
+    def test_unknown_resource_is_structured(self, capsys: pytest.CaptureFixture[str]) -> None:
         with patch(
             "sys.argv",
             ["qaip", "--error-format", "json", "schema", "nonexistent"],
@@ -1285,24 +1543,26 @@ class TestSchemaUnknownStructured:
 class TestSecretsUpdateSecretValueGuard:
     """secrets.update で secret キーが body にある場合のみ --yes 必須。"""
 
-    def test_update_secret_value_without_yes_blocks(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_update_secret_value_without_yes_blocks(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("QAIP_API_KEY", "fake")
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "secrets.update",
-            "--id", _VALID_UUID,
-            "--name", "n",
-            "--json", json.dumps({"secret": "rotated"}),
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "secrets.update",
+                "--id",
+                _VALID_UUID,
+                "--name",
+                "n",
+                "--json",
+                json.dumps({"secret": "rotated"}),
+            ]
+        )
         with pytest.raises(CLIError) as exc_info:
             args.func(args)
         assert exc_info.value.code == "confirmation_required"
 
-    def test_update_name_only_does_not_require_yes(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_update_name_only_does_not_require_yes(self, monkeypatch: pytest.MonkeyPatch) -> None:
         from unittest.mock import MagicMock, patch as _patch
 
         monkeypatch.setenv("QAIP_API_KEY", "fake")
@@ -1310,34 +1570,41 @@ class TestSecretsUpdateSecretValueGuard:
         mock_client.secrets.update.return_value.model_dump.return_value = {"id": _VALID_UUID}
         with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
             parser = _build_parser()
-            args = parser.parse_args([
-                "api", "secrets.update",
-                "--id", _VALID_UUID,
-                "--name", "renamed",
-            ])
+            args = parser.parse_args(
+                [
+                    "api",
+                    "secrets.update",
+                    "--id",
+                    _VALID_UUID,
+                    "--name",
+                    "renamed",
+                ]
+            )
             args.func(args)
         mock_client.secrets.update.assert_called_once()
 
-    def test_update_invalid_id_before_yes(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_update_invalid_id_before_yes(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """validate_id が require_yes より先。不正な secret_id の場合は破壊操作の
         確認を求める前に invalid_id で弾く。"""
         monkeypatch.setenv("QAIP_API_KEY", "fake")
         parser = _build_parser()
-        args = parser.parse_args([
-            "api", "secrets.update",
-            "--id", "not-a-uuid",
-            "--name", "n",
-            "--json", json.dumps({"secret": "rotated"}),
-        ])
+        args = parser.parse_args(
+            [
+                "api",
+                "secrets.update",
+                "--id",
+                "not-a-uuid",
+                "--name",
+                "n",
+                "--json",
+                json.dumps({"secret": "rotated"}),
+            ]
+        )
         with pytest.raises(CLIError) as exc_info:
             args.func(args)
         assert exc_info.value.code == "invalid_id"
 
-    def test_update_secret_value_with_yes_passes(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_update_secret_value_with_yes_passes(self, monkeypatch: pytest.MonkeyPatch) -> None:
         from unittest.mock import MagicMock, patch as _patch
 
         monkeypatch.setenv("QAIP_API_KEY", "fake")
@@ -1345,12 +1612,18 @@ class TestSecretsUpdateSecretValueGuard:
         mock_client.secrets.update.return_value.model_dump.return_value = {"id": _VALID_UUID}
         with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
             parser = _build_parser()
-            args = parser.parse_args([
-                "api", "secrets.update",
-                "--id", _VALID_UUID,
-                "--name", "n",
-                "--yes",
-                "--json", json.dumps({"secret": "rotated"}),
-            ])
+            args = parser.parse_args(
+                [
+                    "api",
+                    "secrets.update",
+                    "--id",
+                    _VALID_UUID,
+                    "--name",
+                    "n",
+                    "--yes",
+                    "--json",
+                    json.dumps({"secret": "rotated"}),
+                ]
+            )
             args.func(args)
         mock_client.secrets.update.assert_called_once()
