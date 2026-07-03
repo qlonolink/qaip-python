@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import io
 import json
+import hashlib
+from pathlib import Path
 from unittest.mock import patch
 
 import httpx
@@ -57,6 +60,8 @@ class TestSchemaCommand:
         assert "methods" in data
         assert "retrieve" in data["methods"]
         assert "list" in data["methods"]
+        assert data["methods"]["download_raw"]["required_one_of"] == [["output", "stdout"]]
+        assert ["output", "stdout"] in data["methods"]["download_raw"]["mutually_exclusive"]
 
     def test_schema_unknown_resource(self) -> None:
         parser = _build_parser()
@@ -162,6 +167,16 @@ class TestDryRun:
         data = json.loads(captured.out)
         assert data["method"] == "GET"
         assert data["body"]["limit"] == 10
+
+    def test_sources_download_raw_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(["api", "sources.download_raw", "--id", "src-1", "--dry-run"])
+        args.func(args)
+        captured = capsys.readouterr()
+        data = json.loads(captured.out)
+        assert data["method"] == "GET"
+        assert data["path"] == "/sources/src-1/raw"
+        assert "body" not in data
 
     def test_source_groups_list_with_source_type(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
@@ -973,6 +988,212 @@ class TestLocalFileGroupsMissingFile:
 
 
 _VALID_UUID = "11111111-1111-1111-1111-111111111111"
+
+
+class TestSourcesDownloadRaw:
+    def test_requires_destination_for_real_call(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        parser = _build_parser()
+        args = parser.parse_args(["api", "sources.download_raw", "--id", _VALID_UUID])
+
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+
+        assert exc_info.value.code == "invalid_argument"
+
+    def test_rejects_output_and_stdout_together(self) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(
+            [
+                "api",
+                "sources.download_raw",
+                "--id",
+                _VALID_UUID,
+                "--output",
+                "raw.html",
+                "--stdout",
+            ]
+        )
+
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+
+        assert exc_info.value.code == "invalid_argument"
+
+    def test_rejects_stdout_with_fields(self) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(
+            [
+                "api",
+                "sources.download_raw",
+                "--id",
+                _VALID_UUID,
+                "--stdout",
+                "--fields",
+                "path",
+            ]
+        )
+
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+
+        assert exc_info.value.code == "invalid_argument"
+
+    def test_dry_run_reports_would_overwrite(
+        self,
+        tmp_path: Path,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        output = tmp_path / "raw.html"
+        output.write_bytes(b"old")
+        parser = _build_parser()
+        args = parser.parse_args(
+            [
+                "api",
+                "sources.download_raw",
+                "--id",
+                "src-1",
+                "--output",
+                str(output),
+                "--dry-run",
+            ]
+        )
+        args.func(args)
+
+        captured = capsys.readouterr()
+        data = json.loads(captured.out)
+        assert data["body"]["output"] == str(output)
+        assert data["body"]["would_overwrite"] is True
+
+    def test_existing_output_requires_force(
+        self,
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        output = tmp_path / "raw.html"
+        output.write_bytes(b"old")
+        parser = _build_parser()
+        args = parser.parse_args(
+            [
+                "api",
+                "sources.download_raw",
+                "--id",
+                _VALID_UUID,
+                "--output",
+                str(output),
+            ]
+        )
+
+        with patch("qaip.cli._api.sources.get_client") as mock_get_client:
+            with pytest.raises(CLIError) as exc_info:
+                args.func(args)
+
+        assert exc_info.value.code == "confirmation_required"
+        mock_get_client.assert_not_called()
+
+    def test_invalid_source_id_rejected_before_request(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        parser = _build_parser()
+        args = parser.parse_args(["api", "sources.download_raw", "--id", "not-a-uuid", "--stdout"])
+
+        with patch("qaip.cli._api.sources.get_client") as mock_get_client:
+            with pytest.raises(CLIError) as exc_info:
+                args.func(args)
+
+        assert exc_info.value.code == "invalid_id"
+        mock_get_client.assert_not_called()
+
+    def test_streams_to_stdout(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        class FakeStdout:
+            def __init__(self) -> None:
+                self.buffer = io.BytesIO()
+
+        fake_stdout = FakeStdout()
+        seen_paths: list[str] = []
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            seen_paths.append(request.url.path)
+            return httpx.Response(200, content=b"raw-bytes")
+
+        transport = httpx.MockTransport(handler)
+        client = Qaip(
+            base_url="http://test.local",
+            api_key="test-key",
+            http_client=httpx.Client(transport=transport),
+        )
+
+        parser = _build_parser()
+        args = parser.parse_args(["api", "sources.download_raw", "--id", _VALID_UUID, "--stdout"])
+
+        with client:
+            monkeypatch.setattr("qaip.cli._api.sources.sys.stdout", fake_stdout)
+            with patch("qaip.cli._api.sources.get_client", return_value=client):
+                args.func(args)
+
+        assert seen_paths == [f"/sources/{_VALID_UUID}/raw"]
+        assert fake_stdout.buffer.getvalue() == b"raw-bytes"
+
+    def test_downloads_to_output_file(
+        self,
+        tmp_path: Path,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        output = tmp_path / "raw.html"
+        output.write_bytes(b"old")
+        seen_paths: list[str] = []
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            seen_paths.append(request.url.path)
+            return httpx.Response(
+                200,
+                content=b"<html>raw</html>",
+                headers={
+                    "content-type": "text/html",
+                    "content-length": "16",
+                    "content-disposition": 'attachment; filename="raw.html"',
+                },
+            )
+
+        transport = httpx.MockTransport(handler)
+        client = Qaip(
+            base_url="http://test.local",
+            api_key="test-key",
+            http_client=httpx.Client(transport=transport),
+        )
+
+        parser = _build_parser()
+        args = parser.parse_args(
+            [
+                "api",
+                "sources.download_raw",
+                "--id",
+                _VALID_UUID,
+                "--output",
+                str(output),
+                "--force",
+            ]
+        )
+
+        with client:
+            with patch("qaip.cli._api.sources.get_client", return_value=client):
+                args.func(args)
+
+        captured = capsys.readouterr()
+        result = json.loads(captured.out)
+        assert seen_paths == [f"/sources/{_VALID_UUID}/raw"]
+        assert output.read_bytes() == b"<html>raw</html>"
+        assert result == {
+            "path": str(output.resolve()),
+            "bytes_written": 16,
+            "sha256": hashlib.sha256(b"<html>raw</html>").hexdigest(),
+            "content_type": "text/html",
+            "content_length": 16,
+            "content_disposition": 'attachment; filename="raw.html"',
+        }
 
 
 class TestMainTypeErrorHandling:
