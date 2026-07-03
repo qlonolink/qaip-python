@@ -43,12 +43,21 @@ def _build_parser() -> argparse.ArgumentParser:
         help="API base URL (defaults to QAIP_BASE_URL env var)",
     )
     parser.add_argument(
+        "-H",
+        "--header",
+        action="append",
+        dest="headers",
+        default=None,
+        metavar="NAME:VALUE",
+        help="Extra HTTP header sent with every request, as 'Name: Value' (repeatable). For advanced/internal use.",
+    )
+    parser.add_argument(
         "--error-format",
         choices=("text", "json"),
         default=None,
-        help="Format for error output written to stderr "
-        "(default: text; or set QAIP_ERROR_FORMAT=json)",
+        help="Format for error output written to stderr (default: text; or set QAIP_ERROR_FORMAT=json)",
     )
+
     def show_help(_: argparse.Namespace) -> None:
         parser.print_help()
 
