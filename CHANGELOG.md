@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.9.0 (2026-07-03)
+
+Full Changelog: [v0.8.2...v0.9.0](https://github.com/qlonolink/qaip-python/compare/v0.8.2...v0.9.0)
+
+### Features
+
+* **app:** Gemini grounding を completion / agent で feature flag + API パラメータ制御 ([d67cf3b](https://github.com/qlonolink/qaip-python/commit/d67cf3b3ba5d524695dc0335d07c400e9969d7e8))
+
+
+### Bug Fixes
+
+* **types:** avoid type-checker errors on params with additional properties ([cec2c33](https://github.com/qlonolink/qaip-python/commit/cec2c3325cc9fad4641174476b53622a6e1040ae))
+
 ## 0.8.2 (2026-06-22)
 
 Full Changelog: [v0.8.1...v0.8.2](https://github.com/qlonolink/qaip-python/compare/v0.8.1...v0.8.2)
