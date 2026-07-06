@@ -70,3 +70,24 @@ class CompletionResponse(BaseModel):
 
     created: int
     """The Unix timestamp (in seconds) of when the completion was created"""
+
+    assistant_message_id: Optional[str] = None
+    """Id of the persisted assistant message node (the new active leaf).
+
+    Null when no assistant node was persisted.
+    """
+
+    conversation_id: Optional[str] = None
+    """Target conversation id.
+
+    For an existing conversation (conversation_id was supplied) it is always
+    returned, even if this turn's answer was not persisted. For a new conversation
+    it is null when nothing was persisted (e.g. no answer generated, or the history
+    write failed).
+    """
+
+    user_message_id: Optional[str] = None
+    """Id of the persisted user message node for this turn.
+
+    Null when the turn was not persisted.
+    """

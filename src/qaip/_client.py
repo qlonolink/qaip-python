@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING, Any, List, Mapping, Iterable
-from typing_extensions import Self, override
+from typing_extensions import Self, Literal, override
 
 import httpx
 
@@ -302,6 +302,7 @@ class Qaip(SyncAPIClient):
         authz_policy: str | Omit = omit,
         chunk_metadata: MetadataFilterGroup | Omit = omit,
         citation: bool | Omit = omit,
+        conversation_id: str | Omit = omit,
         date_from: int | Omit = omit,
         date_to: int | Omit = omit,
         domains: SequenceNotStr[str] | Omit = omit,
@@ -309,13 +310,16 @@ class Qaip(SyncAPIClient):
         grounding: bool | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
+        parent_message_id: str | Omit = omit,
         principal_id: str | Omit = omit,
+        regenerate: bool | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         stream: bool | Omit = omit,
         tag_filter_logic: LogicalOperator | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
+        truncation: Literal["auto", "disabled"] | Omit = omit,
         use_postfilter: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -339,6 +343,14 @@ class Qaip(SyncAPIClient):
 
           citation: Whether to include citations in the response
 
+          conversation_id: Conversation to append this turn to. When omitted, a new conversation is created
+              server-side and its id is returned (response body for JSON, the
+              X-Conversation-Id header for streaming). Pass it back on subsequent turns so the
+              answer is persisted into the same conversation history tree. When set, the past
+              conversation is rebuilt server-side from the stored tree, so only the latest
+              user message in `messages` is used as the new input (earlier `messages` entries
+              are ignored). Retrieval uses that latest question.
+
           date_from: Start date for content search (Unix timestamp in seconds)
 
           date_to: End date for content search (Unix timestamp in seconds)
@@ -355,10 +367,19 @@ class Qaip(SyncAPIClient):
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
 
+          parent_message_id: Id of the message node to branch this turn from (the parent of the new user
+              message). When omitted, the turn continues from the conversation's current
+              active leaf. Set it to fork a branch (e.g. editing an earlier question). Must
+              belong to conversation_id.
+
           principal_id: Identifier of the end-user (principal) on whose behalf this request is made.
               Used to look up the principal's authz subject attributes for policy evaluation.
               When omitted, subject attributes are empty (most restrictive). Ignored when
               authz is disabled.
+
+          regenerate: When true, the latest user message is NOT persisted again; instead a new
+              assistant answer is created as a sibling under parent_message_id (which must
+              reference an existing user message). Used to regenerate an answer.
 
           source_metadata: Filter by individual source/file metadata from source_metadatas table
 
@@ -370,6 +391,11 @@ class Qaip(SyncAPIClient):
           tag_ids: target tag IDs to be obtained
 
           tags: target tag names to be obtained
+
+          truncation: How to handle a reconstructed conversation that exceeds the model's context
+              budget (only relevant when conversation_id is set, i.e. history is rebuilt
+              server-side). "auto": drop the oldest turns until it fits (the latest question
+              is always kept). "disabled": return 400 if it does not fit.
 
           use_postfilter: Whether to bypass LanceDB prefilter and apply WHERE after the vector search
               (IVF_PQ) returns top-K. Significantly faster for broad filters that cover most
@@ -392,6 +418,7 @@ class Qaip(SyncAPIClient):
                     "authz_policy": authz_policy,
                     "chunk_metadata": chunk_metadata,
                     "citation": citation,
+                    "conversation_id": conversation_id,
                     "date_from": date_from,
                     "date_to": date_to,
                     "domains": domains,
@@ -399,13 +426,16 @@ class Qaip(SyncAPIClient):
                     "grounding": grounding,
                     "limit": limit,
                     "metadata": metadata,
+                    "parent_message_id": parent_message_id,
                     "principal_id": principal_id,
+                    "regenerate": regenerate,
                     "source_metadata": source_metadata,
                     "source_types": source_types,
                     "stream": stream,
                     "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
+                    "truncation": truncation,
                     "use_postfilter": use_postfilter,
                 },
                 client_completion_params.ClientCompletionParams,
@@ -963,6 +993,7 @@ class AsyncQaip(AsyncAPIClient):
         authz_policy: str | Omit = omit,
         chunk_metadata: MetadataFilterGroup | Omit = omit,
         citation: bool | Omit = omit,
+        conversation_id: str | Omit = omit,
         date_from: int | Omit = omit,
         date_to: int | Omit = omit,
         domains: SequenceNotStr[str] | Omit = omit,
@@ -970,13 +1001,16 @@ class AsyncQaip(AsyncAPIClient):
         grounding: bool | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
+        parent_message_id: str | Omit = omit,
         principal_id: str | Omit = omit,
+        regenerate: bool | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         stream: bool | Omit = omit,
         tag_filter_logic: LogicalOperator | Omit = omit,
         tag_ids: SequenceNotStr[str] | Omit = omit,
         tags: SequenceNotStr[str] | Omit = omit,
+        truncation: Literal["auto", "disabled"] | Omit = omit,
         use_postfilter: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1000,6 +1034,14 @@ class AsyncQaip(AsyncAPIClient):
 
           citation: Whether to include citations in the response
 
+          conversation_id: Conversation to append this turn to. When omitted, a new conversation is created
+              server-side and its id is returned (response body for JSON, the
+              X-Conversation-Id header for streaming). Pass it back on subsequent turns so the
+              answer is persisted into the same conversation history tree. When set, the past
+              conversation is rebuilt server-side from the stored tree, so only the latest
+              user message in `messages` is used as the new input (earlier `messages` entries
+              are ignored). Retrieval uses that latest question.
+
           date_from: Start date for content search (Unix timestamp in seconds)
 
           date_to: End date for content search (Unix timestamp in seconds)
@@ -1016,10 +1058,19 @@ class AsyncQaip(AsyncAPIClient):
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
 
+          parent_message_id: Id of the message node to branch this turn from (the parent of the new user
+              message). When omitted, the turn continues from the conversation's current
+              active leaf. Set it to fork a branch (e.g. editing an earlier question). Must
+              belong to conversation_id.
+
           principal_id: Identifier of the end-user (principal) on whose behalf this request is made.
               Used to look up the principal's authz subject attributes for policy evaluation.
               When omitted, subject attributes are empty (most restrictive). Ignored when
               authz is disabled.
+
+          regenerate: When true, the latest user message is NOT persisted again; instead a new
+              assistant answer is created as a sibling under parent_message_id (which must
+              reference an existing user message). Used to regenerate an answer.
 
           source_metadata: Filter by individual source/file metadata from source_metadatas table
 
@@ -1031,6 +1082,11 @@ class AsyncQaip(AsyncAPIClient):
           tag_ids: target tag IDs to be obtained
 
           tags: target tag names to be obtained
+
+          truncation: How to handle a reconstructed conversation that exceeds the model's context
+              budget (only relevant when conversation_id is set, i.e. history is rebuilt
+              server-side). "auto": drop the oldest turns until it fits (the latest question
+              is always kept). "disabled": return 400 if it does not fit.
 
           use_postfilter: Whether to bypass LanceDB prefilter and apply WHERE after the vector search
               (IVF_PQ) returns top-K. Significantly faster for broad filters that cover most
@@ -1053,6 +1109,7 @@ class AsyncQaip(AsyncAPIClient):
                     "authz_policy": authz_policy,
                     "chunk_metadata": chunk_metadata,
                     "citation": citation,
+                    "conversation_id": conversation_id,
                     "date_from": date_from,
                     "date_to": date_to,
                     "domains": domains,
@@ -1060,13 +1117,16 @@ class AsyncQaip(AsyncAPIClient):
                     "grounding": grounding,
                     "limit": limit,
                     "metadata": metadata,
+                    "parent_message_id": parent_message_id,
                     "principal_id": principal_id,
+                    "regenerate": regenerate,
                     "source_metadata": source_metadata,
                     "source_types": source_types,
                     "stream": stream,
                     "tag_filter_logic": tag_filter_logic,
                     "tag_ids": tag_ids,
                     "tags": tags,
+                    "truncation": truncation,
                     "use_postfilter": use_postfilter,
                 },
                 client_completion_params.ClientCompletionParams,

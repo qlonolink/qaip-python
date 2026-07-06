@@ -62,6 +62,7 @@ class TestClient:
                 "logic": "AND",
             },
             citation=True,
+            conversation_id="550e8400-e29b-41d4-a716-446655440000",
             date_from=1735639200,
             date_to=1735639200,
             domains=["string"],
@@ -82,7 +83,9 @@ class TestClient:
                 "groups": [],
                 "logic": "AND",
             },
+            parent_message_id="f47ac10b-58cc-4372-a567-0e02b2c3d479",
             principal_id="user-123",
+            regenerate=True,
             source_metadata={
                 "filters": [
                     {
@@ -102,6 +105,7 @@ class TestClient:
             tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
+            truncation="auto",
             use_postfilter=True,
         )
         assert_matches_type(CompletionResponse, client_, path=["response"])
@@ -532,6 +536,7 @@ class TestAsyncClient:
                 "logic": "AND",
             },
             citation=True,
+            conversation_id="550e8400-e29b-41d4-a716-446655440000",
             date_from=1735639200,
             date_to=1735639200,
             domains=["string"],
@@ -552,7 +557,9 @@ class TestAsyncClient:
                 "groups": [],
                 "logic": "AND",
             },
+            parent_message_id="f47ac10b-58cc-4372-a567-0e02b2c3d479",
             principal_id="user-123",
+            regenerate=True,
             source_metadata={
                 "filters": [
                     {
@@ -572,6 +579,7 @@ class TestAsyncClient:
             tag_filter_logic="AND",
             tag_ids=["string"],
             tags=["string"],
+            truncation="auto",
             use_postfilter=True,
         )
         assert_matches_type(CompletionResponse, client, path=["response"])
