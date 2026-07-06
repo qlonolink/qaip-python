@@ -40,7 +40,7 @@ response = client.completion(
         }
     ],
 )
-print(response.choices)
+print(response.assistant_message_id)
 ```
 
 While you can provide an `api_key` keyword argument,
@@ -71,7 +71,7 @@ async def main() -> None:
             }
         ],
     )
-    print(response.choices)
+    print(response.assistant_message_id)
 
 
 asyncio.run(main())
@@ -112,7 +112,7 @@ async def main() -> None:
                 }
             ],
         )
-        print(response.choices)
+        print(response.assistant_message_id)
 
 
 asyncio.run(main())
@@ -301,7 +301,7 @@ response = client.with_raw_response.completion(
 print(response.headers.get('X-My-Header'))
 
 client = response.parse()  # get the object that `completion()` would have returned
-print(client.choices)
+print(client.assistant_message_id)
 ```
 
 These methods return an [`APIResponse`](https://github.com/qlonolink/qaip-python/tree/main/src/qaip/_response.py) object.
