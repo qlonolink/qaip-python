@@ -38,3 +38,11 @@ class Content(BaseModel):
     """Source URL of the content"""
 
     keywords: Optional[List[str]] = None
+
+    source_id: Optional[str] = None
+    """Optional source ID for the original source.
+
+    For crawl content, use this value with GET /sources/{source_id}/raw to download
+    the stored crawl file content. For local_file content, use GET
+    /sources/{source_id} for source details.
+    """
