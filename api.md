@@ -112,6 +112,7 @@ Methods:
 - <code title="get /sources">client.sources.<a href="./src/qaip/resources/sources.py">list</a>(\*\*<a href="src/qaip/types/source_list_params.py">params</a>) -> <a href="./src/qaip/types/source_list_response.py">SourceListResponse</a></code>
 - <code title="post /sources/metadata/batch">client.sources.<a href="./src/qaip/resources/sources.py">batch_set_metadata</a>(\*\*<a href="src/qaip/types/source_batch_set_metadata_params.py">params</a>) -> <a href="./src/qaip/types/shared/batch_set_metadata_response.py">BatchSetMetadataResponse</a></code>
 - <code title="delete /sources/{source_id}/metadata">client.sources.<a href="./src/qaip/resources/sources.py">delete_metadata</a>(source_id) -> <a href="./src/qaip/types/source_delete_metadata_response.py">SourceDeleteMetadataResponse</a></code>
+- <code title="get /sources/{source_id}/raw">client.sources.<a href="./src/qaip/resources/sources.py">download_raw</a>(source_id) -> BinaryAPIResponse</code>
 - <code title="get /sources/{source_id}/metadata">client.sources.<a href="./src/qaip/resources/sources.py">retrieve_metadata</a>(source_id) -> <a href="./src/qaip/types/shared/metadata.py">Metadata</a></code>
 - <code title="put /sources/{source_id}/metadata">client.sources.<a href="./src/qaip/resources/sources.py">update_metadata</a>(source_id, \*\*<a href="src/qaip/types/source_update_metadata_params.py">params</a>) -> <a href="./src/qaip/types/shared/metadata.py">Metadata</a></code>
 
