@@ -5,7 +5,9 @@ from __future__ import annotations
 import os
 from typing import Any, cast
 
+import httpx
 import pytest
+from respx import MockRouter
 
 from qaip import Qaip, AsyncQaip
 from qaip.types import (
@@ -14,6 +16,12 @@ from qaip.types import (
     SourceDeleteMetadataResponse,
 )
 from tests.utils import assert_matches_type
+from qaip._response import (
+    BinaryAPIResponse,
+    AsyncBinaryAPIResponse,
+    StreamedBinaryAPIResponse,
+    AsyncStreamedBinaryAPIResponse,
+)
 from qaip.types.shared import Metadata, BatchSetMetadataResponse
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
@@ -192,6 +200,62 @@ class TestSources:
     def test_path_params_delete_metadata(self, client: Qaip) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `source_id` but received ''"):
             client.sources.with_raw_response.delete_metadata(
+                "",
+            )
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    def test_method_download_raw(self, client: Qaip, respx_mock: MockRouter) -> None:
+        respx_mock.get("/sources/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+        source = client.sources.download_raw(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert source.is_closed
+        assert source.json() == {"foo": "bar"}
+        assert cast(Any, source.is_closed) is True
+        assert isinstance(source, BinaryAPIResponse)
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    def test_raw_response_download_raw(self, client: Qaip, respx_mock: MockRouter) -> None:
+        respx_mock.get("/sources/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+
+        source = client.sources.with_raw_response.download_raw(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert source.is_closed is True
+        assert source.http_request.headers.get("X-Stainless-Lang") == "python"
+        assert source.json() == {"foo": "bar"}
+        assert isinstance(source, BinaryAPIResponse)
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    def test_streaming_response_download_raw(self, client: Qaip, respx_mock: MockRouter) -> None:
+        respx_mock.get("/sources/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+        with client.sources.with_streaming_response.download_raw(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as source:
+            assert not source.is_closed
+            assert source.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            assert source.json() == {"foo": "bar"}
+            assert cast(Any, source.is_closed) is True
+            assert isinstance(source, StreamedBinaryAPIResponse)
+
+        assert cast(Any, source.is_closed) is True
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    def test_path_params_download_raw(self, client: Qaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `source_id` but received ''"):
+            client.sources.with_raw_response.download_raw(
                 "",
             )
 
@@ -476,6 +540,62 @@ class TestAsyncSources:
     async def test_path_params_delete_metadata(self, async_client: AsyncQaip) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `source_id` but received ''"):
             await async_client.sources.with_raw_response.delete_metadata(
+                "",
+            )
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    async def test_method_download_raw(self, async_client: AsyncQaip, respx_mock: MockRouter) -> None:
+        respx_mock.get("/sources/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+        source = await async_client.sources.download_raw(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert source.is_closed
+        assert await source.json() == {"foo": "bar"}
+        assert cast(Any, source.is_closed) is True
+        assert isinstance(source, AsyncBinaryAPIResponse)
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    async def test_raw_response_download_raw(self, async_client: AsyncQaip, respx_mock: MockRouter) -> None:
+        respx_mock.get("/sources/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+
+        source = await async_client.sources.with_raw_response.download_raw(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert source.is_closed is True
+        assert source.http_request.headers.get("X-Stainless-Lang") == "python"
+        assert await source.json() == {"foo": "bar"}
+        assert isinstance(source, AsyncBinaryAPIResponse)
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    async def test_streaming_response_download_raw(self, async_client: AsyncQaip, respx_mock: MockRouter) -> None:
+        respx_mock.get("/sources/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+        async with async_client.sources.with_streaming_response.download_raw(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as source:
+            assert not source.is_closed
+            assert source.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            assert await source.json() == {"foo": "bar"}
+            assert cast(Any, source.is_closed) is True
+            assert isinstance(source, AsyncStreamedBinaryAPIResponse)
+
+        assert cast(Any, source.is_closed) is True
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    async def test_path_params_download_raw(self, async_client: AsyncQaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `source_id` but received ''"):
+            await async_client.sources.with_raw_response.download_raw(
                 "",
             )
 
