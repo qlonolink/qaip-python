@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.0 (2026-07-06)
+
+Full Changelog: [v0.9.0...v0.10.0](https://github.com/qlonolink/qaip-python/compare/v0.9.0...v0.10.0)
+
+### Features
+
+* [codex] クロール原本ダウンロードAPIを実装 ([8d437a2](https://github.com/qlonolink/qaip-python/commit/8d437a27a54b14040b8e6fedcb993040e373bcbd))
+
 ## 0.9.0 (2026-07-03)
 
 Full Changelog: [v0.8.2...v0.9.0](https://github.com/qlonolink/qaip-python/compare/v0.8.2...v0.9.0)
