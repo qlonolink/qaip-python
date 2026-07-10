@@ -61,11 +61,11 @@ from qaip.types import (
 
 Methods:
 
-- <code title="post /agent/runs/{run_id}/cancel">client.agent.<a href="./src/qaip/resources/agent.py">cancel_run</a>(run_id) -> <a href="./src/qaip/types/agent_run.py">AgentRun</a></code>
+- <code title="post /agent/runs/{run_id}/cancel">client.agent.<a href="./src/qaip/resources/agent.py">cancel_run</a>(run_id, \*\*<a href="src/qaip/types/agent_cancel_run_params.py">params</a>) -> <a href="./src/qaip/types/agent_run.py">AgentRun</a></code>
 - <code title="post /agent/runs">client.agent.<a href="./src/qaip/resources/agent.py">create_run</a>(\*\*<a href="src/qaip/types/agent_create_run_params.py">params</a>) -> <a href="./src/qaip/types/agent_run.py">AgentRun</a></code>
 - <code title="get /agent/runs/{run_id}/events">client.agent.<a href="./src/qaip/resources/agent.py">list_run_events</a>(run_id, \*\*<a href="src/qaip/types/agent_list_run_events_params.py">params</a>) -> <a href="./src/qaip/types/agent_list_run_events_response.py">AgentListRunEventsResponse</a></code>
-- <code title="get /agent/runs/{run_id}">client.agent.<a href="./src/qaip/resources/agent.py">retrieve_run</a>(run_id) -> <a href="./src/qaip/types/agent_run.py">AgentRun</a></code>
-- <code title="get /agent/runs/{run_id}/result">client.agent.<a href="./src/qaip/resources/agent.py">retrieve_run_result</a>(run_id) -> <a href="./src/qaip/types/agent_retrieve_run_result_response.py">AgentRetrieveRunResultResponse</a></code>
+- <code title="get /agent/runs/{run_id}">client.agent.<a href="./src/qaip/resources/agent.py">retrieve_run</a>(run_id, \*\*<a href="src/qaip/types/agent_retrieve_run_params.py">params</a>) -> <a href="./src/qaip/types/agent_run.py">AgentRun</a></code>
+- <code title="get /agent/runs/{run_id}/result">client.agent.<a href="./src/qaip/resources/agent.py">retrieve_run_result</a>(run_id, \*\*<a href="src/qaip/types/agent_retrieve_run_result_params.py">params</a>) -> <a href="./src/qaip/types/agent_retrieve_run_result_response.py">AgentRetrieveRunResultResponse</a></code>
 - <code title="post /agent/run">client.agent.<a href="./src/qaip/resources/agent.py">run</a>(\*\*<a href="src/qaip/types/agent_run_params.py">params</a>) -> str</code>
 
 # TagSourceGroups
