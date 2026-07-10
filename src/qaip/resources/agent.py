@@ -6,7 +6,14 @@ from typing import Iterable
 
 import httpx
 
-from ..types import agent_run_params, agent_create_run_params, agent_list_run_events_params
+from ..types import (
+    agent_run_params,
+    agent_cancel_run_params,
+    agent_create_run_params,
+    agent_retrieve_run_params,
+    agent_list_run_events_params,
+    agent_retrieve_run_result_params,
+)
 from .._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from .._utils import path_template, maybe_transform, async_maybe_transform
 from .._compat import cached_property
@@ -54,6 +61,7 @@ class AgentResource(SyncAPIResource):
         self,
         run_id: str,
         *,
+        principal_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -66,6 +74,9 @@ class AgentResource(SyncAPIResource):
         </p> <p> Required roles: All, App </p>
 
         Args:
+          principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
+              null) is addressed; a run whose principal differs yields 404.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -79,7 +90,11 @@ class AgentResource(SyncAPIResource):
         return self._post(
             path_template("/agent/runs/{run_id}/cancel", run_id=run_id),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform({"principal_id": principal_id}, agent_cancel_run_params.AgentCancelRunParams),
             ),
             cast_to=AgentRun,
         )
@@ -132,6 +147,7 @@ class AgentResource(SyncAPIResource):
         *,
         after: int | Omit = omit,
         limit: int | Omit = omit,
+        principal_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -144,6 +160,9 @@ class AgentResource(SyncAPIResource):
         </p> <p> Required roles: All, App </p>
 
         Args:
+          principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
+              null) is addressed; a run whose principal differs yields 404.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -165,6 +184,7 @@ class AgentResource(SyncAPIResource):
                     {
                         "after": after,
                         "limit": limit,
+                        "principal_id": principal_id,
                     },
                     agent_list_run_events_params.AgentListRunEventsParams,
                 ),
@@ -176,6 +196,7 @@ class AgentResource(SyncAPIResource):
         self,
         run_id: str,
         *,
+        principal_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -188,6 +209,9 @@ class AgentResource(SyncAPIResource):
         </p> <p> Required roles: All, App </p>
 
         Args:
+          principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
+              null) is addressed; a run whose principal differs yields 404.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -201,7 +225,11 @@ class AgentResource(SyncAPIResource):
         return self._get(
             path_template("/agent/runs/{run_id}", run_id=run_id),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform({"principal_id": principal_id}, agent_retrieve_run_params.AgentRetrieveRunParams),
             ),
             cast_to=AgentRun,
         )
@@ -210,6 +238,7 @@ class AgentResource(SyncAPIResource):
         self,
         run_id: str,
         *,
+        principal_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -222,6 +251,9 @@ class AgentResource(SyncAPIResource):
         </p> <p> Required roles: All, App </p>
 
         Args:
+          principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
+              null) is addressed; a run whose principal differs yields 404.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -235,7 +267,13 @@ class AgentResource(SyncAPIResource):
         return self._get(
             path_template("/agent/runs/{run_id}/result", run_id=run_id),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform(
+                    {"principal_id": principal_id}, agent_retrieve_run_result_params.AgentRetrieveRunResultParams
+                ),
             ),
             cast_to=AgentRetrieveRunResultResponse,
         )
@@ -320,6 +358,7 @@ class AsyncAgentResource(AsyncAPIResource):
         self,
         run_id: str,
         *,
+        principal_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -332,6 +371,9 @@ class AsyncAgentResource(AsyncAPIResource):
         </p> <p> Required roles: All, App </p>
 
         Args:
+          principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
+              null) is addressed; a run whose principal differs yields 404.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -345,7 +387,13 @@ class AsyncAgentResource(AsyncAPIResource):
         return await self._post(
             path_template("/agent/runs/{run_id}/cancel", run_id=run_id),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {"principal_id": principal_id}, agent_cancel_run_params.AgentCancelRunParams
+                ),
             ),
             cast_to=AgentRun,
         )
@@ -398,6 +446,7 @@ class AsyncAgentResource(AsyncAPIResource):
         *,
         after: int | Omit = omit,
         limit: int | Omit = omit,
+        principal_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -410,6 +459,9 @@ class AsyncAgentResource(AsyncAPIResource):
         </p> <p> Required roles: All, App </p>
 
         Args:
+          principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
+              null) is addressed; a run whose principal differs yields 404.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -431,6 +483,7 @@ class AsyncAgentResource(AsyncAPIResource):
                     {
                         "after": after,
                         "limit": limit,
+                        "principal_id": principal_id,
                     },
                     agent_list_run_events_params.AgentListRunEventsParams,
                 ),
@@ -442,6 +495,7 @@ class AsyncAgentResource(AsyncAPIResource):
         self,
         run_id: str,
         *,
+        principal_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -454,6 +508,9 @@ class AsyncAgentResource(AsyncAPIResource):
         </p> <p> Required roles: All, App </p>
 
         Args:
+          principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
+              null) is addressed; a run whose principal differs yields 404.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -467,7 +524,13 @@ class AsyncAgentResource(AsyncAPIResource):
         return await self._get(
             path_template("/agent/runs/{run_id}", run_id=run_id),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {"principal_id": principal_id}, agent_retrieve_run_params.AgentRetrieveRunParams
+                ),
             ),
             cast_to=AgentRun,
         )
@@ -476,6 +539,7 @@ class AsyncAgentResource(AsyncAPIResource):
         self,
         run_id: str,
         *,
+        principal_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -488,6 +552,9 @@ class AsyncAgentResource(AsyncAPIResource):
         </p> <p> Required roles: All, App </p>
 
         Args:
+          principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
+              null) is addressed; a run whose principal differs yields 404.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -501,7 +568,13 @@ class AsyncAgentResource(AsyncAPIResource):
         return await self._get(
             path_template("/agent/runs/{run_id}/result", run_id=run_id),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {"principal_id": principal_id}, agent_retrieve_run_result_params.AgentRetrieveRunResultParams
+                ),
             ),
             cast_to=AgentRetrieveRunResultResponse,
         )
