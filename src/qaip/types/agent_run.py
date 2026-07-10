@@ -31,7 +31,13 @@ class AgentRun(BaseModel):
 
     idempotency_key: Optional[str] = None
 
+    input: Optional[Dict[str, object]] = None
+    """Original RunAgentInput. Used to reconstruct a thread's transcript on restore."""
+
     mcp_session_id: Optional[str] = None
+
+    parent_run_id: Optional[str] = None
+    """Run this run branched from within the thread (null for the thread root)."""
 
     result: Optional[Dict[str, object]] = None
 

@@ -4,14 +4,10 @@ from __future__ import annotations
 
 from typing_extensions import TypedDict
 
-__all__ = ["AgentListRunEventsParams"]
+__all__ = ["AgentRetrieveRunParams"]
 
 
-class AgentListRunEventsParams(TypedDict, total=False):
-    after: int
-
-    limit: int
-
+class AgentRetrieveRunParams(TypedDict, total=False):
     principal_id: str
     """Scope by principal.
 
