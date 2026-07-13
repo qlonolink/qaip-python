@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.11.0 (2026-07-13)
+
+Full Changelog: [v0.10.0...v0.11.0](https://github.com/qlonolink/qaip-python/compare/v0.10.0...v0.11.0)
+
+### Features
+
+* **app:** エージェント会話のスレッド一覧 (/agent/threads) ([7a0af5d](https://github.com/qlonolink/qaip-python/commit/7a0af5d0962e6776a636f4fd893143335989f46b))
+* **app:** 会話履歴機能 (/completions サーバ側保存・分岐対応) ([d29d263](https://github.com/qlonolink/qaip-python/commit/d29d263fa7d764a67997de635b21260e86bbcd32))
+
 ## 0.10.0 (2026-07-06)
 
 Full Changelog: [v0.9.0...v0.10.0](https://github.com/qlonolink/qaip-python/compare/v0.9.0...v0.10.0)
