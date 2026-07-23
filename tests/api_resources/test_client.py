@@ -83,6 +83,20 @@ class TestClient:
                 "groups": [],
                 "logic": "AND",
             },
+            metadata_filter={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             parent_message_id="f47ac10b-58cc-4372-a567-0e02b2c3d479",
             principal_id="user-123",
             regenerate=True,
@@ -245,6 +259,20 @@ class TestClient:
                 "groups": [],
                 "logic": "AND",
             },
+            metadata_filter={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             offset=0,
             principal_id="user-123",
             prompt="prompt",
@@ -268,6 +296,20 @@ class TestClient:
                 "domains": ["string"],
                 "file_types": ["html"],
                 "metadata": {
+                    "filters": [
+                        {
+                            "key": "key",
+                            "operator": "eq",
+                            "type": "string",
+                            "max": {},
+                            "min": {},
+                            "val": {},
+                        }
+                    ],
+                    "groups": [],
+                    "logic": "AND",
+                },
+                "metadata_filter": {
                     "filters": [
                         {
                             "key": "key",
@@ -557,6 +599,20 @@ class TestAsyncClient:
                 "groups": [],
                 "logic": "AND",
             },
+            metadata_filter={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             parent_message_id="f47ac10b-58cc-4372-a567-0e02b2c3d479",
             principal_id="user-123",
             regenerate=True,
@@ -719,6 +775,20 @@ class TestAsyncClient:
                 "groups": [],
                 "logic": "AND",
             },
+            metadata_filter={
+                "filters": [
+                    {
+                        "key": "key",
+                        "operator": "eq",
+                        "type": "string",
+                        "max": {},
+                        "min": {},
+                        "val": {},
+                    }
+                ],
+                "groups": [],
+                "logic": "AND",
+            },
             offset=0,
             principal_id="user-123",
             prompt="prompt",
@@ -742,6 +812,20 @@ class TestAsyncClient:
                 "domains": ["string"],
                 "file_types": ["html"],
                 "metadata": {
+                    "filters": [
+                        {
+                            "key": "key",
+                            "operator": "eq",
+                            "type": "string",
+                            "max": {},
+                            "min": {},
+                            "val": {},
+                        }
+                    ],
+                    "groups": [],
+                    "logic": "AND",
+                },
+                "metadata_filter": {
                     "filters": [
                         {
                             "key": "key",

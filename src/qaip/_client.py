@@ -310,6 +310,7 @@ class Qaip(SyncAPIClient):
         grounding: bool | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
+        metadata_filter: MetadataFilterGroup | Omit = omit,
         parent_message_id: str | Omit = omit,
         principal_id: str | Omit = omit,
         regenerate: bool | Omit = omit,
@@ -366,6 +367,10 @@ class Qaip(SyncAPIClient):
 
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
+
+          metadata_filter: Filter by declared metadata columns (see /metadata_columns) pushed down directly
+              to LanceDB (no PostgreSQL round-trip). Targets string/integer typed columns.
+              Keys must be declared via /metadata_columns or the request is rejected (400).
 
           parent_message_id: Id of the message node to branch this turn from (the parent of the new user
               message). When omitted, the turn continues from the conversation's current
@@ -426,6 +431,7 @@ class Qaip(SyncAPIClient):
                     "grounding": grounding,
                     "limit": limit,
                     "metadata": metadata,
+                    "metadata_filter": metadata_filter,
                     "parent_message_id": parent_message_id,
                     "principal_id": principal_id,
                     "regenerate": regenerate,
@@ -512,6 +518,7 @@ class Qaip(SyncAPIClient):
         file_types: List[FileType] | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
+        metadata_filter: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
         principal_id: str | Omit = omit,
         prompt: str | Omit = omit,
@@ -548,6 +555,10 @@ class Qaip(SyncAPIClient):
 
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
+
+          metadata_filter: Filter by declared metadata columns (see /metadata_columns) pushed down directly
+              to LanceDB (no PostgreSQL round-trip). Targets string/integer typed columns.
+              Keys must be declared via /metadata_columns or the request is rejected (400).
 
           principal_id: Identifier of the end-user (principal) on whose behalf this request is made.
               Used to look up the principal's authz subject attributes for policy evaluation.
@@ -589,6 +600,7 @@ class Qaip(SyncAPIClient):
                     "file_types": file_types,
                     "limit": limit,
                     "metadata": metadata,
+                    "metadata_filter": metadata_filter,
                     "offset": offset,
                     "principal_id": principal_id,
                     "prompt": prompt,
@@ -1001,6 +1013,7 @@ class AsyncQaip(AsyncAPIClient):
         grounding: bool | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
+        metadata_filter: MetadataFilterGroup | Omit = omit,
         parent_message_id: str | Omit = omit,
         principal_id: str | Omit = omit,
         regenerate: bool | Omit = omit,
@@ -1057,6 +1070,10 @@ class AsyncQaip(AsyncAPIClient):
 
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
+
+          metadata_filter: Filter by declared metadata columns (see /metadata_columns) pushed down directly
+              to LanceDB (no PostgreSQL round-trip). Targets string/integer typed columns.
+              Keys must be declared via /metadata_columns or the request is rejected (400).
 
           parent_message_id: Id of the message node to branch this turn from (the parent of the new user
               message). When omitted, the turn continues from the conversation's current
@@ -1117,6 +1134,7 @@ class AsyncQaip(AsyncAPIClient):
                     "grounding": grounding,
                     "limit": limit,
                     "metadata": metadata,
+                    "metadata_filter": metadata_filter,
                     "parent_message_id": parent_message_id,
                     "principal_id": principal_id,
                     "regenerate": regenerate,
@@ -1203,6 +1221,7 @@ class AsyncQaip(AsyncAPIClient):
         file_types: List[FileType] | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
+        metadata_filter: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
         principal_id: str | Omit = omit,
         prompt: str | Omit = omit,
@@ -1239,6 +1258,10 @@ class AsyncQaip(AsyncAPIClient):
 
           metadata: (reserved for future use) Filter group with nested structure. Supports combining
               filters with AND/OR logic.
+
+          metadata_filter: Filter by declared metadata columns (see /metadata_columns) pushed down directly
+              to LanceDB (no PostgreSQL round-trip). Targets string/integer typed columns.
+              Keys must be declared via /metadata_columns or the request is rejected (400).
 
           principal_id: Identifier of the end-user (principal) on whose behalf this request is made.
               Used to look up the principal's authz subject attributes for policy evaluation.
@@ -1280,6 +1303,7 @@ class AsyncQaip(AsyncAPIClient):
                     "file_types": file_types,
                     "limit": limit,
                     "metadata": metadata,
+                    "metadata_filter": metadata_filter,
                     "offset": offset,
                     "principal_id": principal_id,
                     "prompt": prompt,
