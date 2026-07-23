@@ -46,6 +46,13 @@ class ClientExtractParams(TypedDict, total=False):
     Supports combining filters with AND/OR logic.
     """
 
+    metadata_filter: "MetadataFilterGroup"
+    """
+    Filter by declared metadata columns (see /metadata_columns) pushed down directly
+    to LanceDB (no PostgreSQL round-trip). Targets string/integer typed columns.
+    Keys must be declared via /metadata_columns or the request is rejected (400).
+    """
+
     offset: int
 
     principal_id: str
