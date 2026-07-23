@@ -122,6 +122,20 @@ class TestAgent:
                             "groups": [],
                             "logic": "AND",
                         },
+                        "metadata_filter": {
+                            "filters": [
+                                {
+                                    "key": "key",
+                                    "operator": "eq",
+                                    "type": "string",
+                                    "max": {},
+                                    "min": {},
+                                    "val": {},
+                                }
+                            ],
+                            "groups": [],
+                            "logic": "AND",
+                        },
                         "source_metadata": {
                             "filters": [
                                 {
@@ -386,6 +400,20 @@ class TestAgent:
                         "groups": [],
                         "logic": "AND",
                     },
+                    "metadata_filter": {
+                        "filters": [
+                            {
+                                "key": "key",
+                                "operator": "eq",
+                                "type": "string",
+                                "max": {},
+                                "min": {},
+                                "val": {},
+                            }
+                        ],
+                        "groups": [],
+                        "logic": "AND",
+                    },
                     "source_metadata": {
                         "filters": [
                             {
@@ -535,6 +563,20 @@ class TestAsyncAgent:
                         "file_types": ["html"],
                         "limit": 1,
                         "metadata": {
+                            "filters": [
+                                {
+                                    "key": "key",
+                                    "operator": "eq",
+                                    "type": "string",
+                                    "max": {},
+                                    "min": {},
+                                    "val": {},
+                                }
+                            ],
+                            "groups": [],
+                            "logic": "AND",
+                        },
+                        "metadata_filter": {
                             "filters": [
                                 {
                                     "key": "key",
@@ -799,6 +841,20 @@ class TestAsyncAgent:
                     "file_types": ["html"],
                     "limit": 1,
                     "metadata": {
+                        "filters": [
+                            {
+                                "key": "key",
+                                "operator": "eq",
+                                "type": "string",
+                                "max": {},
+                                "min": {},
+                                "val": {},
+                            }
+                        ],
+                        "groups": [],
+                        "logic": "AND",
+                    },
+                    "metadata_filter": {
                         "filters": [
                             {
                                 "key": "key",
