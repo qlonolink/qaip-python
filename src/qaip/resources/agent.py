@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Iterable, Optional
 
 import httpx
 
@@ -283,6 +283,7 @@ class AgentResource(SyncAPIResource):
         *,
         forwarded_props: agent_run_params.ForwardedProps | Omit = omit,
         messages: Iterable[AgentMessageParam] | Omit = omit,
+        redaction_policy_id: Optional[str] | Omit = omit,
         run_id: str | Omit = omit,
         thread_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -298,6 +299,32 @@ class AgentResource(SyncAPIResource):
 
         Args:
           forwarded_props: Forwarded properties for the run (AG-UI standard)
+
+          redaction_policy_id: ID of a versioned redaction policy to apply before sending the conversation to
+              the external model / embedding provider.
+
+              When omitted or `null` (the default), **no redaction is performed and the input
+              is sent to the external provider as-is**. This is an explicit API contract, not
+              a fail-open behavior: omitting the field never silently sanitizes the input.
+
+              When a known ID is given, the conversation history (all roles, string/array/dict
+              content, tool call arguments, string metadata and source URLs), the RAG search
+              query and the RAG search results are masked with that policy before any external
+              call. The original text is still stored in `agent_runs.input` and emitted in
+              `RUN_STARTED` for UI display; only the copy sent to the external provider is
+              masked. Restoration mappings are never stored.
+
+              Errors:
+
+              - unknown ID or an empty string: `422` (never interpreted as "no redaction")
+              - combined with the AgentCore execution mode:
+                `422 AGENTCORE_REDACTION_UNSUPPORTED`
+              - redactor unavailable / timeout / failure: `503 REDACTION_UNAVAILABLE` before
+                the run starts, or a `RUN_ERROR` with code `REDACTION_FAILED` during the run.
+                The request is never forwarded unmasked as a fallback.
+
+              A parent run's policy is not inherited: a child run is redacted only when it
+              specifies `redactionPolicyId` itself.
 
           run_id: Optional ID for the run
 
@@ -318,6 +345,7 @@ class AgentResource(SyncAPIResource):
                 {
                     "forwarded_props": forwarded_props,
                     "messages": messages,
+                    "redaction_policy_id": redaction_policy_id,
                     "run_id": run_id,
                     "thread_id": thread_id,
                 },
@@ -584,6 +612,7 @@ class AsyncAgentResource(AsyncAPIResource):
         *,
         forwarded_props: agent_run_params.ForwardedProps | Omit = omit,
         messages: Iterable[AgentMessageParam] | Omit = omit,
+        redaction_policy_id: Optional[str] | Omit = omit,
         run_id: str | Omit = omit,
         thread_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -599,6 +628,32 @@ class AsyncAgentResource(AsyncAPIResource):
 
         Args:
           forwarded_props: Forwarded properties for the run (AG-UI standard)
+
+          redaction_policy_id: ID of a versioned redaction policy to apply before sending the conversation to
+              the external model / embedding provider.
+
+              When omitted or `null` (the default), **no redaction is performed and the input
+              is sent to the external provider as-is**. This is an explicit API contract, not
+              a fail-open behavior: omitting the field never silently sanitizes the input.
+
+              When a known ID is given, the conversation history (all roles, string/array/dict
+              content, tool call arguments, string metadata and source URLs), the RAG search
+              query and the RAG search results are masked with that policy before any external
+              call. The original text is still stored in `agent_runs.input` and emitted in
+              `RUN_STARTED` for UI display; only the copy sent to the external provider is
+              masked. Restoration mappings are never stored.
+
+              Errors:
+
+              - unknown ID or an empty string: `422` (never interpreted as "no redaction")
+              - combined with the AgentCore execution mode:
+                `422 AGENTCORE_REDACTION_UNSUPPORTED`
+              - redactor unavailable / timeout / failure: `503 REDACTION_UNAVAILABLE` before
+                the run starts, or a `RUN_ERROR` with code `REDACTION_FAILED` during the run.
+                The request is never forwarded unmasked as a fallback.
+
+              A parent run's policy is not inherited: a child run is redacted only when it
+              specifies `redactionPolicyId` itself.
 
           run_id: Optional ID for the run
 
@@ -619,6 +674,7 @@ class AsyncAgentResource(AsyncAPIResource):
                 {
                     "forwarded_props": forwarded_props,
                     "messages": messages,
+                    "redaction_policy_id": redaction_policy_id,
                     "run_id": run_id,
                     "thread_id": thread_id,
                 },
