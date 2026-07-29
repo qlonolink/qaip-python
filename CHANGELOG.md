@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.12.0 (2026-07-29)
+
+Full Changelog: [v0.11.0...v0.12.0](https://github.com/qlonolink/qaip-python/compare/v0.11.0...v0.12.0)
+
+### Features
+
+* **api:** metadata_filter を /completions・/agent/run・/extract にも公開する ([d0c0d3d](https://github.com/qlonolink/qaip-python/commit/d0c0d3d83150218882e3ae6b09da7af0c125c5ab))
+* 外部LLM送信前のRedactionとリリースゲートを実装 ([f2eed0f](https://github.com/qlonolink/qaip-python/commit/f2eed0f0a83e9a6c8816a28c334c155dde12455f))
+
+
+### Chores
+
+* **internal:** codegen related update ([73ca51c](https://github.com/qlonolink/qaip-python/commit/73ca51c923485ff5f4707b4bbc40246ceb5af179))
+
 ## 0.11.0 (2026-07-13)
 
 Full Changelog: [v0.10.0...v0.11.0](https://github.com/qlonolink/qaip-python/compare/v0.10.0...v0.11.0)
