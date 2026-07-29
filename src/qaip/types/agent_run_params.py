@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Iterable, Optional
 from typing_extensions import Annotated, TypedDict
 
 from .._utils import PropertyInfo
@@ -16,6 +16,35 @@ class AgentRunParams(TypedDict, total=False):
     """Forwarded properties for the run (AG-UI standard)"""
 
     messages: Iterable[AgentMessageParam]
+
+    redaction_policy_id: Annotated[Optional[str], PropertyInfo(alias="redactionPolicyId")]
+    """
+    ID of a versioned redaction policy to apply before sending the conversation to
+    the external model / embedding provider.
+
+    When omitted or `null` (the default), **no redaction is performed and the input
+    is sent to the external provider as-is**. This is an explicit API contract, not
+    a fail-open behavior: omitting the field never silently sanitizes the input.
+
+    When a known ID is given, the conversation history (all roles, string/array/dict
+    content, tool call arguments, string metadata and source URLs), the RAG search
+    query and the RAG search results are masked with that policy before any external
+    call. The original text is still stored in `agent_runs.input` and emitted in
+    `RUN_STARTED` for UI display; only the copy sent to the external provider is
+    masked. Restoration mappings are never stored.
+
+    Errors:
+
+    - unknown ID or an empty string: `422` (never interpreted as "no redaction")
+    - combined with the AgentCore execution mode:
+      `422 AGENTCORE_REDACTION_UNSUPPORTED`
+    - redactor unavailable / timeout / failure: `503 REDACTION_UNAVAILABLE` before
+      the run starts, or a `RUN_ERROR` with code `REDACTION_FAILED` during the run.
+      The request is never forwarded unmasked as a fallback.
+
+    A parent run's policy is not inherited: a child run is redacted only when it
+    specifies `redactionPolicyId` itself.
+    """
 
     run_id: str
     """Optional ID for the run"""
