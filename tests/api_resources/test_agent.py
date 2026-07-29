@@ -165,6 +165,7 @@ class TestAgent:
                         "role": "system",
                     }
                 ],
+                "redaction_policy_id": "pii-standard",
                 "run_id": "run_id",
                 "thread_id": "thread_id",
             },
@@ -443,6 +444,7 @@ class TestAgent:
                     "role": "system",
                 }
             ],
+            redaction_policy_id="pii-standard",
             run_id="run_id",
             thread_id="thread_id",
         )
@@ -619,6 +621,7 @@ class TestAsyncAgent:
                         "role": "system",
                     }
                 ],
+                "redaction_policy_id": "pii-standard",
                 "run_id": "run_id",
                 "thread_id": "thread_id",
             },
@@ -897,6 +900,7 @@ class TestAsyncAgent:
                     "role": "system",
                 }
             ],
+            redaction_policy_id="pii-standard",
             run_id="run_id",
             thread_id="thread_id",
         )
