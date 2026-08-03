@@ -19,6 +19,7 @@ from . import (
     source_groups,
     local_file_groups,
     tag_source_groups,
+    redaction_policies,
     user_keyword_snapshots,
 )
 
@@ -43,3 +44,4 @@ def register_commands(parser: ArgumentParser) -> None:
     local_file_groups.register(subparsers)
     agent.register(subparsers)
     tag_source_groups.register(subparsers)
+    redaction_policies.register(subparsers)

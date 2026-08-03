@@ -585,6 +585,71 @@ RESOURCES: dict[str, dict[str, Any]] = {
             },
         },
     },
+    "redaction-policies": {
+        "description": "Tenant redaction policy management",
+        "methods": {
+            "validate": {
+                "http_method": "POST",
+                "path": "/redaction/policies/validate",
+                "required_params": ["name", "business_confidential"],
+                "optional_params": ["description"],
+            },
+            "create": {
+                "http_method": "POST",
+                "path": "/redaction/policies",
+                "required_params": ["name", "business_confidential"],
+                "optional_params": ["description"],
+            },
+            "list": {
+                "http_method": "GET",
+                "path": "/redaction/policies",
+                "required_params": [],
+                "optional_params": [],
+            },
+            "retrieve": {
+                "http_method": "GET",
+                "path": "/redaction/policies/{name}",
+                "required_params": ["name"],
+                "optional_params": [],
+            },
+            "create-version": {
+                "http_method": "POST",
+                "path": "/redaction/policies/{name}/versions",
+                "required_params": ["name", "business_confidential"],
+                "optional_params": ["description"],
+            },
+            "list-versions": {
+                "http_method": "GET",
+                "path": "/redaction/policies/{name}/versions",
+                "required_params": ["name"],
+                "optional_params": ["before_version", "limit"],
+            },
+            "retrieve-version": {
+                "http_method": "GET",
+                "path": "/redaction/policies/{name}/versions/{version}",
+                "required_params": ["name", "version"],
+                "optional_params": [],
+            },
+            "activate-version": {
+                "http_method": "POST",
+                "path": "/redaction/policies/{name}/versions/{version}/activate",
+                "required_params": ["name", "version", "expected_active_version"],
+                "optional_params": [],
+            },
+            "archive": {
+                "http_method": "POST",
+                "path": "/redaction/policies/{name}/archive",
+                "required_params": ["name", "expected_active_version"],
+                "optional_params": [],
+            },
+            "delete-version": {
+                "http_method": "DELETE",
+                "path": "/redaction/policies/{name}/versions/{version}",
+                "required_params": ["name", "version"],
+                "optional_params": [],
+            },
+        },
+    },
 }
 
 
