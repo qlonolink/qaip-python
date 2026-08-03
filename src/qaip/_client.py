@@ -71,6 +71,7 @@ if TYPE_CHECKING:
         source_groups,
         local_file_groups,
         tag_source_groups,
+        redaction_policies,
     )
     from .resources.agent import AgentResource, AsyncAgentResource
     from .resources.crawls import CrawlsResource, AsyncCrawlsResource
@@ -82,6 +83,7 @@ if TYPE_CHECKING:
     from .resources.source_groups import SourceGroupsResource, AsyncSourceGroupsResource
     from .resources.local_file_groups import LocalFileGroupsResource, AsyncLocalFileGroupsResource
     from .resources.tag_source_groups import TagSourceGroupsResource, AsyncTagSourceGroupsResource
+    from .resources.redaction_policies import RedactionPoliciesResource, AsyncRedactionPoliciesResource
 
 __all__ = ["Timeout", "Transport", "ProxiesTypes", "RequestOptions", "Qaip", "AsyncQaip", "Client", "AsyncClient"]
 
@@ -215,6 +217,13 @@ class Qaip(SyncAPIClient):
         from .resources.notions import NotionsResource
 
         return NotionsResource(self)
+
+    @cached_property
+    def redaction_policies(self) -> RedactionPoliciesResource:
+        """Tenant redaction policy management (ALL API keys only)"""
+        from .resources.redaction_policies import RedactionPoliciesResource
+
+        return RedactionPoliciesResource(self)
 
     @cached_property
     def with_raw_response(self) -> QaipWithRawResponse:
@@ -920,6 +929,13 @@ class AsyncQaip(AsyncAPIClient):
         return AsyncNotionsResource(self)
 
     @cached_property
+    def redaction_policies(self) -> AsyncRedactionPoliciesResource:
+        """Tenant redaction policy management (ALL API keys only)"""
+        from .resources.redaction_policies import AsyncRedactionPoliciesResource
+
+        return AsyncRedactionPoliciesResource(self)
+
+    @cached_property
     def with_raw_response(self) -> AsyncQaipWithRawResponse:
         return AsyncQaipWithRawResponse(self)
 
@@ -1580,6 +1596,13 @@ class QaipWithRawResponse:
 
         return NotionsResourceWithRawResponse(self._client.notions)
 
+    @cached_property
+    def redaction_policies(self) -> redaction_policies.RedactionPoliciesResourceWithRawResponse:
+        """Tenant redaction policy management (ALL API keys only)"""
+        from .resources.redaction_policies import RedactionPoliciesResourceWithRawResponse
+
+        return RedactionPoliciesResourceWithRawResponse(self._client.redaction_policies)
+
 
 class AsyncQaipWithRawResponse:
     _client: AsyncQaip
@@ -1668,6 +1691,13 @@ class AsyncQaipWithRawResponse:
         from .resources.notions import AsyncNotionsResourceWithRawResponse
 
         return AsyncNotionsResourceWithRawResponse(self._client.notions)
+
+    @cached_property
+    def redaction_policies(self) -> redaction_policies.AsyncRedactionPoliciesResourceWithRawResponse:
+        """Tenant redaction policy management (ALL API keys only)"""
+        from .resources.redaction_policies import AsyncRedactionPoliciesResourceWithRawResponse
+
+        return AsyncRedactionPoliciesResourceWithRawResponse(self._client.redaction_policies)
 
 
 class QaipWithStreamedResponse:
@@ -1758,6 +1788,13 @@ class QaipWithStreamedResponse:
 
         return NotionsResourceWithStreamingResponse(self._client.notions)
 
+    @cached_property
+    def redaction_policies(self) -> redaction_policies.RedactionPoliciesResourceWithStreamingResponse:
+        """Tenant redaction policy management (ALL API keys only)"""
+        from .resources.redaction_policies import RedactionPoliciesResourceWithStreamingResponse
+
+        return RedactionPoliciesResourceWithStreamingResponse(self._client.redaction_policies)
+
 
 class AsyncQaipWithStreamedResponse:
     _client: AsyncQaip
@@ -1846,6 +1883,13 @@ class AsyncQaipWithStreamedResponse:
         from .resources.notions import AsyncNotionsResourceWithStreamingResponse
 
         return AsyncNotionsResourceWithStreamingResponse(self._client.notions)
+
+    @cached_property
+    def redaction_policies(self) -> redaction_policies.AsyncRedactionPoliciesResourceWithStreamingResponse:
+        """Tenant redaction policy management (ALL API keys only)"""
+        from .resources.redaction_policies import AsyncRedactionPoliciesResourceWithStreamingResponse
+
+        return AsyncRedactionPoliciesResourceWithStreamingResponse(self._client.redaction_policies)
 
 
 Client = Qaip

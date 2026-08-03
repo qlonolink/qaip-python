@@ -80,6 +80,14 @@ from .tag_source_groups import (
     TagSourceGroupsResourceWithStreamingResponse,
     AsyncTagSourceGroupsResourceWithStreamingResponse,
 )
+from .redaction_policies import (
+    RedactionPoliciesResource,
+    AsyncRedactionPoliciesResource,
+    RedactionPoliciesResourceWithRawResponse,
+    AsyncRedactionPoliciesResourceWithRawResponse,
+    RedactionPoliciesResourceWithStreamingResponse,
+    AsyncRedactionPoliciesResourceWithStreamingResponse,
+)
 
 __all__ = [
     "AgentResource",
@@ -142,4 +150,10 @@ __all__ = [
     "AsyncNotionsResourceWithRawResponse",
     "NotionsResourceWithStreamingResponse",
     "AsyncNotionsResourceWithStreamingResponse",
+    "RedactionPoliciesResource",
+    "AsyncRedactionPoliciesResource",
+    "RedactionPoliciesResourceWithRawResponse",
+    "AsyncRedactionPoliciesResourceWithRawResponse",
+    "RedactionPoliciesResourceWithStreamingResponse",
+    "AsyncRedactionPoliciesResourceWithStreamingResponse",
 ]

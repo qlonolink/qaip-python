@@ -221,3 +221,34 @@ Methods:
 - <code title="delete /notions/{id}">client.notions.<a href="./src/qaip/resources/notions.py">delete</a>(id) -> <a href="./src/qaip/types/notion.py">Notion</a></code>
 - <code title="get /notion-settings/{id}">client.notions.<a href="./src/qaip/resources/notions.py">retrieve_setting</a>(id) -> <a href="./src/qaip/types/notion_setting.py">NotionSetting</a></code>
 - <code title="put /notion-settings/{id}">client.notions.<a href="./src/qaip/resources/notions.py">update_setting</a>(id, \*\*<a href="src/qaip/types/notion_update_setting_params.py">params</a>) -> <a href="./src/qaip/types/notion_setting.py">NotionSetting</a></code>
+
+# RedactionPolicies
+
+Types:
+
+```python
+from qaip.types import (
+    PolicyDefinition,
+    PolicyDetail,
+    PolicySource,
+    PolicyStatus,
+    PolicySummary,
+    PolicyVersion,
+    PolicyVersions,
+    RedactionPolicyListResponse,
+    RedactionPolicyValidateResponse,
+)
+```
+
+Methods:
+
+- <code title="post /redaction/policies">client.redaction_policies.<a href="./src/qaip/resources/redaction_policies.py">create</a>(\*\*<a href="src/qaip/types/redaction_policy_create_params.py">params</a>) -> <a href="./src/qaip/types/policy_version.py">PolicyVersion</a></code>
+- <code title="get /redaction/policies/{name}">client.redaction_policies.<a href="./src/qaip/resources/redaction_policies.py">retrieve</a>(name) -> <a href="./src/qaip/types/policy_detail.py">PolicyDetail</a></code>
+- <code title="get /redaction/policies">client.redaction_policies.<a href="./src/qaip/resources/redaction_policies.py">list</a>() -> <a href="./src/qaip/types/redaction_policy_list_response.py">RedactionPolicyListResponse</a></code>
+- <code title="post /redaction/policies/{name}/versions/{version}/activate">client.redaction_policies.<a href="./src/qaip/resources/redaction_policies.py">activate_version</a>(version, \*, name, \*\*<a href="src/qaip/types/redaction_policy_activate_version_params.py">params</a>) -> <a href="./src/qaip/types/policy_version.py">PolicyVersion</a></code>
+- <code title="post /redaction/policies/{name}/archive">client.redaction_policies.<a href="./src/qaip/resources/redaction_policies.py">archive</a>(name, \*\*<a href="src/qaip/types/redaction_policy_archive_params.py">params</a>) -> <a href="./src/qaip/types/policy_detail.py">PolicyDetail</a></code>
+- <code title="post /redaction/policies/{name}/versions">client.redaction_policies.<a href="./src/qaip/resources/redaction_policies.py">create_version</a>(name, \*\*<a href="src/qaip/types/redaction_policy_create_version_params.py">params</a>) -> <a href="./src/qaip/types/policy_version.py">PolicyVersion</a></code>
+- <code title="delete /redaction/policies/{name}/versions/{version}">client.redaction_policies.<a href="./src/qaip/resources/redaction_policies.py">delete_version</a>(version, \*, name) -> None</code>
+- <code title="get /redaction/policies/{name}/versions">client.redaction_policies.<a href="./src/qaip/resources/redaction_policies.py">list_versions</a>(name, \*\*<a href="src/qaip/types/redaction_policy_list_versions_params.py">params</a>) -> <a href="./src/qaip/types/policy_versions.py">PolicyVersions</a></code>
+- <code title="get /redaction/policies/{name}/versions/{version}">client.redaction_policies.<a href="./src/qaip/resources/redaction_policies.py">retrieve_version</a>(version, \*, name) -> <a href="./src/qaip/types/policy_version.py">PolicyVersion</a></code>
+- <code title="post /redaction/policies/validate">client.redaction_policies.<a href="./src/qaip/resources/redaction_policies.py">validate</a>(\*\*<a href="src/qaip/types/redaction_policy_validate_params.py">params</a>) -> <a href="./src/qaip/types/redaction_policy_validate_response.py">RedactionPolicyValidateResponse</a></code>
