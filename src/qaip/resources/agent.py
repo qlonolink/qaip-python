@@ -308,11 +308,13 @@ class AgentResource(SyncAPIResource):
               a fail-open behavior: omitting the field never silently sanitizes the input.
 
               When a known ID is given, the conversation history (all roles, string/array/dict
-              content, tool call arguments, string metadata and source URLs), the RAG search
-              query and the RAG search results are masked with that policy before any external
-              call. The original text is still stored in `agent_runs.input` and emitted in
-              `RUN_STARTED` for UI display; only the copy sent to the external provider is
-              masked. Restoration mappings are never stored.
+              content, tool call arguments, string metadata and source URLs), RAG search query
+              and results, Google web search query and results, external table results, and
+              all other tool results are masked with that policy before they reach the
+              corresponding external model or embedding provider. The original text is still
+              stored in `agent_runs.input` and emitted in `RUN_STARTED` for UI display; only
+              the copy sent to the external provider is masked. Restoration mappings are never
+              stored.
 
               Errors:
 
@@ -637,11 +639,13 @@ class AsyncAgentResource(AsyncAPIResource):
               a fail-open behavior: omitting the field never silently sanitizes the input.
 
               When a known ID is given, the conversation history (all roles, string/array/dict
-              content, tool call arguments, string metadata and source URLs), the RAG search
-              query and the RAG search results are masked with that policy before any external
-              call. The original text is still stored in `agent_runs.input` and emitted in
-              `RUN_STARTED` for UI display; only the copy sent to the external provider is
-              masked. Restoration mappings are never stored.
+              content, tool call arguments, string metadata and source URLs), RAG search query
+              and results, Google web search query and results, external table results, and
+              all other tool results are masked with that policy before they reach the
+              corresponding external model or embedding provider. The original text is still
+              stored in `agent_runs.input` and emitted in `RUN_STARTED` for UI display; only
+              the copy sent to the external provider is masked. Restoration mappings are never
+              stored.
 
               Errors:
 
