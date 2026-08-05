@@ -397,7 +397,7 @@ class Qaip(SyncAPIClient):
     ) -> CompletionResponse:
         """<p> Generates a completion based on the input messages and retrieval chunks.
 
-        If the 'stream' parameter is set to true, the response is returned as a stream of plain text (text/plain). </p> <p> Required roles: All, App </p>
+        If the 'stream' parameter is set to true, the response is streamed. By default the stream is plain text (text/plain). Send the request header 'Accept: text/event-stream' to instead receive a Server-Sent Events (SSE) stream of ag-ui protocol events (delta text as TEXT_MESSAGE_CONTENT, grounding and citations as CUSTOM events, history ids and completion as RUN_STARTED / RUN_FINISHED). </p> <p> Required roles: All, App </p>
 
         Args:
           messages: The messages to generate completion for
@@ -454,8 +454,10 @@ class Qaip(SyncAPIClient):
 
           source_metadata: Filter by individual source/file metadata from source_metadatas table
 
-          stream: Whether to stream the response. If true, the response is sent as a stream using
-              the 'text/plain' content type.
+          stream: Whether to stream the response. If true, the response is streamed as
+              'text/plain' by default, or as an ag-ui Server-Sent Events stream
+              ('text/event-stream') when the request sends the header 'Accept:
+              text/event-stream'.
 
           tag_filter_logic: Logical operator for combining filter conditions
 
@@ -1149,7 +1151,7 @@ class AsyncQaip(AsyncAPIClient):
     ) -> CompletionResponse:
         """<p> Generates a completion based on the input messages and retrieval chunks.
 
-        If the 'stream' parameter is set to true, the response is returned as a stream of plain text (text/plain). </p> <p> Required roles: All, App </p>
+        If the 'stream' parameter is set to true, the response is streamed. By default the stream is plain text (text/plain). Send the request header 'Accept: text/event-stream' to instead receive a Server-Sent Events (SSE) stream of ag-ui protocol events (delta text as TEXT_MESSAGE_CONTENT, grounding and citations as CUSTOM events, history ids and completion as RUN_STARTED / RUN_FINISHED). </p> <p> Required roles: All, App </p>
 
         Args:
           messages: The messages to generate completion for
@@ -1206,8 +1208,10 @@ class AsyncQaip(AsyncAPIClient):
 
           source_metadata: Filter by individual source/file metadata from source_metadatas table
 
-          stream: Whether to stream the response. If true, the response is sent as a stream using
-              the 'text/plain' content type.
+          stream: Whether to stream the response. If true, the response is streamed as
+              'text/plain' by default, or as an ag-ui Server-Sent Events stream
+              ('text/event-stream') when the request sends the header 'Accept:
+              text/event-stream'.
 
           tag_filter_logic: Logical operator for combining filter conditions
 
