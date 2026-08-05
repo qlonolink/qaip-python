@@ -109,7 +109,9 @@ class ClientCompletionParams(TypedDict, total=False):
     stream: bool
     """Whether to stream the response.
 
-    If true, the response is sent as a stream using the 'text/plain' content type.
+    If true, the response is streamed as 'text/plain' by default, or as an ag-ui
+    Server-Sent Events stream ('text/event-stream') when the request sends the
+    header 'Accept: text/event-stream'.
     """
 
     tag_filter_logic: LogicalOperator
