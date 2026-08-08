@@ -85,6 +85,11 @@ class Input(TypedDict, total=False):
     - redactor unavailable / timeout / failure: `503 REDACTION_UNAVAILABLE` before
       the run starts, or a `RUN_ERROR` with code `REDACTION_FAILED` during the run.
       The request is never forwarded unmasked as a fallback.
+    - concurrent redaction runs saturated in the AgentCore execution mode:
+      `503 REDACTION_CAPACITY_EXCEEDED` before the run starts. Each run executes in
+      its own microVM, so the per-process concurrency limit cannot bound the load on
+      the shared redactor; the number of concurrent policy-bearing runs is capped
+      instead. Retrying later succeeds.
 
     A parent run's policy is not inherited: a child run is redacted only when it
     specifies `redactionPolicyId` itself.
