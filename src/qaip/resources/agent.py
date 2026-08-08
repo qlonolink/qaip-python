@@ -319,8 +319,9 @@ class AgentResource(SyncAPIResource):
               Errors:
 
               - unknown ID or an empty string: `422` (never interpreted as "no redaction")
-              - combined with the AgentCore execution mode:
-                `422 AGENTCORE_REDACTION_UNSUPPORTED`
+              - used on a deployment whose AgentCore runtime has no redactor wired up:
+                `422 AGENTCORE_REDACTION_UNSUPPORTED`. Where the wiring is in place, the
+                AgentCore execution mode applies the same redaction as the local mode
               - redactor unavailable / timeout / failure: `503 REDACTION_UNAVAILABLE` before
                 the run starts, or a `RUN_ERROR` with code `REDACTION_FAILED` during the run.
                 The request is never forwarded unmasked as a fallback.
@@ -650,8 +651,9 @@ class AsyncAgentResource(AsyncAPIResource):
               Errors:
 
               - unknown ID or an empty string: `422` (never interpreted as "no redaction")
-              - combined with the AgentCore execution mode:
-                `422 AGENTCORE_REDACTION_UNSUPPORTED`
+              - used on a deployment whose AgentCore runtime has no redactor wired up:
+                `422 AGENTCORE_REDACTION_UNSUPPORTED`. Where the wiring is in place, the
+                AgentCore execution mode applies the same redaction as the local mode
               - redactor unavailable / timeout / failure: `503 REDACTION_UNAVAILABLE` before
                 the run starts, or a `RUN_ERROR` with code `REDACTION_FAILED` during the run.
                 The request is never forwarded unmasked as a fallback.
