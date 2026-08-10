@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import sys
 import json
 import hashlib
 from pathlib import Path
@@ -1848,3 +1849,117 @@ class TestSecretsUpdateSecretValueGuard:
             )
             args.func(args)
         mock_client.secrets.update.assert_called_once()
+
+
+class TestApiKeysCreate:
+    """発行された平文の鍵はこの応答でしか得られないため、CLI 側の防衛線を固定する。"""
+
+    def test_dry_run_builds_body(self, capsys: pytest.CaptureFixture[str]) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(
+            [
+                "api",
+                "api-keys.create",
+                "--name",
+                "ci-runner",
+                "--scopes",
+                "inference:run,knowledge:read",
+                "--dry-run",
+            ]
+        )
+        args.func(args)
+        data = json.loads(capsys.readouterr().out)
+        assert data["method"] == "POST"
+        assert data["path"] == "/api-keys"
+        assert data["body"]["scopes"] == ["inference:run", "knowledge:read"]
+
+    def test_fields_flag_is_not_available(self) -> None:
+        # --fields を許すと鍵を含まない絞り込みで発行済みの鍵を落としうる。
+        parser = _build_parser()
+        with pytest.raises(SystemExit):
+            parser.parse_args(["api", "api-keys.create", "--name", "n", "--scopes", "inference:run", "--fields", "id"])
+
+    @pytest.mark.parametrize(
+        ("body", "match"),
+        [
+            ({"name": "n", "scopes": "inference:run"}, "non-empty array"),
+            ({"name": "n", "scopes": []}, "non-empty array"),
+            ({"name": "n", "scopes": [1]}, "only strings"),
+            ({"name": "n", "scopes": ["apikeys:issue"]}, "not issuable"),
+            ({"name": "n", "scopes": ["external_data:query"]}, "not issuable"),
+            ({"name": "   ", "scopes": ["inference:run"]}, "non-empty string"),
+        ],
+    )
+    def test_invalid_body_is_rejected_before_dry_run(self, body: dict[str, object], match: str) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(["api", "api-keys.create", "--json", json.dumps(body), "--dry-run"])
+        with pytest.raises(CLIError, match=match):
+            args.func(args)
+
+    def test_unknown_json_field_is_rejected(self) -> None:
+        # extra_body 等を素通しすると dry-run の表示と実送信がずれる。
+        parser = _build_parser()
+        args = parser.parse_args(
+            [
+                "api",
+                "api-keys.create",
+                "--json",
+                json.dumps(
+                    {
+                        "name": "n",
+                        "scopes": ["inference:run"],
+                        "extra_body": {"scopes": ["secrets:write"]},
+                    }
+                ),
+                "--dry-run",
+            ]
+        )
+        with pytest.raises(CLIError, match="unsupported field"):
+            args.func(args)
+
+    @pytest.mark.parametrize(
+        ("status", "exit_code"),
+        [(500, 5), (403, 3), (422, 4)],
+    )
+    def test_api_error_keeps_status_contract_but_is_non_retryable(
+        self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], status: int, exit_code: int
+    ) -> None:
+        # retryable: true を見たエージェントがコマンドごと再実行すると鍵が重複する。
+        # 一方で status 由来の exit code と http_status は既存契約なので保つ。
+        from unittest.mock import MagicMock, patch as _patch
+
+        import httpx
+
+        from qaip._exceptions import APIStatusError
+
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        monkeypatch.setenv("QAIP_ERROR_FORMAT", "json")
+        request = httpx.Request("POST", "https://example.test/api-keys")
+        response = httpx.Response(status, json={"error": "boom"}, request=request)
+        mock_client = MagicMock()
+        mock_client.api_keys.create.side_effect = APIStatusError("boom", response=response, body=None)
+        monkeypatch.setattr(
+            sys, "argv", ["qaip", "api", "api-keys.create", "--name", "n", "--scopes", "inference:run"]
+        )
+        with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
+            code = main()
+        assert code == exit_code
+        payload = json.loads(capsys.readouterr().err)["error"]
+        assert payload["retryable"] is False
+        assert payload["http_status"] == status
+        assert "not idempotent" in payload["hint"]
+
+    def test_create_is_called_with_explicit_kwargs(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        # body を **展開しないことで SDK 制御引数の注入経路を塞ぐ。
+        from unittest.mock import MagicMock, patch as _patch
+
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        mock_client = MagicMock()
+        mock_client.api_keys.create.return_value.model_dump.return_value = {"id": _VALID_UUID}
+        with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
+            parser = _build_parser()
+            args = parser.parse_args(["api", "api-keys.create", "--name", "n", "--scopes", "inference:run"])
+            args.func(args)
+        kwargs = mock_client.api_keys.create.call_args.kwargs
+        assert set(kwargs) == {"name", "scopes", "description"}
+        assert kwargs["scopes"] == ["inference:run"]

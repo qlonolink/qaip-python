@@ -67,6 +67,7 @@ if TYPE_CHECKING:
         notions,
         secrets,
         sources,
+        api_keys,
         keywords,
         google_drives,
         source_groups,
@@ -81,6 +82,7 @@ if TYPE_CHECKING:
     from .resources.notions import NotionsResource, AsyncNotionsResource
     from .resources.secrets import SecretsResource, AsyncSecretsResource
     from .resources.sources import SourcesResource, AsyncSourcesResource
+    from .resources.api_keys import ApiKeysResource, AsyncApiKeysResource
     from .resources.keywords import KeywordsResource, AsyncKeywordsResource
     from .resources.google_drives import GoogleDrivesResource, AsyncGoogleDrivesResource
     from .resources.source_groups import SourceGroupsResource, AsyncSourceGroupsResource
@@ -200,6 +202,13 @@ class Qaip(SyncAPIClient):
         from .resources.secrets import SecretsResource
 
         return SecretsResource(self)
+
+    @cached_property
+    def api_keys(self) -> ApiKeysResource:
+        """API key issuance"""
+        from .resources.api_keys import ApiKeysResource
+
+        return ApiKeysResource(self)
 
     @cached_property
     def keywords(self) -> KeywordsResource:
@@ -926,6 +935,13 @@ class AsyncQaip(AsyncAPIClient):
         return AsyncSecretsResource(self)
 
     @cached_property
+    def api_keys(self) -> AsyncApiKeysResource:
+        """API key issuance"""
+        from .resources.api_keys import AsyncApiKeysResource
+
+        return AsyncApiKeysResource(self)
+
+    @cached_property
     def keywords(self) -> AsyncKeywordsResource:
         """Keyword management"""
         from .resources.keywords import AsyncKeywordsResource
@@ -1608,6 +1624,13 @@ class QaipWithRawResponse:
         return SecretsResourceWithRawResponse(self._client.secrets)
 
     @cached_property
+    def api_keys(self) -> api_keys.ApiKeysResourceWithRawResponse:
+        """API key issuance"""
+        from .resources.api_keys import ApiKeysResourceWithRawResponse
+
+        return ApiKeysResourceWithRawResponse(self._client.api_keys)
+
+    @cached_property
     def keywords(self) -> keywords.KeywordsResourceWithRawResponse:
         """Keyword management"""
         from .resources.keywords import KeywordsResourceWithRawResponse
@@ -1716,6 +1739,13 @@ class AsyncQaipWithRawResponse:
         from .resources.secrets import AsyncSecretsResourceWithRawResponse
 
         return AsyncSecretsResourceWithRawResponse(self._client.secrets)
+
+    @cached_property
+    def api_keys(self) -> api_keys.AsyncApiKeysResourceWithRawResponse:
+        """API key issuance"""
+        from .resources.api_keys import AsyncApiKeysResourceWithRawResponse
+
+        return AsyncApiKeysResourceWithRawResponse(self._client.api_keys)
 
     @cached_property
     def keywords(self) -> keywords.AsyncKeywordsResourceWithRawResponse:
@@ -1828,6 +1858,13 @@ class QaipWithStreamedResponse:
         return SecretsResourceWithStreamingResponse(self._client.secrets)
 
     @cached_property
+    def api_keys(self) -> api_keys.ApiKeysResourceWithStreamingResponse:
+        """API key issuance"""
+        from .resources.api_keys import ApiKeysResourceWithStreamingResponse
+
+        return ApiKeysResourceWithStreamingResponse(self._client.api_keys)
+
+    @cached_property
     def keywords(self) -> keywords.KeywordsResourceWithStreamingResponse:
         """Keyword management"""
         from .resources.keywords import KeywordsResourceWithStreamingResponse
@@ -1936,6 +1973,13 @@ class AsyncQaipWithStreamedResponse:
         from .resources.secrets import AsyncSecretsResourceWithStreamingResponse
 
         return AsyncSecretsResourceWithStreamingResponse(self._client.secrets)
+
+    @cached_property
+    def api_keys(self) -> api_keys.AsyncApiKeysResourceWithStreamingResponse:
+        """API key issuance"""
+        from .resources.api_keys import AsyncApiKeysResourceWithStreamingResponse
+
+        return AsyncApiKeysResourceWithStreamingResponse(self._client.api_keys)
 
     @cached_property
     def keywords(self) -> keywords.AsyncKeywordsResourceWithStreamingResponse:
