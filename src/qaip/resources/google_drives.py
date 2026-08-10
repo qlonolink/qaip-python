@@ -62,7 +62,7 @@ class GoogleDrivesResource(SyncAPIResource):
     ) -> GoogleDrive:
         """<p> Creates a new Google Drive data source and starts ingestion.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           folder_url: Google Drive folder URL
@@ -117,7 +117,7 @@ class GoogleDrivesResource(SyncAPIResource):
     ) -> GoogleDrive:
         """<p> Gets detailed information about a specific Google Drive data source.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -152,7 +152,7 @@ class GoogleDrivesResource(SyncAPIResource):
     ) -> GoogleDriveListResponse:
         """<p> Lists Google Drive data sources with cursor-based pagination.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -197,7 +197,7 @@ class GoogleDrivesResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> GoogleDrive:
         """
-        <p> Initiates an asynchronous deletion job for the specified Google Drive data source. The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required roles: All </p>
+        <p> Initiates an asynchronous deletion job for the specified Google Drive data source. The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -231,7 +231,7 @@ class GoogleDrivesResource(SyncAPIResource):
     ) -> GoogleDriveSetting:
         """<p> Gets the setting (schedule, folder URL, etc.) for Google Drive data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -267,7 +267,7 @@ class GoogleDrivesResource(SyncAPIResource):
     ) -> GoogleDriveSetting:
         """<p> Updates the setting (name, schedule) for Google Drive data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the Google Drive data source
@@ -339,7 +339,7 @@ class AsyncGoogleDrivesResource(AsyncAPIResource):
     ) -> GoogleDrive:
         """<p> Creates a new Google Drive data source and starts ingestion.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           folder_url: Google Drive folder URL
@@ -394,7 +394,7 @@ class AsyncGoogleDrivesResource(AsyncAPIResource):
     ) -> GoogleDrive:
         """<p> Gets detailed information about a specific Google Drive data source.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -429,7 +429,7 @@ class AsyncGoogleDrivesResource(AsyncAPIResource):
     ) -> GoogleDriveListResponse:
         """<p> Lists Google Drive data sources with cursor-based pagination.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -474,7 +474,7 @@ class AsyncGoogleDrivesResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> GoogleDrive:
         """
-        <p> Initiates an asynchronous deletion job for the specified Google Drive data source. The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required roles: All </p>
+        <p> Initiates an asynchronous deletion job for the specified Google Drive data source. The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -508,7 +508,7 @@ class AsyncGoogleDrivesResource(AsyncAPIResource):
     ) -> GoogleDriveSetting:
         """<p> Gets the setting (schedule, folder URL, etc.) for Google Drive data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -544,7 +544,7 @@ class AsyncGoogleDrivesResource(AsyncAPIResource):
     ) -> GoogleDriveSetting:
         """<p> Updates the setting (name, schedule) for Google Drive data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the Google Drive data source

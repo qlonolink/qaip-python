@@ -77,7 +77,7 @@ class AgentResource(SyncAPIResource):
     ) -> AgentRun:
         """<p> Mark an asynchronous agent run as cancelled.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `inference:run` </p>
 
         Args:
           principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
@@ -119,7 +119,7 @@ class AgentResource(SyncAPIResource):
     ) -> AgentRun:
         """<p> Create an asynchronous agent run and start execution in the background.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `inference:run` </p>
 
         Args:
           idempotency_key: Optional idempotency key for reusing an existing asynchronous run.
@@ -163,7 +163,7 @@ class AgentResource(SyncAPIResource):
     ) -> AgentListRunEventsResponse:
         """<p> List persisted events for an asynchronous agent run.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `inference:run` </p>
 
         Args:
           principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
@@ -244,7 +244,7 @@ class AgentResource(SyncAPIResource):
     ) -> AgentRun:
         """<p> Get the current state of an asynchronous agent run.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `inference:run` </p>
 
         Args:
           principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
@@ -286,7 +286,7 @@ class AgentResource(SyncAPIResource):
     ) -> AgentRetrieveRunResultResponse:
         """<p> Get the terminal result and error state for an asynchronous agent run.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `inference:run` </p>
 
         Args:
           principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
@@ -392,7 +392,7 @@ class AgentResource(SyncAPIResource):
     ) -> Stream[AgentRunResponse]:
         """<p> Run the agent with the given input and stream the events.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `inference:run` </p>
 
         Args:
           forwarded_props: Forwarded properties for the run (AG-UI standard)
@@ -501,7 +501,7 @@ class AsyncAgentResource(AsyncAPIResource):
     ) -> AgentRun:
         """<p> Mark an asynchronous agent run as cancelled.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `inference:run` </p>
 
         Args:
           principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
@@ -545,7 +545,7 @@ class AsyncAgentResource(AsyncAPIResource):
     ) -> AgentRun:
         """<p> Create an asynchronous agent run and start execution in the background.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `inference:run` </p>
 
         Args:
           idempotency_key: Optional idempotency key for reusing an existing asynchronous run.
@@ -589,7 +589,7 @@ class AsyncAgentResource(AsyncAPIResource):
     ) -> AgentListRunEventsResponse:
         """<p> List persisted events for an asynchronous agent run.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `inference:run` </p>
 
         Args:
           principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
@@ -670,7 +670,7 @@ class AsyncAgentResource(AsyncAPIResource):
     ) -> AgentRun:
         """<p> Get the current state of an asynchronous agent run.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `inference:run` </p>
 
         Args:
           principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
@@ -714,7 +714,7 @@ class AsyncAgentResource(AsyncAPIResource):
     ) -> AgentRetrieveRunResultResponse:
         """<p> Get the terminal result and error state for an asynchronous agent run.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `inference:run` </p>
 
         Args:
           principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
@@ -820,7 +820,7 @@ class AsyncAgentResource(AsyncAPIResource):
     ) -> AsyncStream[AgentRunResponse]:
         """<p> Run the agent with the given input and stream the events.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `inference:run` </p>
 
         Args:
           forwarded_props: Forwarded properties for the run (AG-UI standard)

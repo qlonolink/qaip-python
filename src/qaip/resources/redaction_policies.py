@@ -35,7 +35,9 @@ __all__ = ["RedactionPoliciesResource", "AsyncRedactionPoliciesResource"]
 
 
 class RedactionPoliciesResource(SyncAPIResource):
-    """Tenant redaction policy management (ALL API keys only)"""
+    """
+    Tenant redaction policy management (requires the `policy:redaction:manage` scope)
+    """
 
     @cached_property
     def with_raw_response(self) -> RedactionPoliciesResourceWithRawResponse:
@@ -72,8 +74,8 @@ class RedactionPoliciesResource(SyncAPIResource):
         """Creates the first DRAFT for a tenant-local name.
 
         Replaying the same normalized
-        DRAFT returns 200; a new DRAFT returns 201. Required authentication: an API key
-        with the All role.
+        DRAFT returns 200; a new DRAFT returns 201. Required scope:
+        `policy:redaction:manage`.
 
         Args:
           extra_headers: Send extra headers
@@ -114,8 +116,8 @@ class RedactionPoliciesResource(SyncAPIResource):
         """Built-in policies have an ACTIVE snapshot only.
 
         An archived-only tenant name is
-        returned with both current snapshots null. Required authentication: an API key
-        with the All role.
+        returned with both current snapshots null. Required scope:
+        `policy:redaction:manage`.
 
         Args:
           extra_headers: Send extra headers
@@ -148,8 +150,8 @@ class RedactionPoliciesResource(SyncAPIResource):
     ) -> RedactionPolicyListResponse:
         """Returns summaries only; policy definitions are not included.
 
-        Required
-        authentication: an API key with the All role.
+        Required scope:
+        `policy:redaction:manage`.
         """
         return self._get(
             "/redaction/policies",
@@ -175,7 +177,7 @@ class RedactionPoliciesResource(SyncAPIResource):
         """
         Revalidates the stored snapshot and changes ACTIVE only when
         expectedActiveVersion matches. null means that no ACTIVE version is expected.
-        Required authentication: an API key with the All role.
+        Required scope: `policy:redaction:manage`.
 
         Args:
           expected_active_version: null requires that no ACTIVE version currently exists.
@@ -219,7 +221,7 @@ class RedactionPoliciesResource(SyncAPIResource):
         """Leaves any DRAFT unchanged.
 
         null means that no ACTIVE version is expected.
-        Required authentication: an API key with the All role.
+        Required scope: `policy:redaction:manage`.
 
         Args:
           expected_active_version: null requires that no ACTIVE version currently exists.
@@ -262,7 +264,7 @@ class RedactionPoliciesResource(SyncAPIResource):
         """Appends MAX(version)+1 for an existing tenant name.
 
         The version is assigned by
-        the server. Required authentication: an API key with the All role.
+        the server. Required scope: `policy:redaction:manage`.
 
         Args:
           extra_headers: Send extra headers
@@ -304,8 +306,8 @@ class RedactionPoliciesResource(SyncAPIResource):
     ) -> None:
         """Hard-deletes only a DRAFT that has never been ACTIVE.
 
-        Required authentication:
-        an API key with the All role.
+        Required scope:
+        `policy:redaction:manage`.
 
         Args:
           extra_headers: Send extra headers
@@ -345,8 +347,7 @@ class RedactionPoliciesResource(SyncAPIResource):
         """Uses the opaque server-returned beforeVersion cursor.
 
         Version summaries do not
-        contain a policy definition. Required authentication: an API key with the All
-        role.
+        contain a policy definition. Required scope: `policy:redaction:manage`.
 
         Args:
           extra_headers: Send extra headers
@@ -391,8 +392,8 @@ class RedactionPoliciesResource(SyncAPIResource):
     ) -> PolicyVersion:
         """Returns the canonical definition for the requested version.
 
-        Required
-        authentication: an API key with the All role.
+        Required scope:
+        `policy:redaction:manage`.
 
         Args:
           extra_headers: Send extra headers
@@ -431,7 +432,7 @@ class RedactionPoliciesResource(SyncAPIResource):
         """
         Normalizes and validates a schema version 1 tenant policy, then returns the
         canonical definition and behavior digest without accessing the tenant policy
-        store. Required authentication: an API key with the All role.
+        store. Required scope: `policy:redaction:manage`.
 
         Args:
           extra_headers: Send extra headers
@@ -460,7 +461,9 @@ class RedactionPoliciesResource(SyncAPIResource):
 
 
 class AsyncRedactionPoliciesResource(AsyncAPIResource):
-    """Tenant redaction policy management (ALL API keys only)"""
+    """
+    Tenant redaction policy management (requires the `policy:redaction:manage` scope)
+    """
 
     @cached_property
     def with_raw_response(self) -> AsyncRedactionPoliciesResourceWithRawResponse:
@@ -497,8 +500,8 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
         """Creates the first DRAFT for a tenant-local name.
 
         Replaying the same normalized
-        DRAFT returns 200; a new DRAFT returns 201. Required authentication: an API key
-        with the All role.
+        DRAFT returns 200; a new DRAFT returns 201. Required scope:
+        `policy:redaction:manage`.
 
         Args:
           extra_headers: Send extra headers
@@ -539,8 +542,8 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
         """Built-in policies have an ACTIVE snapshot only.
 
         An archived-only tenant name is
-        returned with both current snapshots null. Required authentication: an API key
-        with the All role.
+        returned with both current snapshots null. Required scope:
+        `policy:redaction:manage`.
 
         Args:
           extra_headers: Send extra headers
@@ -573,8 +576,8 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
     ) -> RedactionPolicyListResponse:
         """Returns summaries only; policy definitions are not included.
 
-        Required
-        authentication: an API key with the All role.
+        Required scope:
+        `policy:redaction:manage`.
         """
         return await self._get(
             "/redaction/policies",
@@ -600,7 +603,7 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
         """
         Revalidates the stored snapshot and changes ACTIVE only when
         expectedActiveVersion matches. null means that no ACTIVE version is expected.
-        Required authentication: an API key with the All role.
+        Required scope: `policy:redaction:manage`.
 
         Args:
           expected_active_version: null requires that no ACTIVE version currently exists.
@@ -644,7 +647,7 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
         """Leaves any DRAFT unchanged.
 
         null means that no ACTIVE version is expected.
-        Required authentication: an API key with the All role.
+        Required scope: `policy:redaction:manage`.
 
         Args:
           expected_active_version: null requires that no ACTIVE version currently exists.
@@ -687,7 +690,7 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
         """Appends MAX(version)+1 for an existing tenant name.
 
         The version is assigned by
-        the server. Required authentication: an API key with the All role.
+        the server. Required scope: `policy:redaction:manage`.
 
         Args:
           extra_headers: Send extra headers
@@ -729,8 +732,8 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
     ) -> None:
         """Hard-deletes only a DRAFT that has never been ACTIVE.
 
-        Required authentication:
-        an API key with the All role.
+        Required scope:
+        `policy:redaction:manage`.
 
         Args:
           extra_headers: Send extra headers
@@ -770,8 +773,7 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
         """Uses the opaque server-returned beforeVersion cursor.
 
         Version summaries do not
-        contain a policy definition. Required authentication: an API key with the All
-        role.
+        contain a policy definition. Required scope: `policy:redaction:manage`.
 
         Args:
           extra_headers: Send extra headers
@@ -816,8 +818,8 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
     ) -> PolicyVersion:
         """Returns the canonical definition for the requested version.
 
-        Required
-        authentication: an API key with the All role.
+        Required scope:
+        `policy:redaction:manage`.
 
         Args:
           extra_headers: Send extra headers
@@ -856,7 +858,7 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
         """
         Normalizes and validates a schema version 1 tenant policy, then returns the
         canonical definition and behavior digest without accessing the tenant policy
-        store. Required authentication: an API key with the All role.
+        store. Required scope: `policy:redaction:manage`.
 
         Args:
           extra_headers: Send extra headers

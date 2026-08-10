@@ -64,7 +64,7 @@ class LocalFileGroupsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> LocalFileGroupCreateResponse:
         """
-        <p> Creates a new local file group by uploading files directly via multipart form data. </p> <p> The total request body size must not exceed 500 MB. </p> <p> Required roles: All </p>
+        <p> Creates a new local file group by uploading files directly via multipart form data. </p> <p> The total request body size must not exceed 500 MB. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           files: Files to upload
@@ -133,7 +133,7 @@ class LocalFileGroupsResource(SyncAPIResource):
     ) -> LocalFileGroup:
         """<p> Returns a single local file group by ID.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -168,7 +168,7 @@ class LocalFileGroupsResource(SyncAPIResource):
     ) -> LocalFileGroupListResponse:
         """<p> Lists local file groups with cursor-based pagination.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -214,7 +214,7 @@ class LocalFileGroupsResource(SyncAPIResource):
     ) -> LocalFileGroupDeleteResponse:
         """<p> Initiates an asynchronous deletion job for the specified local file group.
 
-        The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required roles: All </p>
+        The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -273,7 +273,7 @@ class AsyncLocalFileGroupsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> LocalFileGroupCreateResponse:
         """
-        <p> Creates a new local file group by uploading files directly via multipart form data. </p> <p> The total request body size must not exceed 500 MB. </p> <p> Required roles: All </p>
+        <p> Creates a new local file group by uploading files directly via multipart form data. </p> <p> The total request body size must not exceed 500 MB. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           files: Files to upload
@@ -342,7 +342,7 @@ class AsyncLocalFileGroupsResource(AsyncAPIResource):
     ) -> LocalFileGroup:
         """<p> Returns a single local file group by ID.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -377,7 +377,7 @@ class AsyncLocalFileGroupsResource(AsyncAPIResource):
     ) -> LocalFileGroupListResponse:
         """<p> Lists local file groups with cursor-based pagination.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -423,7 +423,7 @@ class AsyncLocalFileGroupsResource(AsyncAPIResource):
     ) -> LocalFileGroupDeleteResponse:
         """<p> Initiates an asynchronous deletion job for the specified local file group.
 
-        The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required roles: All </p>
+        The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
