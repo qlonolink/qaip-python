@@ -57,7 +57,7 @@ class TagSourceGroupsResource(SyncAPIResource):
     ) -> TagSourceGroup:
         """<p> Creates a new tag source group association.
 
-        A source group is a collection of files ingested by a single job. </p> <p> Required roles: All </p>
+        A source group is a collection of files ingested by a single job. </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           source_group_id: Source group ID. The source group ID corresponds to the job ID for each data
@@ -102,7 +102,7 @@ class TagSourceGroupsResource(SyncAPIResource):
     ) -> TagSourceGroup:
         """<p> Deletes a tag source group association.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           source_group_id: Source group ID. The source group ID corresponds to the job ID for each data
@@ -170,7 +170,7 @@ class AsyncTagSourceGroupsResource(AsyncAPIResource):
     ) -> TagSourceGroup:
         """<p> Creates a new tag source group association.
 
-        A source group is a collection of files ingested by a single job. </p> <p> Required roles: All </p>
+        A source group is a collection of files ingested by a single job. </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           source_group_id: Source group ID. The source group ID corresponds to the job ID for each data
@@ -215,7 +215,7 @@ class AsyncTagSourceGroupsResource(AsyncAPIResource):
     ) -> TagSourceGroup:
         """<p> Deletes a tag source group association.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           source_group_id: Source group ID. The source group ID corresponds to the job ID for each data

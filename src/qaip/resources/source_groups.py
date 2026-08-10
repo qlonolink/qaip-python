@@ -69,7 +69,7 @@ class SourceGroupsResource(SyncAPIResource):
     ) -> SourceGroup:
         """<p> Gets detailed information about a specific source group.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -104,7 +104,7 @@ class SourceGroupsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> SourceGroupListResponse:
         """
-        <p> Lists source groups (jobs) across all source types: crawl, local_file, google_drive, github, notion. </p> <p> Required roles: All, App </p>
+        <p> Lists source groups (jobs) across all source types: crawl, local_file, google_drive, github, notion. </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -153,7 +153,7 @@ class SourceGroupsResource(SyncAPIResource):
     ) -> BatchSetMetadataResponse:
         """<p> Updates metadata for multiple source groups in a single request.
 
-        Merges with existing metadata by key. Send val: null to delete a key. Maximum 50 items per request. </p> <p> Required roles: All </p>
+        Merges with existing metadata by key. Send val: null to delete a key. Maximum 50 items per request. </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           items: List of source group metadata items (max 50)
@@ -190,7 +190,7 @@ class SourceGroupsResource(SyncAPIResource):
     ) -> SourceGroupDeleteMetadataResponse:
         """<p> Deletes metadata for a specific source group.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -224,7 +224,7 @@ class SourceGroupsResource(SyncAPIResource):
     ) -> SourceGroupListSourcesResponse:
         """<p> Lists sources (files) within a specific source group.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -258,7 +258,7 @@ class SourceGroupsResource(SyncAPIResource):
     ) -> SharedMetadata:
         """<p> Gets metadata for a specific source group.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -293,7 +293,7 @@ class SourceGroupsResource(SyncAPIResource):
     ) -> SharedMetadata:
         """<p> Updates metadata for a specific source group.
 
-        Merges with existing metadata by key. Send val: null to delete a key. </p> <p> Required roles: All </p>
+        Merges with existing metadata by key. Send val: null to delete a key. </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -353,7 +353,7 @@ class AsyncSourceGroupsResource(AsyncAPIResource):
     ) -> SourceGroup:
         """<p> Gets detailed information about a specific source group.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -388,7 +388,7 @@ class AsyncSourceGroupsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> SourceGroupListResponse:
         """
-        <p> Lists source groups (jobs) across all source types: crawl, local_file, google_drive, github, notion. </p> <p> Required roles: All, App </p>
+        <p> Lists source groups (jobs) across all source types: crawl, local_file, google_drive, github, notion. </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -437,7 +437,7 @@ class AsyncSourceGroupsResource(AsyncAPIResource):
     ) -> BatchSetMetadataResponse:
         """<p> Updates metadata for multiple source groups in a single request.
 
-        Merges with existing metadata by key. Send val: null to delete a key. Maximum 50 items per request. </p> <p> Required roles: All </p>
+        Merges with existing metadata by key. Send val: null to delete a key. Maximum 50 items per request. </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           items: List of source group metadata items (max 50)
@@ -474,7 +474,7 @@ class AsyncSourceGroupsResource(AsyncAPIResource):
     ) -> SourceGroupDeleteMetadataResponse:
         """<p> Deletes metadata for a specific source group.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -508,7 +508,7 @@ class AsyncSourceGroupsResource(AsyncAPIResource):
     ) -> SourceGroupListSourcesResponse:
         """<p> Lists sources (files) within a specific source group.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -542,7 +542,7 @@ class AsyncSourceGroupsResource(AsyncAPIResource):
     ) -> SharedMetadata:
         """<p> Gets metadata for a specific source group.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -577,7 +577,7 @@ class AsyncSourceGroupsResource(AsyncAPIResource):
     ) -> SharedMetadata:
         """<p> Updates metadata for a specific source group.
 
-        Merges with existing metadata by key. Send val: null to delete a key. </p> <p> Required roles: All </p>
+        Merges with existing metadata by key. Send val: null to delete a key. </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           extra_headers: Send extra headers

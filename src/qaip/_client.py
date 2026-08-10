@@ -220,7 +220,9 @@ class Qaip(SyncAPIClient):
 
     @cached_property
     def redaction_policies(self) -> RedactionPoliciesResource:
-        """Tenant redaction policy management (ALL API keys only)"""
+        """
+        Tenant redaction policy management (requires the `policy:redaction:manage` scope)
+        """
         from .resources.redaction_policies import RedactionPoliciesResource
 
         return RedactionPoliciesResource(self)
@@ -340,7 +342,7 @@ class Qaip(SyncAPIClient):
     ) -> CompletionResponse:
         """<p> Generates a completion based on the input messages and retrieval chunks.
 
-        If the 'stream' parameter is set to true, the response is streamed. By default the stream is plain text (text/plain). Send the request header 'Accept: text/event-stream' to instead receive a Server-Sent Events (SSE) stream of ag-ui protocol events (delta text as TEXT_MESSAGE_CONTENT, grounding and citations as CUSTOM events, history ids and completion as RUN_STARTED / RUN_FINISHED). </p> <p> Required roles: All, App </p>
+        If the 'stream' parameter is set to true, the response is streamed. By default the stream is plain text (text/plain). Send the request header 'Accept: text/event-stream' to instead receive a Server-Sent Events (SSE) stream of ag-ui protocol events (delta text as TEXT_MESSAGE_CONTENT, grounding and citations as CUSTOM events, history ids and completion as RUN_STARTED / RUN_FINISHED). </p> <p> Required scope: `inference:run` </p>
 
         Args:
           messages: The messages to generate completion for
@@ -478,7 +480,7 @@ class Qaip(SyncAPIClient):
     ) -> Content:
         """<p> Get through indexed content.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           authz_policy: (reserved for future use) Name of the registered authz policy to evaluate when
@@ -549,7 +551,7 @@ class Qaip(SyncAPIClient):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ExtractResponse:
         """
-        <p> Performs data extraction using LLM based on the specified data source, filter conditions, and JSON schema. Retrieves chunked data and uses the schema to extract and return the result as JSON via LLM. </p> <p> Required roles: All, App </p>
+        <p> Performs data extraction using LLM based on the specified data source, filter conditions, and JSON schema. Retrieves chunked data and uses the schema to extract and return the result as JSON via LLM. </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           schema: JSON Schema for the data to be extracted.
@@ -662,7 +664,7 @@ class Qaip(SyncAPIClient):
     ) -> SearchResponse:
         """<p> Searches through indexed content using query.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           query: Search query string
@@ -757,7 +759,7 @@ class Qaip(SyncAPIClient):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TagsResponse:
-        """<p> Returns the list of tags. </p> <p> Required roles: All, App </p>"""
+        """<p> Returns the list of tags. </p> <p> Required scope: `knowledge:read` </p>"""
         return self.get(
             "/tags",
             options=make_request_options(
@@ -932,7 +934,9 @@ class AsyncQaip(AsyncAPIClient):
 
     @cached_property
     def redaction_policies(self) -> AsyncRedactionPoliciesResource:
-        """Tenant redaction policy management (ALL API keys only)"""
+        """
+        Tenant redaction policy management (requires the `policy:redaction:manage` scope)
+        """
         from .resources.redaction_policies import AsyncRedactionPoliciesResource
 
         return AsyncRedactionPoliciesResource(self)
@@ -1052,7 +1056,7 @@ class AsyncQaip(AsyncAPIClient):
     ) -> CompletionResponse:
         """<p> Generates a completion based on the input messages and retrieval chunks.
 
-        If the 'stream' parameter is set to true, the response is streamed. By default the stream is plain text (text/plain). Send the request header 'Accept: text/event-stream' to instead receive a Server-Sent Events (SSE) stream of ag-ui protocol events (delta text as TEXT_MESSAGE_CONTENT, grounding and citations as CUSTOM events, history ids and completion as RUN_STARTED / RUN_FINISHED). </p> <p> Required roles: All, App </p>
+        If the 'stream' parameter is set to true, the response is streamed. By default the stream is plain text (text/plain). Send the request header 'Accept: text/event-stream' to instead receive a Server-Sent Events (SSE) stream of ag-ui protocol events (delta text as TEXT_MESSAGE_CONTENT, grounding and citations as CUSTOM events, history ids and completion as RUN_STARTED / RUN_FINISHED). </p> <p> Required scope: `inference:run` </p>
 
         Args:
           messages: The messages to generate completion for
@@ -1190,7 +1194,7 @@ class AsyncQaip(AsyncAPIClient):
     ) -> Content:
         """<p> Get through indexed content.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           authz_policy: (reserved for future use) Name of the registered authz policy to evaluate when
@@ -1261,7 +1265,7 @@ class AsyncQaip(AsyncAPIClient):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> ExtractResponse:
         """
-        <p> Performs data extraction using LLM based on the specified data source, filter conditions, and JSON schema. Retrieves chunked data and uses the schema to extract and return the result as JSON via LLM. </p> <p> Required roles: All, App </p>
+        <p> Performs data extraction using LLM based on the specified data source, filter conditions, and JSON schema. Retrieves chunked data and uses the schema to extract and return the result as JSON via LLM. </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           schema: JSON Schema for the data to be extracted.
@@ -1374,7 +1378,7 @@ class AsyncQaip(AsyncAPIClient):
     ) -> SearchResponse:
         """<p> Searches through indexed content using query.
 
-        </p> <p> Required roles: All, App </p>
+        </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           query: Search query string
@@ -1469,7 +1473,7 @@ class AsyncQaip(AsyncAPIClient):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> TagsResponse:
-        """<p> Returns the list of tags. </p> <p> Required roles: All, App </p>"""
+        """<p> Returns the list of tags. </p> <p> Required scope: `knowledge:read` </p>"""
         return await self.get(
             "/tags",
             options=make_request_options(
@@ -1602,7 +1606,9 @@ class QaipWithRawResponse:
 
     @cached_property
     def redaction_policies(self) -> redaction_policies.RedactionPoliciesResourceWithRawResponse:
-        """Tenant redaction policy management (ALL API keys only)"""
+        """
+        Tenant redaction policy management (requires the `policy:redaction:manage` scope)
+        """
         from .resources.redaction_policies import RedactionPoliciesResourceWithRawResponse
 
         return RedactionPoliciesResourceWithRawResponse(self._client.redaction_policies)
@@ -1698,7 +1704,9 @@ class AsyncQaipWithRawResponse:
 
     @cached_property
     def redaction_policies(self) -> redaction_policies.AsyncRedactionPoliciesResourceWithRawResponse:
-        """Tenant redaction policy management (ALL API keys only)"""
+        """
+        Tenant redaction policy management (requires the `policy:redaction:manage` scope)
+        """
         from .resources.redaction_policies import AsyncRedactionPoliciesResourceWithRawResponse
 
         return AsyncRedactionPoliciesResourceWithRawResponse(self._client.redaction_policies)
@@ -1794,7 +1802,9 @@ class QaipWithStreamedResponse:
 
     @cached_property
     def redaction_policies(self) -> redaction_policies.RedactionPoliciesResourceWithStreamingResponse:
-        """Tenant redaction policy management (ALL API keys only)"""
+        """
+        Tenant redaction policy management (requires the `policy:redaction:manage` scope)
+        """
         from .resources.redaction_policies import RedactionPoliciesResourceWithStreamingResponse
 
         return RedactionPoliciesResourceWithStreamingResponse(self._client.redaction_policies)
@@ -1890,7 +1900,9 @@ class AsyncQaipWithStreamedResponse:
 
     @cached_property
     def redaction_policies(self) -> redaction_policies.AsyncRedactionPoliciesResourceWithStreamingResponse:
-        """Tenant redaction policy management (ALL API keys only)"""
+        """
+        Tenant redaction policy management (requires the `policy:redaction:manage` scope)
+        """
         from .resources.redaction_policies import AsyncRedactionPoliciesResourceWithStreamingResponse
 
         return AsyncRedactionPoliciesResourceWithStreamingResponse(self._client.redaction_policies)

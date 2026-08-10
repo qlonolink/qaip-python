@@ -62,7 +62,7 @@ class NotionsResource(SyncAPIResource):
     ) -> Notion:
         """<p> Creates a new Notion data source and starts ingestion.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the Notion data source
@@ -117,7 +117,7 @@ class NotionsResource(SyncAPIResource):
     ) -> Notion:
         """<p> Gets detailed information about a specific Notion data source.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -152,7 +152,7 @@ class NotionsResource(SyncAPIResource):
     ) -> NotionListResponse:
         """<p> Lists Notion data sources with cursor-based pagination.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -198,7 +198,7 @@ class NotionsResource(SyncAPIResource):
     ) -> Notion:
         """<p> Initiates an asynchronous deletion job for the specified Notion data source.
 
-        The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required roles: All </p>
+        The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -232,7 +232,7 @@ class NotionsResource(SyncAPIResource):
     ) -> NotionSetting:
         """<p> Gets the setting (schedule, page ID, etc.) for Notion data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -268,7 +268,7 @@ class NotionsResource(SyncAPIResource):
     ) -> NotionSetting:
         """<p> Updates the setting (name, schedule) for Notion data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the Notion data source
@@ -340,7 +340,7 @@ class AsyncNotionsResource(AsyncAPIResource):
     ) -> Notion:
         """<p> Creates a new Notion data source and starts ingestion.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the Notion data source
@@ -395,7 +395,7 @@ class AsyncNotionsResource(AsyncAPIResource):
     ) -> Notion:
         """<p> Gets detailed information about a specific Notion data source.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -430,7 +430,7 @@ class AsyncNotionsResource(AsyncAPIResource):
     ) -> NotionListResponse:
         """<p> Lists Notion data sources with cursor-based pagination.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -476,7 +476,7 @@ class AsyncNotionsResource(AsyncAPIResource):
     ) -> Notion:
         """<p> Initiates an asynchronous deletion job for the specified Notion data source.
 
-        The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required roles: All </p>
+        The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -510,7 +510,7 @@ class AsyncNotionsResource(AsyncAPIResource):
     ) -> NotionSetting:
         """<p> Gets the setting (schedule, page ID, etc.) for Notion data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -546,7 +546,7 @@ class AsyncNotionsResource(AsyncAPIResource):
     ) -> NotionSetting:
         """<p> Updates the setting (name, schedule) for Notion data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the Notion data source

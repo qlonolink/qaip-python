@@ -61,7 +61,7 @@ class SecretsResource(SyncAPIResource):
     ) -> Secret:
         """<p> Creates a new secret.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `secrets:write` </p>
 
         Args:
           name: Name of the secret
@@ -110,7 +110,7 @@ class SecretsResource(SyncAPIResource):
     ) -> Secret:
         """<p> Gets detailed information about a specific secret.
 
-        The secret value is not returned. </p> <p> Required roles: All </p>
+        The secret value is not returned. </p> <p> Required scope: `secrets:read` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -147,7 +147,7 @@ class SecretsResource(SyncAPIResource):
     ) -> Secret:
         """<p> Updates an existing secret.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `secrets:write` </p>
 
         Args:
           name: Name of the secret
@@ -197,7 +197,7 @@ class SecretsResource(SyncAPIResource):
     ) -> SecretListResponse:
         """<p> Lists secrets with cursor-based pagination.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `secrets:read` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -246,7 +246,7 @@ class SecretsResource(SyncAPIResource):
     ) -> Secret:
         """<p> Deletes an existing secret and its associated schedules.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `secrets:write` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -306,7 +306,7 @@ class AsyncSecretsResource(AsyncAPIResource):
     ) -> Secret:
         """<p> Creates a new secret.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `secrets:write` </p>
 
         Args:
           name: Name of the secret
@@ -355,7 +355,7 @@ class AsyncSecretsResource(AsyncAPIResource):
     ) -> Secret:
         """<p> Gets detailed information about a specific secret.
 
-        The secret value is not returned. </p> <p> Required roles: All </p>
+        The secret value is not returned. </p> <p> Required scope: `secrets:read` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -392,7 +392,7 @@ class AsyncSecretsResource(AsyncAPIResource):
     ) -> Secret:
         """<p> Updates an existing secret.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `secrets:write` </p>
 
         Args:
           name: Name of the secret
@@ -442,7 +442,7 @@ class AsyncSecretsResource(AsyncAPIResource):
     ) -> SecretListResponse:
         """<p> Lists secrets with cursor-based pagination.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `secrets:read` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -491,7 +491,7 @@ class AsyncSecretsResource(AsyncAPIResource):
     ) -> Secret:
         """<p> Deletes an existing secret and its associated schedules.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `secrets:write` </p>
 
         Args:
           extra_headers: Send extra headers

@@ -66,7 +66,7 @@ class GithubsResource(SyncAPIResource):
     ) -> GitHub:
         """<p> Creates a new GitHub data source and starts ingestion.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the GitHub data source
@@ -131,7 +131,7 @@ class GithubsResource(SyncAPIResource):
     ) -> GitHub:
         """<p> Gets detailed information about a specific GitHub data source.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -166,7 +166,7 @@ class GithubsResource(SyncAPIResource):
     ) -> GitHubListResponse:
         """<p> Lists GitHub data sources with cursor-based pagination.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -212,7 +212,7 @@ class GithubsResource(SyncAPIResource):
     ) -> GitHub:
         """<p> Initiates an asynchronous deletion job for the specified GitHub data source.
 
-        The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required roles: All </p>
+        The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -246,7 +246,7 @@ class GithubsResource(SyncAPIResource):
     ) -> GitHubSetting:
         """<p> Gets the setting (schedule, repository, etc.) for GitHub data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -282,7 +282,7 @@ class GithubsResource(SyncAPIResource):
     ) -> GitHubSetting:
         """<p> Updates the setting (name, schedule) for GitHub data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the GitHub data source
@@ -357,7 +357,7 @@ class AsyncGithubsResource(AsyncAPIResource):
     ) -> GitHub:
         """<p> Creates a new GitHub data source and starts ingestion.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the GitHub data source
@@ -422,7 +422,7 @@ class AsyncGithubsResource(AsyncAPIResource):
     ) -> GitHub:
         """<p> Gets detailed information about a specific GitHub data source.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -457,7 +457,7 @@ class AsyncGithubsResource(AsyncAPIResource):
     ) -> GitHubListResponse:
         """<p> Lists GitHub data sources with cursor-based pagination.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -503,7 +503,7 @@ class AsyncGithubsResource(AsyncAPIResource):
     ) -> GitHub:
         """<p> Initiates an asynchronous deletion job for the specified GitHub data source.
 
-        The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required roles: All </p>
+        The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -537,7 +537,7 @@ class AsyncGithubsResource(AsyncAPIResource):
     ) -> GitHubSetting:
         """<p> Gets the setting (schedule, repository, etc.) for GitHub data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -573,7 +573,7 @@ class AsyncGithubsResource(AsyncAPIResource):
     ) -> GitHubSetting:
         """<p> Updates the setting (name, schedule) for GitHub data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the GitHub data source
