@@ -82,7 +82,7 @@ class CrawlsResource(SyncAPIResource):
     ) -> Crawl:
         """<p> Creates a new web crawl data source and starts ingestion.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           max_depth: Maximum crawl depth
@@ -157,7 +157,7 @@ class CrawlsResource(SyncAPIResource):
     ) -> Crawl:
         """<p> Gets detailed information about a specific web crawl data source.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -192,7 +192,7 @@ class CrawlsResource(SyncAPIResource):
     ) -> CrawlListResponse:
         """<p> Lists web crawl data sources with cursor-based pagination.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -237,7 +237,7 @@ class CrawlsResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Crawl:
         """
-        <p> Initiates an asynchronous deletion job for the specified web crawl data source. The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required roles: All </p>
+        <p> Initiates an asynchronous deletion job for the specified web crawl data source. The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -319,7 +319,7 @@ class CrawlsResource(SyncAPIResource):
     ) -> Crawl:
         """<p> Creates a new web crawl data source by directly downloading a list of URLs.
 
-        Unlike the standard crawl endpoint, this does not follow links or crawl pages — it downloads the specified URLs directly. </p> <p> Required roles: All </p>
+        Unlike the standard crawl endpoint, this does not follow links or crawl pages — it downloads the specified URLs directly. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the web crawl data source
@@ -373,7 +373,7 @@ class CrawlsResource(SyncAPIResource):
     ) -> CrawlSetting:
         """<p> Gets the setting (schedule, URL, etc.) for web crawl data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -409,7 +409,7 @@ class CrawlsResource(SyncAPIResource):
     ) -> CrawlSetting:
         """<p> Updates the setting (name, schedule) for web crawl data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the web crawl data source
@@ -487,7 +487,7 @@ class AsyncCrawlsResource(AsyncAPIResource):
     ) -> Crawl:
         """<p> Creates a new web crawl data source and starts ingestion.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           max_depth: Maximum crawl depth
@@ -562,7 +562,7 @@ class AsyncCrawlsResource(AsyncAPIResource):
     ) -> Crawl:
         """<p> Gets detailed information about a specific web crawl data source.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -597,7 +597,7 @@ class AsyncCrawlsResource(AsyncAPIResource):
     ) -> CrawlListResponse:
         """<p> Lists web crawl data sources with cursor-based pagination.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -642,7 +642,7 @@ class AsyncCrawlsResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Crawl:
         """
-        <p> Initiates an asynchronous deletion job for the specified web crawl data source. The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required roles: All </p>
+        <p> Initiates an asynchronous deletion job for the specified web crawl data source. The response indicates that the deletion job has been accepted, not that the deletion is complete. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -724,7 +724,7 @@ class AsyncCrawlsResource(AsyncAPIResource):
     ) -> Crawl:
         """<p> Creates a new web crawl data source by directly downloading a list of URLs.
 
-        Unlike the standard crawl endpoint, this does not follow links or crawl pages — it downloads the specified URLs directly. </p> <p> Required roles: All </p>
+        Unlike the standard crawl endpoint, this does not follow links or crawl pages — it downloads the specified URLs directly. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the web crawl data source
@@ -778,7 +778,7 @@ class AsyncCrawlsResource(AsyncAPIResource):
     ) -> CrawlSetting:
         """<p> Gets the setting (schedule, URL, etc.) for web crawl data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -814,7 +814,7 @@ class AsyncCrawlsResource(AsyncAPIResource):
     ) -> CrawlSetting:
         """<p> Updates the setting (name, schedule) for web crawl data sources.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the web crawl data source

@@ -76,7 +76,7 @@ class SourcesResource(SyncAPIResource):
     ) -> Source:
         """<p> Gets detailed information about a specific source.
 
-        This endpoint currently supports local_file source IDs. Crawl source IDs returned by /search or GET /contents/{id} are separate IDs and are not accepted here; use GET /sources/{source_id}/raw to download the stored crawl file content. </p> <p> Required roles: All, App </p>
+        This endpoint currently supports local_file source IDs. Crawl source IDs returned by /search or GET /contents/{id} are separate IDs and are not accepted here; use GET /sources/{source_id}/raw to download the stored crawl file content. </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -111,7 +111,7 @@ class SourcesResource(SyncAPIResource):
     ) -> SourceListResponse:
         """<p> Lists sources that have metadata records.
 
-        Currently only local_file sources are returned by this endpoint. Crawl source IDs appear in search results and can be used with GET /sources/{source_id}/raw instead. </p> <p> Required roles: All, App </p>
+        Currently only local_file sources are returned by this endpoint. Crawl source IDs appear in search results and can be used with GET /sources/{source_id}/raw instead. </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -157,7 +157,7 @@ class SourcesResource(SyncAPIResource):
     ) -> BatchSetMetadataResponse:
         """<p> Updates metadata for multiple sources in a single request.
 
-        Merges with existing metadata by key. Send val: null to delete a key. Maximum 50 items per request. </p> <p> Required roles: All </p>
+        Merges with existing metadata by key. Send val: null to delete a key. Maximum 50 items per request. </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           items: List of source metadata items (max 50)
@@ -192,7 +192,7 @@ class SourcesResource(SyncAPIResource):
     ) -> SourceDeleteMetadataResponse:
         """<p> Deletes metadata for a specific source.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -227,7 +227,7 @@ class SourcesResource(SyncAPIResource):
     ) -> BinaryAPIResponse:
         """<p> Downloads the file content stored from crawl.
 
-        Only crawl source IDs returned as content.source_id from /search, GET /contents/{id}, or POST /completions citations are valid. Local file source IDs accepted by GET /sources/{source_id} return 404 here. </p> <p> The endpoint checks tenant ownership of the crawl source and returns the entire stored file. It does not apply per-chunk authorization policies; applications using enforce authorization should decide whether to expose raw files to each principal. </p> <p> Required roles: All, App </p>
+        Only crawl source IDs returned as content.source_id from /search, GET /contents/{id}, or POST /completions citations are valid. Local file source IDs accepted by GET /sources/{source_id} return 404 here. </p> <p> The endpoint checks tenant ownership of the crawl source and returns the entire stored file. It does not apply per-chunk authorization policies; applications using enforce authorization should decide whether to expose raw files to each principal. </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           crawl_id: Parent crawl ID. Supplying it uses the crawl manifest fast path; omission uses
@@ -272,7 +272,7 @@ class SourcesResource(SyncAPIResource):
     ) -> SharedMetadata:
         """<p> Gets metadata for a specific local_file source.
 
-        Crawl source IDs returned by search results are separate IDs and are not accepted here; use GET /sources/{source_id}/raw for stored crawl file content. </p> <p> Required roles: All, App </p>
+        Crawl source IDs returned by search results are separate IDs and are not accepted here; use GET /sources/{source_id}/raw for stored crawl file content. </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -307,7 +307,7 @@ class SourcesResource(SyncAPIResource):
     ) -> SharedMetadata:
         """<p> Updates metadata for a specific source.
 
-        Merges with existing metadata by key. Send val: null to delete a key. </p> <p> Required roles: All </p>
+        Merges with existing metadata by key. Send val: null to delete a key. </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -365,7 +365,7 @@ class AsyncSourcesResource(AsyncAPIResource):
     ) -> Source:
         """<p> Gets detailed information about a specific source.
 
-        This endpoint currently supports local_file source IDs. Crawl source IDs returned by /search or GET /contents/{id} are separate IDs and are not accepted here; use GET /sources/{source_id}/raw to download the stored crawl file content. </p> <p> Required roles: All, App </p>
+        This endpoint currently supports local_file source IDs. Crawl source IDs returned by /search or GET /contents/{id} are separate IDs and are not accepted here; use GET /sources/{source_id}/raw to download the stored crawl file content. </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -400,7 +400,7 @@ class AsyncSourcesResource(AsyncAPIResource):
     ) -> SourceListResponse:
         """<p> Lists sources that have metadata records.
 
-        Currently only local_file sources are returned by this endpoint. Crawl source IDs appear in search results and can be used with GET /sources/{source_id}/raw instead. </p> <p> Required roles: All, App </p>
+        Currently only local_file sources are returned by this endpoint. Crawl source IDs appear in search results and can be used with GET /sources/{source_id}/raw instead. </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           after_id: Fetch records after this ID
@@ -446,7 +446,7 @@ class AsyncSourcesResource(AsyncAPIResource):
     ) -> BatchSetMetadataResponse:
         """<p> Updates metadata for multiple sources in a single request.
 
-        Merges with existing metadata by key. Send val: null to delete a key. Maximum 50 items per request. </p> <p> Required roles: All </p>
+        Merges with existing metadata by key. Send val: null to delete a key. Maximum 50 items per request. </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           items: List of source metadata items (max 50)
@@ -483,7 +483,7 @@ class AsyncSourcesResource(AsyncAPIResource):
     ) -> SourceDeleteMetadataResponse:
         """<p> Deletes metadata for a specific source.
 
-        </p> <p> Required roles: All </p>
+        </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -518,7 +518,7 @@ class AsyncSourcesResource(AsyncAPIResource):
     ) -> AsyncBinaryAPIResponse:
         """<p> Downloads the file content stored from crawl.
 
-        Only crawl source IDs returned as content.source_id from /search, GET /contents/{id}, or POST /completions citations are valid. Local file source IDs accepted by GET /sources/{source_id} return 404 here. </p> <p> The endpoint checks tenant ownership of the crawl source and returns the entire stored file. It does not apply per-chunk authorization policies; applications using enforce authorization should decide whether to expose raw files to each principal. </p> <p> Required roles: All, App </p>
+        Only crawl source IDs returned as content.source_id from /search, GET /contents/{id}, or POST /completions citations are valid. Local file source IDs accepted by GET /sources/{source_id} return 404 here. </p> <p> The endpoint checks tenant ownership of the crawl source and returns the entire stored file. It does not apply per-chunk authorization policies; applications using enforce authorization should decide whether to expose raw files to each principal. </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           crawl_id: Parent crawl ID. Supplying it uses the crawl manifest fast path; omission uses
@@ -563,7 +563,7 @@ class AsyncSourcesResource(AsyncAPIResource):
     ) -> SharedMetadata:
         """<p> Gets metadata for a specific local_file source.
 
-        Crawl source IDs returned by search results are separate IDs and are not accepted here; use GET /sources/{source_id}/raw for stored crawl file content. </p> <p> Required roles: All, App </p>
+        Crawl source IDs returned by search results are separate IDs and are not accepted here; use GET /sources/{source_id}/raw for stored crawl file content. </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
           extra_headers: Send extra headers
@@ -598,7 +598,7 @@ class AsyncSourcesResource(AsyncAPIResource):
     ) -> SharedMetadata:
         """<p> Updates metadata for a specific source.
 
-        Merges with existing metadata by key. Send val: null to delete a key. </p> <p> Required roles: All </p>
+        Merges with existing metadata by key. Send val: null to delete a key. </p> <p> Required scope: `knowledge:write` </p>
 
         Args:
           extra_headers: Send extra headers
