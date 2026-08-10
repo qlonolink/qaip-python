@@ -153,6 +153,18 @@ Methods:
 - <code title="get /secrets">client.secrets.<a href="./src/qaip/resources/secrets.py">list</a>(\*\*<a href="src/qaip/types/secret_list_params.py">params</a>) -> <a href="./src/qaip/types/secret_list_response.py">SecretListResponse</a></code>
 - <code title="delete /secrets/{secret_id}">client.secrets.<a href="./src/qaip/resources/secrets.py">delete</a>(secret_id) -> <a href="./src/qaip/types/secret.py">Secret</a></code>
 
+# ApiKeys
+
+Types:
+
+```python
+from qaip.types import CreatedApiKey, IssuableApiKeyScope
+```
+
+Methods:
+
+- <code title="post /api-keys">client.api_keys.<a href="./src/qaip/resources/api_keys.py">create</a>(\*\*<a href="src/qaip/types/api_key_create_params.py">params</a>) -> <a href="./src/qaip/types/created_api_key.py">CreatedApiKey</a></code>
+
 # Keywords
 
 Types:

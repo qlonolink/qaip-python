@@ -13,6 +13,7 @@ from . import (
     notions,
     secrets,
     sources,
+    api_keys,
     keywords,
     completion,
     google_drives,
@@ -43,3 +44,4 @@ def register_commands(parser: ArgumentParser) -> None:
     local_file_groups.register(subparsers)
     agent.register(subparsers)
     tag_source_groups.register(subparsers)
+    api_keys.register(subparsers)

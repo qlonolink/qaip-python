@@ -223,6 +223,17 @@ RESOURCES: dict[str, dict[str, Any]] = {
             },
         },
     },
+    "api-keys": {
+        "description": "API key issuance (requires the apikeys:issue scope)",
+        "methods": {
+            "create": {
+                "http_method": "POST",
+                "path": "/api-keys",
+                "required_params": ["name", "scopes"],
+                "optional_params": ["description"],
+            },
+        },
+    },
     "secrets": {
         "description": "Secret management",
         "methods": {
