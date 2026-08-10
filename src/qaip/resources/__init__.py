@@ -88,14 +88,6 @@ from .tag_source_groups import (
     TagSourceGroupsResourceWithStreamingResponse,
     AsyncTagSourceGroupsResourceWithStreamingResponse,
 )
-from .user_keyword_snapshots import (
-    UserKeywordSnapshotsResource,
-    AsyncUserKeywordSnapshotsResource,
-    UserKeywordSnapshotsResourceWithRawResponse,
-    AsyncUserKeywordSnapshotsResourceWithRawResponse,
-    UserKeywordSnapshotsResourceWithStreamingResponse,
-    AsyncUserKeywordSnapshotsResourceWithStreamingResponse,
-)
 from .redaction_policies import (
     RedactionPoliciesResource,
     AsyncRedactionPoliciesResource,
@@ -103,6 +95,14 @@ from .redaction_policies import (
     AsyncRedactionPoliciesResourceWithRawResponse,
     RedactionPoliciesResourceWithStreamingResponse,
     AsyncRedactionPoliciesResourceWithStreamingResponse,
+)
+from .user_keyword_snapshots import (
+    UserKeywordSnapshotsResource,
+    AsyncUserKeywordSnapshotsResource,
+    UserKeywordSnapshotsResourceWithRawResponse,
+    AsyncUserKeywordSnapshotsResourceWithRawResponse,
+    UserKeywordSnapshotsResourceWithStreamingResponse,
+    AsyncUserKeywordSnapshotsResourceWithStreamingResponse,
 )
 
 __all__ = [
