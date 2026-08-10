@@ -72,8 +72,8 @@ if TYPE_CHECKING:
         source_groups,
         local_file_groups,
         tag_source_groups,
-        user_keyword_snapshots,
         redaction_policies,
+        user_keyword_snapshots,
     )
     from .resources.agent import AgentResource, AsyncAgentResource
     from .resources.crawls import CrawlsResource, AsyncCrawlsResource
@@ -86,6 +86,7 @@ if TYPE_CHECKING:
     from .resources.source_groups import SourceGroupsResource, AsyncSourceGroupsResource
     from .resources.local_file_groups import LocalFileGroupsResource, AsyncLocalFileGroupsResource
     from .resources.tag_source_groups import TagSourceGroupsResource, AsyncTagSourceGroupsResource
+    from .resources.redaction_policies import RedactionPoliciesResource, AsyncRedactionPoliciesResource
     from .resources.user_keyword_snapshots import (
         UserKeywordSnapshotsResource,
         AsyncUserKeywordSnapshotsResource,
