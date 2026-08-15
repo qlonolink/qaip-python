@@ -19,7 +19,9 @@ class AgentRun(BaseModel):
     run_id: str
 
     status: AgentRunStatus
-    """Agent run status. Values are QUEUED, RUNNING, SUCCEEDED, FAILED, or CANCELLED."""
+    """Agent run lifecycle state."""
+
+    thread_id: str
 
     workflow_type: str
 
@@ -32,7 +34,7 @@ class AgentRun(BaseModel):
     idempotency_key: Optional[str] = None
 
     input: Optional[Dict[str, object]] = None
-    """Original RunAgentInput. Used to reconstruct a thread's transcript on restore."""
+    """Server-enriched agent input used to reconstruct the thread transcript."""
 
     mcp_session_id: Optional[str] = None
 
@@ -43,10 +45,6 @@ class AgentRun(BaseModel):
 
     runtime_arn: Optional[str] = None
 
-    runtime_session_id: Optional[str] = None
-
     started_at: Optional[datetime] = None
-
-    thread_id: Optional[str] = None
 
     trace_id: Optional[str] = None

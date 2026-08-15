@@ -2,20 +2,18 @@
 
 from __future__ import annotations
 
-from typing import Iterable, Optional
-
 import httpx
 
 from ..types import (
-    agent_run_params,
     agent_cancel_run_params,
     agent_create_run_params,
     agent_retrieve_run_params,
     agent_list_run_events_params,
+    agent_stream_run_events_params,
     agent_retrieve_run_result_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
-from .._utils import path_template, maybe_transform, async_maybe_transform
+from .._utils import path_template, maybe_transform, strip_not_given, async_maybe_transform
 from .._compat import cached_property
 from .._resource import SyncAPIResource, AsyncAPIResource
 from .._response import (
@@ -27,9 +25,9 @@ from .._response import (
 from .._streaming import Stream, AsyncStream
 from .._base_client import make_request_options
 from ..types.agent_run import AgentRun
-from ..types.agent_run_response import AgentRunResponse
-from ..types.agent_message_param import AgentMessageParam
+from ..types.create_agent_run_input_param import CreateAgentRunInputParam
 from ..types.agent_list_run_events_response import AgentListRunEventsResponse
+from ..types.agent_stream_run_events_response import AgentStreamRunEventsResponse
 from ..types.agent_retrieve_run_result_response import AgentRetrieveRunResultResponse
 
 __all__ = ["AgentResource", "AsyncAgentResource"]
@@ -69,9 +67,9 @@ class AgentResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> AgentRun:
-        """<p> Mark an asynchronous agent run as cancelled.
+        """<p> Start asynchronous cancellation.
 
-        </p> <p> Required scope: `inference:run` </p>
+        A running AgentCore session enters CANCELLING until StopRuntimeSession is confirmed or the bounded stop policy records a terminal failure. </p> <p> Required scope: `inference:run` </p>
 
         Args:
           principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
@@ -102,7 +100,7 @@ class AgentResource(SyncAPIResource):
     def create_run(
         self,
         *,
-        input: agent_create_run_params.Input,
+        input: CreateAgentRunInputParam,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -116,8 +114,6 @@ class AgentResource(SyncAPIResource):
         </p> <p> Required scope: `inference:run` </p>
 
         Args:
-          idempotency_key: Optional idempotency key for reusing an existing asynchronous run.
-
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -126,15 +122,10 @@ class AgentResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        extra_headers = {**strip_not_given({"Idempotency-Key": idempotency_key}), **(extra_headers or {})}
         return self._post(
             "/agent/runs",
-            body=maybe_transform(
-                {
-                    "input": input,
-                    "idempotency_key": idempotency_key,
-                },
-                agent_create_run_params.AgentCreateRunParams,
-            ),
+            body=maybe_transform({"input": input}, agent_create_run_params.AgentCreateRunParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -278,65 +269,31 @@ class AgentResource(SyncAPIResource):
             cast_to=AgentRetrieveRunResultResponse,
         )
 
-    def run(
+    def stream_run_events(
         self,
+        run_id: str,
         *,
-        forwarded_props: agent_run_params.ForwardedProps | Omit = omit,
-        messages: Iterable[AgentMessageParam] | Omit = omit,
-        redaction_policy_id: Optional[str] | Omit = omit,
-        run_id: str | Omit = omit,
-        thread_id: str | Omit = omit,
+        after: int | Omit = omit,
+        principal_id: str | Omit = omit,
+        last_event_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> Stream[AgentRunResponse]:
-        """<p> Run the agent with the given input and stream the events.
-
-        </p> <p> Required scope: `inference:run` </p>
+    ) -> Stream[AgentStreamRunEventsResponse]:
+        """
+        Replays events whose index is greater than the cursor, then follows committed
+        events until the run reaches a terminal state. Reconnecting with the last
+        received index is lossless and duplicate-safe.
 
         Args:
-          forwarded_props: Forwarded properties for the run (AG-UI standard)
+          after: Last persisted event index received by the client. Takes precedence over
+              Last-Event-ID.
 
-          redaction_policy_id: ID of a versioned redaction policy to apply before sending the conversation to
-              the external model / embedding provider.
-
-              When omitted or `null` (the default), **no redaction is performed and the input
-              is sent to the external provider as-is**. This is an explicit API contract, not
-              a fail-open behavior: omitting the field never silently sanitizes the input.
-
-              When a known ID is given, the conversation history (all roles, string/array/dict
-              content, tool call arguments, string metadata and source URLs), RAG search query
-              and results, Google web search query and results, external table results, and
-              all other tool results are masked with that policy before they reach the
-              corresponding external model or embedding provider. The original text is still
-              stored in `agent_runs.input` and emitted in `RUN_STARTED` for UI display; only
-              the copy sent to the external provider is masked. Restoration mappings are never
-              stored.
-
-              Errors:
-
-              - unknown ID or an empty string: `422` (never interpreted as "no redaction")
-              - used on a deployment whose AgentCore runtime has no redactor wired up:
-                `422 AGENTCORE_REDACTION_UNSUPPORTED`. Where the wiring is in place, the
-                AgentCore execution mode applies the same redaction as the local mode
-              - redactor unavailable / timeout / failure: `503 REDACTION_UNAVAILABLE` before
-                the run starts, or a `RUN_ERROR` with code `REDACTION_FAILED` during the run.
-                The request is never forwarded unmasked as a fallback.
-              - concurrent redaction runs saturated in the AgentCore execution mode:
-                `503 REDACTION_CAPACITY_EXCEEDED` before the run starts. Each run executes in
-                its own microVM, so the per-process concurrency limit cannot bound the load on
-                the shared redactor; the number of concurrent policy-bearing runs is capped
-                instead. Retrying later succeeds.
-
-              A parent run's policy is not inherited: a child run is redacted only when it
-              specifies `redactionPolicyId` itself.
-
-          run_id: Optional ID for the run
-
-          thread_id: Optional ID for the thread
+          principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
+              null) is addressed; a run whose principal differs yields 404.
 
           extra_headers: Send extra headers
 
@@ -346,25 +303,28 @@ class AgentResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not run_id:
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
         extra_headers = {"Accept": "text/event-stream", **(extra_headers or {})}
-        return self._post(
-            "/agent/run",
-            body=maybe_transform(
-                {
-                    "forwarded_props": forwarded_props,
-                    "messages": messages,
-                    "redaction_policy_id": redaction_policy_id,
-                    "run_id": run_id,
-                    "thread_id": thread_id,
-                },
-                agent_run_params.AgentRunParams,
-            ),
+        extra_headers = {**strip_not_given({"Last-Event-ID": last_event_id}), **(extra_headers or {})}
+        return self._get(
+            path_template("/agent/runs/{run_id}/events/stream", run_id=run_id),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform(
+                    {
+                        "after": after,
+                        "principal_id": principal_id,
+                    },
+                    agent_stream_run_events_params.AgentStreamRunEventsParams,
+                ),
             ),
             cast_to=str,
             stream=True,
-            stream_cls=Stream[AgentRunResponse],
+            stream_cls=Stream[AgentStreamRunEventsResponse],
         )
 
 
@@ -402,9 +362,9 @@ class AsyncAgentResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> AgentRun:
-        """<p> Mark an asynchronous agent run as cancelled.
+        """<p> Start asynchronous cancellation.
 
-        </p> <p> Required scope: `inference:run` </p>
+        A running AgentCore session enters CANCELLING until StopRuntimeSession is confirmed or the bounded stop policy records a terminal failure. </p> <p> Required scope: `inference:run` </p>
 
         Args:
           principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
@@ -437,7 +397,7 @@ class AsyncAgentResource(AsyncAPIResource):
     async def create_run(
         self,
         *,
-        input: agent_create_run_params.Input,
+        input: CreateAgentRunInputParam,
         idempotency_key: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -451,8 +411,6 @@ class AsyncAgentResource(AsyncAPIResource):
         </p> <p> Required scope: `inference:run` </p>
 
         Args:
-          idempotency_key: Optional idempotency key for reusing an existing asynchronous run.
-
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -461,15 +419,10 @@ class AsyncAgentResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        extra_headers = {**strip_not_given({"Idempotency-Key": idempotency_key}), **(extra_headers or {})}
         return await self._post(
             "/agent/runs",
-            body=await async_maybe_transform(
-                {
-                    "input": input,
-                    "idempotency_key": idempotency_key,
-                },
-                agent_create_run_params.AgentCreateRunParams,
-            ),
+            body=await async_maybe_transform({"input": input}, agent_create_run_params.AgentCreateRunParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -615,65 +568,31 @@ class AsyncAgentResource(AsyncAPIResource):
             cast_to=AgentRetrieveRunResultResponse,
         )
 
-    async def run(
+    async def stream_run_events(
         self,
+        run_id: str,
         *,
-        forwarded_props: agent_run_params.ForwardedProps | Omit = omit,
-        messages: Iterable[AgentMessageParam] | Omit = omit,
-        redaction_policy_id: Optional[str] | Omit = omit,
-        run_id: str | Omit = omit,
-        thread_id: str | Omit = omit,
+        after: int | Omit = omit,
+        principal_id: str | Omit = omit,
+        last_event_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AsyncStream[AgentRunResponse]:
-        """<p> Run the agent with the given input and stream the events.
-
-        </p> <p> Required scope: `inference:run` </p>
+    ) -> AsyncStream[AgentStreamRunEventsResponse]:
+        """
+        Replays events whose index is greater than the cursor, then follows committed
+        events until the run reaches a terminal state. Reconnecting with the last
+        received index is lossless and duplicate-safe.
 
         Args:
-          forwarded_props: Forwarded properties for the run (AG-UI standard)
+          after: Last persisted event index received by the client. Takes precedence over
+              Last-Event-ID.
 
-          redaction_policy_id: ID of a versioned redaction policy to apply before sending the conversation to
-              the external model / embedding provider.
-
-              When omitted or `null` (the default), **no redaction is performed and the input
-              is sent to the external provider as-is**. This is an explicit API contract, not
-              a fail-open behavior: omitting the field never silently sanitizes the input.
-
-              When a known ID is given, the conversation history (all roles, string/array/dict
-              content, tool call arguments, string metadata and source URLs), RAG search query
-              and results, Google web search query and results, external table results, and
-              all other tool results are masked with that policy before they reach the
-              corresponding external model or embedding provider. The original text is still
-              stored in `agent_runs.input` and emitted in `RUN_STARTED` for UI display; only
-              the copy sent to the external provider is masked. Restoration mappings are never
-              stored.
-
-              Errors:
-
-              - unknown ID or an empty string: `422` (never interpreted as "no redaction")
-              - used on a deployment whose AgentCore runtime has no redactor wired up:
-                `422 AGENTCORE_REDACTION_UNSUPPORTED`. Where the wiring is in place, the
-                AgentCore execution mode applies the same redaction as the local mode
-              - redactor unavailable / timeout / failure: `503 REDACTION_UNAVAILABLE` before
-                the run starts, or a `RUN_ERROR` with code `REDACTION_FAILED` during the run.
-                The request is never forwarded unmasked as a fallback.
-              - concurrent redaction runs saturated in the AgentCore execution mode:
-                `503 REDACTION_CAPACITY_EXCEEDED` before the run starts. Each run executes in
-                its own microVM, so the per-process concurrency limit cannot bound the load on
-                the shared redactor; the number of concurrent policy-bearing runs is capped
-                instead. Retrying later succeeds.
-
-              A parent run's policy is not inherited: a child run is redacted only when it
-              specifies `redactionPolicyId` itself.
-
-          run_id: Optional ID for the run
-
-          thread_id: Optional ID for the thread
+          principal_id: Scope by principal. If omitted, only a run with no principal (principal_id is
+              null) is addressed; a run whose principal differs yields 404.
 
           extra_headers: Send extra headers
 
@@ -683,25 +602,28 @@ class AsyncAgentResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not run_id:
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
         extra_headers = {"Accept": "text/event-stream", **(extra_headers or {})}
-        return await self._post(
-            "/agent/run",
-            body=await async_maybe_transform(
-                {
-                    "forwarded_props": forwarded_props,
-                    "messages": messages,
-                    "redaction_policy_id": redaction_policy_id,
-                    "run_id": run_id,
-                    "thread_id": thread_id,
-                },
-                agent_run_params.AgentRunParams,
-            ),
+        extra_headers = {**strip_not_given({"Last-Event-ID": last_event_id}), **(extra_headers or {})}
+        return await self._get(
+            path_template("/agent/runs/{run_id}/events/stream", run_id=run_id),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {
+                        "after": after,
+                        "principal_id": principal_id,
+                    },
+                    agent_stream_run_events_params.AgentStreamRunEventsParams,
+                ),
             ),
             cast_to=str,
             stream=True,
-            stream_cls=AsyncStream[AgentRunResponse],
+            stream_cls=AsyncStream[AgentStreamRunEventsResponse],
         )
 
 
@@ -724,8 +646,8 @@ class AgentResourceWithRawResponse:
         self.retrieve_run_result = to_raw_response_wrapper(
             agent.retrieve_run_result,
         )
-        self.run = to_raw_response_wrapper(
-            agent.run,
+        self.stream_run_events = to_raw_response_wrapper(
+            agent.stream_run_events,
         )
 
 
@@ -748,8 +670,8 @@ class AsyncAgentResourceWithRawResponse:
         self.retrieve_run_result = async_to_raw_response_wrapper(
             agent.retrieve_run_result,
         )
-        self.run = async_to_raw_response_wrapper(
-            agent.run,
+        self.stream_run_events = async_to_raw_response_wrapper(
+            agent.stream_run_events,
         )
 
 
@@ -772,8 +694,8 @@ class AgentResourceWithStreamingResponse:
         self.retrieve_run_result = to_streamed_response_wrapper(
             agent.retrieve_run_result,
         )
-        self.run = to_streamed_response_wrapper(
-            agent.run,
+        self.stream_run_events = to_streamed_response_wrapper(
+            agent.stream_run_events,
         )
 
 
@@ -796,6 +718,6 @@ class AsyncAgentResourceWithStreamingResponse:
         self.retrieve_run_result = async_to_streamed_response_wrapper(
             agent.retrieve_run_result,
         )
-        self.run = async_to_streamed_response_wrapper(
-            agent.run,
+        self.stream_run_events = async_to_streamed_response_wrapper(
+            agent.stream_run_events,
         )

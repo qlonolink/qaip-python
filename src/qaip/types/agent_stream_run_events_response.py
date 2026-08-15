@@ -2,6 +2,6 @@
 
 from typing_extensions import TypeAlias
 
-__all__ = ["AgentRunResponse"]
+__all__ = ["AgentStreamRunEventsResponse"]
 
-AgentRunResponse: TypeAlias = str
+AgentStreamRunEventsResponse: TypeAlias = str
