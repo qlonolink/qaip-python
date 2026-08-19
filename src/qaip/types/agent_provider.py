@@ -4,4 +4,4 @@ from typing_extensions import Literal, TypeAlias
 
 __all__ = ["AgentProvider"]
 
-AgentProvider: TypeAlias = Literal["ANTHROPIC_DIRECT", "BEDROCK", "VERTEX_AI"]
+AgentProvider: TypeAlias = Literal["ANTHROPIC_DIRECT", "BEDROCK", "OPENAI", "VERTEX_AI"]
