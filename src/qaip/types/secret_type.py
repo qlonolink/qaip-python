@@ -4,4 +4,4 @@ from typing_extensions import Literal, TypeAlias
 
 __all__ = ["SecretType"]
 
-SecretType: TypeAlias = Literal["google_drive", "github", "notion", "x"]
+SecretType: TypeAlias = Literal["google_drive", "github", "notion", "x", "xai"]
