@@ -577,6 +577,82 @@ RESOURCES: dict[str, dict[str, Any]] = {
                 "required_params": ["run_id"],
                 "optional_params": ["after", "limit"],
             },
+            "stream_run_events": {
+                "http_method": "GET",
+                "path": "/agent/runs/{run_id}/events/stream",
+                "required_params": ["run_id"],
+                "optional_params": ["after", "last_event_id", "principal_id"],
+            },
+            "list_threads": {
+                "http_method": "GET",
+                "path": "/agent/threads",
+                "required_params": [],
+                "optional_params": ["all_principals", "limit", "offset", "principal_id"],
+            },
+            "retrieve_thread": {
+                "http_method": "GET",
+                "path": "/agent/threads/{thread_id}",
+                "required_params": ["thread_id"],
+                "optional_params": ["principal_id"],
+            },
+        },
+    },
+    "conversations": {
+        "description": "Conversation history and branch management",
+        "methods": {
+            "list": {
+                "http_method": "GET",
+                "path": "/conversations",
+                "required_params": [],
+                "optional_params": ["all_principals", "limit", "offset", "principal_id"],
+            },
+            "retrieve": {
+                "http_method": "GET",
+                "path": "/conversations/{conversation_id}",
+                "required_params": ["conversation_id"],
+                "optional_params": ["leaf_id", "principal_id"],
+            },
+            "update": {
+                "http_method": "PATCH",
+                "path": "/conversations/{conversation_id}",
+                "required_params": ["conversation_id"],
+                "optional_params": ["current_leaf_id", "principal_id", "title"],
+            },
+            "delete": {
+                "http_method": "DELETE",
+                "path": "/conversations/{conversation_id}",
+                "required_params": ["conversation_id"],
+                "optional_params": ["principal_id"],
+            },
+        },
+    },
+    "query": {
+        "description": "External table query operations",
+        "methods": {
+            "create": {
+                "http_method": "POST",
+                "path": "/query",
+                "required_params": ["sql"],
+                "optional_params": [],
+            },
+            "retrieve_schema": {
+                "http_method": "GET",
+                "path": "/query/schema",
+                "required_params": [],
+                "optional_params": [],
+            },
+            "retrieve": {
+                "http_method": "GET",
+                "path": "/query/{request_id}",
+                "required_params": ["request_id"],
+                "optional_params": [],
+            },
+            "cancel": {
+                "http_method": "DELETE",
+                "path": "/query/{request_id}",
+                "required_params": ["request_id"],
+                "optional_params": [],
+            },
         },
     },
     "tag-source-groups": {

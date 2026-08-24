@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 from . import (
     tags,
     agent,
+    query,
     crawls,
     search,
     content,
@@ -16,6 +17,7 @@ from . import (
     api_keys,
     keywords,
     completion,
+    conversations,
     google_drives,
     source_groups,
     local_file_groups,
@@ -32,6 +34,7 @@ def register_commands(parser: ArgumentParser) -> None:
     extract.register(subparsers)
     content.register(subparsers)
     tags.register(subparsers)
+    query.register(subparsers)
     sources.register(subparsers)
     source_groups.register(subparsers)
     secrets.register(subparsers)
@@ -43,5 +46,6 @@ def register_commands(parser: ArgumentParser) -> None:
     notions.register(subparsers)
     local_file_groups.register(subparsers)
     agent.register(subparsers)
+    conversations.register(subparsers)
     tag_source_groups.register(subparsers)
     api_keys.register(subparsers)

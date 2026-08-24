@@ -64,6 +64,14 @@ from .keywords import (
     KeywordsResourceWithStreamingResponse,
     AsyncKeywordsResourceWithStreamingResponse,
 )
+from .conversations import (
+    ConversationsResource,
+    AsyncConversationsResource,
+    ConversationsResourceWithRawResponse,
+    AsyncConversationsResourceWithRawResponse,
+    ConversationsResourceWithStreamingResponse,
+    AsyncConversationsResourceWithStreamingResponse,
+)
 from .google_drives import (
     GoogleDrivesResource,
     AsyncGoogleDrivesResource,
@@ -79,6 +87,22 @@ from .source_groups import (
     AsyncSourceGroupsResourceWithRawResponse,
     SourceGroupsResourceWithStreamingResponse,
     AsyncSourceGroupsResourceWithStreamingResponse,
+)
+from .tag_management import (
+    TagManagementResource,
+    AsyncTagManagementResource,
+    TagManagementResourceWithRawResponse,
+    AsyncTagManagementResourceWithRawResponse,
+    TagManagementResourceWithStreamingResponse,
+    AsyncTagManagementResourceWithStreamingResponse,
+)
+from .external_queries import (
+    ExternalQueriesResource,
+    AsyncExternalQueriesResource,
+    ExternalQueriesResourceWithRawResponse,
+    AsyncExternalQueriesResourceWithRawResponse,
+    ExternalQueriesResourceWithStreamingResponse,
+    AsyncExternalQueriesResourceWithStreamingResponse,
 )
 from .local_file_groups import (
     LocalFileGroupsResource,
@@ -120,6 +144,24 @@ __all__ = [
     "AsyncAgentResourceWithRawResponse",
     "AgentResourceWithStreamingResponse",
     "AsyncAgentResourceWithStreamingResponse",
+    "ConversationsResource",
+    "AsyncConversationsResource",
+    "ConversationsResourceWithRawResponse",
+    "AsyncConversationsResourceWithRawResponse",
+    "ConversationsResourceWithStreamingResponse",
+    "AsyncConversationsResourceWithStreamingResponse",
+    "ExternalQueriesResource",
+    "AsyncExternalQueriesResource",
+    "ExternalQueriesResourceWithRawResponse",
+    "AsyncExternalQueriesResourceWithRawResponse",
+    "ExternalQueriesResourceWithStreamingResponse",
+    "AsyncExternalQueriesResourceWithStreamingResponse",
+    "TagManagementResource",
+    "AsyncTagManagementResource",
+    "TagManagementResourceWithRawResponse",
+    "AsyncTagManagementResourceWithRawResponse",
+    "TagManagementResourceWithStreamingResponse",
+    "AsyncTagManagementResourceWithStreamingResponse",
     "ApiKeysResource",
     "AsyncApiKeysResource",
     "ApiKeysResourceWithRawResponse",
