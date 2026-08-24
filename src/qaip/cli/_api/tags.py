@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from argparse import ArgumentParser
 
-from ...types import Tag
 from .._utils import get_client
 from ._common import (
     add_yes,
@@ -15,11 +14,14 @@ from ._common import (
     print_dry_run,
     add_json_param,
     parse_json_body,
+    validate_json_body_fields,
 )
 from .._errors import CLIError
 
 if TYPE_CHECKING:
     from argparse import Namespace, _SubParsersAction
+
+_ALLOWED_BODY_KEYS = frozenset({"name", "description"})
 
 
 def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
@@ -69,6 +71,7 @@ def _create(args: Namespace) -> None:
     if args.description and "description" not in body:
         body["description"] = args.description
 
+    validate_json_body_fields(body, allowed=_ALLOWED_BODY_KEYS)
     if "name" not in body:
         raise CLIError("--name or --json with 'name' field is required")
 
@@ -76,7 +79,10 @@ def _create(args: Namespace) -> None:
         print_dry_run("POST", "/tags", body)
         return
     client = get_client(args)
-    result = client.post("/tags", body=body, cast_to=Tag)
+    if "description" in body:
+        result = client.tag_management.create(name=body["name"], description=body["description"])
+    else:
+        result = client.tag_management.create(name=body["name"])
     print_result(result.model_dump(), args)
 
 
@@ -87,6 +93,7 @@ def _update(args: Namespace) -> None:
     if args.description and "description" not in body:
         body["description"] = args.description
 
+    validate_json_body_fields(body, allowed=_ALLOWED_BODY_KEYS)
     # 部分更新。name / description のいずれも無ければ no-op になるので弾く。
     if not body:
         raise CLIError("at least one of --name / --description (or --json) is required")
@@ -96,7 +103,12 @@ def _update(args: Namespace) -> None:
         return
     validate_id(args.id, label="id")
     client = get_client(args)
-    result = client.put(f"/tags/{args.id}", body=body, cast_to=Tag)
+    if "name" in body and "description" in body:
+        result = client.tag_management.update(args.id, name=body["name"], description=body["description"])
+    elif "name" in body:
+        result = client.tag_management.update(args.id, name=body["name"])
+    else:
+        result = client.tag_management.update(args.id, description=body["description"])
     print_result(result.model_dump(), args)
 
 
@@ -107,5 +119,5 @@ def _delete(args: Namespace) -> None:
     validate_id(args.id, label="id")
     require_yes(args, action="tags.delete")
     client = get_client(args)
-    result = client.delete(f"/tags/{args.id}", cast_to=Tag)
+    result = client.tag_management.delete(args.id)
     print_result(result.model_dump(), args)

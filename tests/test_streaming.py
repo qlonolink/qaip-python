@@ -216,6 +216,31 @@ async def test_multi_byte_character_multiple_chunks(
     assert sse.json() == {"content": "известни"}
 
 
+@pytest.mark.parametrize("sync", [True, False], ids=["sync", "async"])
+async def test_json_stream_ignores_comment_frames_after_event_id(
+    sync: bool,
+    client: Qaip,
+    async_client: AsyncQaip,
+) -> None:
+    def body() -> Iterator[bytes]:
+        yield b'id: 1\ndata: {"type":"RUN_STARTED"}\n\n: flush    \n\n'
+        yield b": keepalive\n\n"
+        yield b'id: 2\ndata: {"type":"RUN_FINISHED"}\n\n'
+
+    expected = [{"type": "RUN_STARTED"}, {"type": "RUN_FINISHED"}]
+    if sync:
+        stream = Stream(cast_to=object, client=client, response=httpx.Response(200, content=body()))
+        assert list(stream) == expected
+        return
+
+    stream = AsyncStream(
+        cast_to=object,
+        client=async_client,
+        response=httpx.Response(200, content=to_aiter(body())),
+    )
+    assert [event async for event in stream] == expected
+
+
 async def to_aiter(iter: Iterator[bytes]) -> AsyncIterator[bytes]:
     for chunk in iter:
         yield chunk

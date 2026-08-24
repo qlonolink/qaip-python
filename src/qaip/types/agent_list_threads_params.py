@@ -1,0 +1,17 @@
+# File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+from __future__ import annotations
+
+from typing_extensions import TypedDict
+
+__all__ = ["AgentListThreadsParams"]
+
+
+class AgentListThreadsParams(TypedDict, total=False):
+    all_principals: bool
+
+    limit: int
+
+    offset: int
+
+    principal_id: str

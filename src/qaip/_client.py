@@ -69,8 +69,11 @@ if TYPE_CHECKING:
         sources,
         api_keys,
         keywords,
+        conversations,
         google_drives,
         source_groups,
+        tag_management,
+        external_queries,
         local_file_groups,
         tag_source_groups,
         redaction_policies,
@@ -84,8 +87,11 @@ if TYPE_CHECKING:
     from .resources.sources import SourcesResource, AsyncSourcesResource
     from .resources.api_keys import ApiKeysResource, AsyncApiKeysResource
     from .resources.keywords import KeywordsResource, AsyncKeywordsResource
+    from .resources.conversations import ConversationsResource, AsyncConversationsResource
     from .resources.google_drives import GoogleDrivesResource, AsyncGoogleDrivesResource
     from .resources.source_groups import SourceGroupsResource, AsyncSourceGroupsResource
+    from .resources.tag_management import TagManagementResource, AsyncTagManagementResource
+    from .resources.external_queries import ExternalQueriesResource, AsyncExternalQueriesResource
     from .resources.local_file_groups import LocalFileGroupsResource, AsyncLocalFileGroupsResource
     from .resources.tag_source_groups import TagSourceGroupsResource, AsyncTagSourceGroupsResource
     from .resources.redaction_policies import RedactionPoliciesResource, AsyncRedactionPoliciesResource
@@ -167,6 +173,27 @@ class Qaip(SyncAPIClient):
         from .resources.agent import AgentResource
 
         return AgentResource(self)
+
+    @cached_property
+    def conversations(self) -> ConversationsResource:
+        """Conversation history and branch management"""
+        from .resources.conversations import ConversationsResource
+
+        return ConversationsResource(self)
+
+    @cached_property
+    def external_queries(self) -> ExternalQueriesResource:
+        """Read-only queries against external tables"""
+        from .resources.external_queries import ExternalQueriesResource
+
+        return ExternalQueriesResource(self)
+
+    @cached_property
+    def tag_management(self) -> TagManagementResource:
+        """Tag creation, update, and deletion"""
+        from .resources.tag_management import TagManagementResource
+
+        return TagManagementResource(self)
 
     @cached_property
     def tag_source_groups(self) -> TagSourceGroupsResource:
@@ -900,6 +927,27 @@ class AsyncQaip(AsyncAPIClient):
         return AsyncAgentResource(self)
 
     @cached_property
+    def conversations(self) -> AsyncConversationsResource:
+        """Conversation history and branch management"""
+        from .resources.conversations import AsyncConversationsResource
+
+        return AsyncConversationsResource(self)
+
+    @cached_property
+    def external_queries(self) -> AsyncExternalQueriesResource:
+        """Read-only queries against external tables"""
+        from .resources.external_queries import AsyncExternalQueriesResource
+
+        return AsyncExternalQueriesResource(self)
+
+    @cached_property
+    def tag_management(self) -> AsyncTagManagementResource:
+        """Tag creation, update, and deletion"""
+        from .resources.tag_management import AsyncTagManagementResource
+
+        return AsyncTagManagementResource(self)
+
+    @cached_property
     def tag_source_groups(self) -> AsyncTagSourceGroupsResource:
         """Tag and source group associations"""
         from .resources.tag_source_groups import AsyncTagSourceGroupsResource
@@ -1589,6 +1637,24 @@ class QaipWithRawResponse:
         return AgentResourceWithRawResponse(self._client.agent)
 
     @cached_property
+    def conversations(self) -> conversations.ConversationsResourceWithRawResponse:
+        from .resources.conversations import ConversationsResourceWithRawResponse
+
+        return ConversationsResourceWithRawResponse(self._client.conversations)
+
+    @cached_property
+    def external_queries(self) -> external_queries.ExternalQueriesResourceWithRawResponse:
+        from .resources.external_queries import ExternalQueriesResourceWithRawResponse
+
+        return ExternalQueriesResourceWithRawResponse(self._client.external_queries)
+
+    @cached_property
+    def tag_management(self) -> tag_management.TagManagementResourceWithRawResponse:
+        from .resources.tag_management import TagManagementResourceWithRawResponse
+
+        return TagManagementResourceWithRawResponse(self._client.tag_management)
+
+    @cached_property
     def tag_source_groups(self) -> tag_source_groups.TagSourceGroupsResourceWithRawResponse:
         """Tag and source group associations"""
         from .resources.tag_source_groups import TagSourceGroupsResourceWithRawResponse
@@ -1704,6 +1770,24 @@ class AsyncQaipWithRawResponse:
         from .resources.agent import AsyncAgentResourceWithRawResponse
 
         return AsyncAgentResourceWithRawResponse(self._client.agent)
+
+    @cached_property
+    def conversations(self) -> conversations.AsyncConversationsResourceWithRawResponse:
+        from .resources.conversations import AsyncConversationsResourceWithRawResponse
+
+        return AsyncConversationsResourceWithRawResponse(self._client.conversations)
+
+    @cached_property
+    def external_queries(self) -> external_queries.AsyncExternalQueriesResourceWithRawResponse:
+        from .resources.external_queries import AsyncExternalQueriesResourceWithRawResponse
+
+        return AsyncExternalQueriesResourceWithRawResponse(self._client.external_queries)
+
+    @cached_property
+    def tag_management(self) -> tag_management.AsyncTagManagementResourceWithRawResponse:
+        from .resources.tag_management import AsyncTagManagementResourceWithRawResponse
+
+        return AsyncTagManagementResourceWithRawResponse(self._client.tag_management)
 
     @cached_property
     def tag_source_groups(self) -> tag_source_groups.AsyncTagSourceGroupsResourceWithRawResponse:
@@ -1823,6 +1907,24 @@ class QaipWithStreamedResponse:
         return AgentResourceWithStreamingResponse(self._client.agent)
 
     @cached_property
+    def conversations(self) -> conversations.ConversationsResourceWithStreamingResponse:
+        from .resources.conversations import ConversationsResourceWithStreamingResponse
+
+        return ConversationsResourceWithStreamingResponse(self._client.conversations)
+
+    @cached_property
+    def external_queries(self) -> external_queries.ExternalQueriesResourceWithStreamingResponse:
+        from .resources.external_queries import ExternalQueriesResourceWithStreamingResponse
+
+        return ExternalQueriesResourceWithStreamingResponse(self._client.external_queries)
+
+    @cached_property
+    def tag_management(self) -> tag_management.TagManagementResourceWithStreamingResponse:
+        from .resources.tag_management import TagManagementResourceWithStreamingResponse
+
+        return TagManagementResourceWithStreamingResponse(self._client.tag_management)
+
+    @cached_property
     def tag_source_groups(self) -> tag_source_groups.TagSourceGroupsResourceWithStreamingResponse:
         """Tag and source group associations"""
         from .resources.tag_source_groups import TagSourceGroupsResourceWithStreamingResponse
@@ -1938,6 +2040,24 @@ class AsyncQaipWithStreamedResponse:
         from .resources.agent import AsyncAgentResourceWithStreamingResponse
 
         return AsyncAgentResourceWithStreamingResponse(self._client.agent)
+
+    @cached_property
+    def conversations(self) -> conversations.AsyncConversationsResourceWithStreamingResponse:
+        from .resources.conversations import AsyncConversationsResourceWithStreamingResponse
+
+        return AsyncConversationsResourceWithStreamingResponse(self._client.conversations)
+
+    @cached_property
+    def external_queries(self) -> external_queries.AsyncExternalQueriesResourceWithStreamingResponse:
+        from .resources.external_queries import AsyncExternalQueriesResourceWithStreamingResponse
+
+        return AsyncExternalQueriesResourceWithStreamingResponse(self._client.external_queries)
+
+    @cached_property
+    def tag_management(self) -> tag_management.AsyncTagManagementResourceWithStreamingResponse:
+        from .resources.tag_management import AsyncTagManagementResourceWithStreamingResponse
+
+        return AsyncTagManagementResourceWithStreamingResponse(self._client.tag_management)
 
     @cached_property
     def tag_source_groups(self) -> tag_source_groups.AsyncTagSourceGroupsResourceWithStreamingResponse:

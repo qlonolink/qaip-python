@@ -52,10 +52,15 @@ from qaip.types import (
     AgentProvider,
     AgentRun,
     AgentRunEvent,
+    AgentRunNode,
     AgentRunStatus,
+    AgentThread,
+    AgentThreadDetail,
+    AgentThreadListResponse,
     AgentListRunEventsResponse,
     AgentRetrieveRunResultResponse,
     AgentRunResponse,
+    AgentStreamEvent,
 )
 ```
 
@@ -64,9 +69,67 @@ Methods:
 - <code title="post /agent/runs/{run_id}/cancel">client.agent.<a href="./src/qaip/resources/agent.py">cancel_run</a>(run_id, \*\*<a href="src/qaip/types/agent_cancel_run_params.py">params</a>) -> <a href="./src/qaip/types/agent_run.py">AgentRun</a></code>
 - <code title="post /agent/runs">client.agent.<a href="./src/qaip/resources/agent.py">create_run</a>(\*\*<a href="src/qaip/types/agent_create_run_params.py">params</a>) -> <a href="./src/qaip/types/agent_run.py">AgentRun</a></code>
 - <code title="get /agent/runs/{run_id}/events">client.agent.<a href="./src/qaip/resources/agent.py">list_run_events</a>(run_id, \*\*<a href="src/qaip/types/agent_list_run_events_params.py">params</a>) -> <a href="./src/qaip/types/agent_list_run_events_response.py">AgentListRunEventsResponse</a></code>
+- <code title="get /agent/threads">client.agent.<a href="./src/qaip/resources/agent.py">list_threads</a>(\*\*<a href="src/qaip/types/agent_list_threads_params.py">params</a>) -> <a href="./src/qaip/types/agent_thread_list_response.py">AgentThreadListResponse</a></code>
 - <code title="get /agent/runs/{run_id}">client.agent.<a href="./src/qaip/resources/agent.py">retrieve_run</a>(run_id, \*\*<a href="src/qaip/types/agent_retrieve_run_params.py">params</a>) -> <a href="./src/qaip/types/agent_run.py">AgentRun</a></code>
 - <code title="get /agent/runs/{run_id}/result">client.agent.<a href="./src/qaip/resources/agent.py">retrieve_run_result</a>(run_id, \*\*<a href="src/qaip/types/agent_retrieve_run_result_params.py">params</a>) -> <a href="./src/qaip/types/agent_retrieve_run_result_response.py">AgentRetrieveRunResultResponse</a></code>
+- <code title="get /agent/threads/{thread_id}">client.agent.<a href="./src/qaip/resources/agent.py">retrieve_thread</a>(thread_id, \*\*<a href="src/qaip/types/agent_retrieve_thread_params.py">params</a>) -> <a href="./src/qaip/types/agent_thread_detail.py">AgentThreadDetail</a></code>
 - <code title="post /agent/run">client.agent.<a href="./src/qaip/resources/agent.py">run</a>(\*\*<a href="src/qaip/types/agent_run_params.py">params</a>) -> str</code>
+- <code title="get /agent/runs/{run_id}/events/stream">client.agent.<a href="./src/qaip/resources/agent.py">stream_run_events</a>(run_id, \*\*<a href="src/qaip/types/agent_stream_run_events_params.py">params</a>) -> <a href="./src/qaip/types/agent_stream_event.py">AgentStreamEvent</a></code>
+
+# Conversations
+
+Types:
+
+```python
+from qaip.types import (
+    Conversation,
+    ConversationDetail,
+    ConversationListResponse,
+    ConversationMessage,
+    ConversationTreeNode,
+)
+```
+
+Methods:
+
+- <code title="get /conversations">client.conversations.<a href="./src/qaip/resources/conversations.py">list</a>(\*\*<a href="src/qaip/types/conversation_list_params.py">params</a>) -> <a href="./src/qaip/types/conversation_list_response.py">ConversationListResponse</a></code>
+- <code title="get /conversations/{conversation_id}">client.conversations.<a href="./src/qaip/resources/conversations.py">retrieve</a>(conversation_id, \*\*<a href="src/qaip/types/conversation_retrieve_params.py">params</a>) -> <a href="./src/qaip/types/conversation_detail.py">ConversationDetail</a></code>
+- <code title="patch /conversations/{conversation_id}">client.conversations.<a href="./src/qaip/resources/conversations.py">update</a>(conversation_id, \*\*<a href="src/qaip/types/conversation_update_params.py">params</a>) -> <a href="./src/qaip/types/conversation.py">Conversation</a></code>
+- <code title="delete /conversations/{conversation_id}">client.conversations.<a href="./src/qaip/resources/conversations.py">delete</a>(conversation_id, \*\*<a href="src/qaip/types/conversation_scope_params.py">params</a>) -> None</code>
+
+# ExternalQueries
+
+Types:
+
+```python
+from qaip.types import (
+    ExternalQueryColumn,
+    ExternalQueryCreateResponse,
+    ExternalQueryPreparingResponse,
+    ExternalQueryResultResponse,
+    ExternalQueryState,
+    ExternalQueryStateOnlyResponse,
+    ExternalTableColumn,
+    ExternalTableQueryResponse,
+    ExternalTableSchema,
+    ExternalTableSchemaResponse,
+)
+```
+
+Methods:
+
+- <code title="post /query">client.external_queries.<a href="./src/qaip/resources/external_queries.py">create</a>(\*\*<a href="src/qaip/types/external_query_create_params.py">params</a>) -> <a href="./src/qaip/types/external_query_create_response.py">ExternalQueryCreateResponse</a></code>
+- <code title="delete /query/{request_id}">client.external_queries.<a href="./src/qaip/resources/external_queries.py">cancel</a>(request_id) -> <a href="./src/qaip/types/external_query_state_only_response.py">ExternalQueryStateOnlyResponse</a></code>
+- <code title="get /query/{request_id}">client.external_queries.<a href="./src/qaip/resources/external_queries.py">retrieve</a>(request_id) -> <a href="./src/qaip/types/external_query_state_only_response.py">ExternalQueryStateOnlyResponse</a></code>
+- <code title="get /query/schema">client.external_queries.<a href="./src/qaip/resources/external_queries.py">retrieve_schema</a>() -> <a href="./src/qaip/types/external_table_schema_response.py">ExternalTableSchemaResponse</a></code>
+
+# TagManagement
+
+Methods:
+
+- <code title="post /tags">client.tag_management.<a href="./src/qaip/resources/tag_management.py">create</a>(\*\*<a href="src/qaip/types/tag_management_create_params.py">params</a>) -> <a href="./src/qaip/types/shared/tag.py">Tag</a></code>
+- <code title="put /tags/{id}">client.tag_management.<a href="./src/qaip/resources/tag_management.py">update</a>(id, \*\*<a href="src/qaip/types/tag_management_update_params.py">params</a>) -> <a href="./src/qaip/types/shared/tag.py">Tag</a></code>
+- <code title="delete /tags/{id}">client.tag_management.<a href="./src/qaip/resources/tag_management.py">delete</a>(id) -> <a href="./src/qaip/types/shared/tag.py">Tag</a></code>
 
 # TagSourceGroups
 

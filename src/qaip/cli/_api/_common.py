@@ -8,9 +8,7 @@ from typing import Any, cast
 
 from .._errors import CLIError
 
-_UUID_RE = re.compile(
-    r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-)
+_UUID_RE = re.compile(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
 
 # `validate_loose_id` の許容文字。空白（タブ・改行・unicode 空白すべて）/ path 区切り
 # (`/` `\\`) / URL エンコード文字 (`%`) / ASCII 制御文字 (`\x00`-`\x1f`, DEL) を弾く
@@ -145,6 +143,13 @@ def parse_json_body(args: argparse.Namespace) -> dict[str, Any] | None:
     return cast(dict[str, Any], data)
 
 
+def validate_json_body_fields(body: dict[str, Any], *, allowed: frozenset[str]) -> None:
+    """SDK の制御引数を request body として受け付けないようフィールドを限定する。"""
+    unknown = sorted(set(body) - allowed)
+    if unknown:
+        raise CLIError(f"unsupported field(s) in --json: {', '.join(unknown)}")
+
+
 def filter_fields(data: Any, fields: str | None) -> Any:  # noqa: ANN401
     if fields is None or not isinstance(data, dict):
         return data
@@ -173,6 +178,8 @@ def print_dry_run(
     body: dict[str, Any] | None = None,
     *,
     sensitive_keys: tuple[str, ...] = (),
+    headers: dict[str, Any] | None = None,
+    query: dict[str, Any] | None = None,
 ) -> None:
     """dry-run のリクエスト内容を標準出力に表示する。
 
@@ -189,4 +196,8 @@ def print_dry_run(
             result["body"] = masked
         else:
             result["body"] = body
+    if headers is not None:
+        result["headers"] = headers
+    if query is not None:
+        result["query"] = query
     sys.stdout.write(json.dumps(result, indent=2, ensure_ascii=False, default=str) + "\n")

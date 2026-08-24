@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING, Any
+import json
+from typing import TYPE_CHECKING, Any, cast
 from argparse import ArgumentParser
 
 from .._utils import get_client
@@ -14,12 +15,17 @@ from ._common import (
     parse_json_arg,
     parse_json_body,
     validate_loose_id,
+    validate_json_body_fields,
 )
 from ..._types import omit
 from .._errors import CLIError
+from ...types.agent_create_run_params import Input as AgentCreateRunInput
 
 if TYPE_CHECKING:
     from argparse import Namespace, _SubParsersAction
+
+_RUN_BODY_KEYS = frozenset({"forwarded_props", "messages", "redaction_policy_id", "run_id", "thread_id"})
+_CREATE_RUN_BODY_KEYS = frozenset({"input", "idempotency_key"})
 
 
 def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
@@ -78,6 +84,37 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
     add_fields(sub)
     sub.set_defaults(func=_list_run_events)
 
+    sub = subparser.add_parser("agent.stream_run_events", help="Stream persisted agent run events")
+    sub.add_argument("-i", "--id", required=True, dest="run_id", help="Run ID")
+    sub.add_argument("--after", type=int, help="Last persisted event index received")
+    sub.add_argument(
+        "--last-event-id",
+        help="SSE reconnect cursor used when --after is omitted",
+    )
+    sub.add_argument("--principal-id", help="Principal scope")
+    add_dry_run(sub)
+    sub.set_defaults(func=_stream_run_events)
+
+    sub = subparser.add_parser("agent.list_threads", help="List agent conversation threads")
+    sub.add_argument("--limit", type=int, help="Maximum number of results")
+    sub.add_argument("--offset", type=int, help="Number of results to skip")
+    sub.add_argument("--principal-id", help="Principal scope")
+    sub.add_argument(
+        "--all-principals",
+        action="store_true",
+        help="Return threads across all principals",
+    )
+    add_dry_run(sub)
+    add_fields(sub)
+    sub.set_defaults(func=_list_threads)
+
+    sub = subparser.add_parser("agent.retrieve_thread", help="Get an agent thread's run tree")
+    sub.add_argument("-i", "--id", required=True, dest="thread_id", help="Thread ID")
+    sub.add_argument("--principal-id", help="Principal scope")
+    add_dry_run(sub)
+    add_fields(sub)
+    sub.set_defaults(func=_retrieve_thread)
+
 
 def _collect_agent_input_fields(args: Namespace, target: dict[str, Any]) -> None:
     """CLI フラグから messages/run_id/thread_id/forwarded_props を target に埋める。
@@ -91,15 +128,14 @@ def _collect_agent_input_fields(args: Namespace, target: dict[str, Any]) -> None
     if args.thread_id and "thread_id" not in target:
         target["thread_id"] = validate_loose_id(args.thread_id, label="thread_id")
     if args.forwarded_props and "forwarded_props" not in target:
-        target["forwarded_props"] = parse_json_arg(
-            args.forwarded_props, label="--forwarded-props"
-        )
+        target["forwarded_props"] = parse_json_arg(args.forwarded_props, label="--forwarded-props")
 
 
 def _build_agent_body(args: Namespace) -> dict[str, Any]:
     """agent.run の body を組み立てる"""
     body = parse_json_body(args) or {}
     _collect_agent_input_fields(args, body)
+    validate_json_body_fields(body, allowed=_RUN_BODY_KEYS)
     return body
 
 
@@ -111,7 +147,13 @@ def _run(args: Namespace) -> None:
         return
 
     client = get_client(args)
-    stream = client.agent.run(**body)
+    stream = client.agent.run(
+        forwarded_props=body["forwarded_props"] if "forwarded_props" in body else omit,
+        messages=body["messages"] if "messages" in body else omit,
+        redaction_policy_id=body["redaction_policy_id"] if "redaction_policy_id" in body else omit,
+        run_id=body["run_id"] if "run_id" in body else omit,
+        thread_id=body["thread_id"] if "thread_id" in body else omit,
+    )
     for event in stream:
         # Stream[AgentRunResponse] の要素は text/event-stream を行単位にパースした str。
         sys.stdout.write(event + "\n")
@@ -120,6 +162,7 @@ def _run(args: Namespace) -> None:
 
 def _create_run(args: Namespace) -> None:
     body = parse_json_body(args) or {}
+    validate_json_body_fields(body, allowed=_CREATE_RUN_BODY_KEYS)
 
     # --json で直接 input を渡された場合はそれを使う。
     # そうでなければ、CLIフラグから input 構造を組み立てる。
@@ -139,7 +182,10 @@ def _create_run(args: Namespace) -> None:
         print_dry_run("POST", "/agent/runs", body)
         return
     client = get_client(args)
-    result = client.agent.create_run(**body)
+    result = client.agent.create_run(
+        input=cast(AgentCreateRunInput, body["input"]),
+        idempotency_key=body["idempotency_key"] if "idempotency_key" in body else omit,
+    )
     print_result(result.model_dump(), args)
 
 
@@ -191,5 +237,75 @@ def _list_run_events(args: Namespace) -> None:
         args.run_id,
         limit=limit if limit is not None else omit,
         after=after if after is not None else omit,
+    )
+    print_result(result.model_dump(), args)
+
+
+def _stream_run_events(args: Namespace) -> None:
+    params: dict[str, Any] = {}
+    if args.after is not None:
+        params["after"] = args.after
+    if args.principal_id is not None:
+        params["principal_id"] = args.principal_id
+
+    if args.dry_run:
+        headers = {"Last-Event-ID": args.last_event_id} if args.last_event_id is not None else None
+        print_dry_run(
+            "GET",
+            f"/agent/runs/{args.run_id}/events/stream",
+            headers=headers,
+            query=params if params else None,
+        )
+        return
+
+    validate_loose_id(args.run_id, label="run_id")
+    client = get_client(args)
+    stream = client.agent.stream_run_events(
+        args.run_id,
+        after=args.after if args.after is not None else omit,
+        last_event_id=args.last_event_id if args.last_event_id is not None else omit,
+        principal_id=args.principal_id if args.principal_id is not None else omit,
+    )
+    for event in stream:
+        sys.stdout.write(json.dumps(event, ensure_ascii=False, default=str) + "\n")
+        sys.stdout.flush()
+
+
+def _list_threads(args: Namespace) -> None:
+    params: dict[str, Any] = {}
+    if args.limit is not None:
+        params["limit"] = args.limit
+    if args.offset is not None:
+        params["offset"] = args.offset
+    if args.principal_id is not None:
+        params["principal_id"] = args.principal_id
+    if args.all_principals:
+        params["all_principals"] = True
+
+    if args.dry_run:
+        print_dry_run("GET", "/agent/threads", params if params else None)
+        return
+
+    client = get_client(args)
+    result = client.agent.list_threads(
+        limit=args.limit if args.limit is not None else omit,
+        offset=args.offset if args.offset is not None else omit,
+        principal_id=args.principal_id if args.principal_id is not None else omit,
+        all_principals=True if args.all_principals else omit,
+    )
+    print_result(result.model_dump(), args)
+
+
+def _retrieve_thread(args: Namespace) -> None:
+    if args.dry_run:
+        params = {"principal_id": args.principal_id} if args.principal_id is not None else None
+        print_dry_run("GET", f"/agent/threads/{args.thread_id}", params)
+        return
+
+    validate_loose_id(args.thread_id, label="thread_id")
+    client = get_client(args)
+    result = client.agent.retrieve_thread(
+        args.thread_id,
+        principal_id=args.principal_id if args.principal_id is not None else omit,
     )
     print_result(result.model_dump(), args)
