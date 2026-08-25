@@ -37,6 +37,15 @@ class TestSecrets:
             name="name",
             secret="secret",
             type="google_drive",
+            chartmetric_consent={
+                "accept_history_storage": True,
+                "accept_llm_processing": True,
+                "accept_quota_rate_cost": True,
+                "accept_retention_deletion": True,
+                "data_use_profile": "x",
+                "enable_for_all_agents": True,
+                "plan_profile": "x",
+            },
             description="description",
         )
         assert_matches_type(Secret, secret, path=["response"])
@@ -128,6 +137,15 @@ class TestSecrets:
         secret = client.secrets.update(
             secret_id="secret_id",
             name="name",
+            chartmetric_consent={
+                "accept_history_storage": True,
+                "accept_llm_processing": True,
+                "accept_quota_rate_cost": True,
+                "accept_retention_deletion": True,
+                "data_use_profile": "x",
+                "enable_for_all_agents": True,
+                "plan_profile": "x",
+            },
             description="description",
             secret="secret",
         )
@@ -273,6 +291,15 @@ class TestAsyncSecrets:
             name="name",
             secret="secret",
             type="google_drive",
+            chartmetric_consent={
+                "accept_history_storage": True,
+                "accept_llm_processing": True,
+                "accept_quota_rate_cost": True,
+                "accept_retention_deletion": True,
+                "data_use_profile": "x",
+                "enable_for_all_agents": True,
+                "plan_profile": "x",
+            },
             description="description",
         )
         assert_matches_type(Secret, secret, path=["response"])
@@ -364,6 +391,15 @@ class TestAsyncSecrets:
         secret = await async_client.secrets.update(
             secret_id="secret_id",
             name="name",
+            chartmetric_consent={
+                "accept_history_storage": True,
+                "accept_llm_processing": True,
+                "accept_quota_rate_cost": True,
+                "accept_retention_deletion": True,
+                "data_use_profile": "x",
+                "enable_for_all_agents": True,
+                "plan_profile": "x",
+            },
             description="description",
             secret="secret",
         )
