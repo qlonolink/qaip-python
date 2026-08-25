@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Optional
+
 import httpx
 
 from ..types import SecretType, secret_list_params, secret_create_params, secret_update_params
@@ -51,6 +53,7 @@ class SecretsResource(SyncAPIResource):
         name: str,
         secret: str,
         type: SecretType,
+        chartmetric_consent: Optional[secret_create_params.ChartmetricConsent] | Omit = omit,
         description: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -70,6 +73,9 @@ class SecretsResource(SyncAPIResource):
 
           type: The type of the secret
 
+          chartmetric_consent: Explicit consent for the Chartmetric plan and build-embedded data-use profile.
+              This object is required only when creating a Chartmetric secret.
+
           description: Description of the secret
 
           extra_headers: Send extra headers
@@ -87,6 +93,7 @@ class SecretsResource(SyncAPIResource):
                     "name": name,
                     "secret": secret,
                     "type": type,
+                    "chartmetric_consent": chartmetric_consent,
                     "description": description,
                 },
                 secret_create_params.SecretCreateParams,
@@ -136,6 +143,7 @@ class SecretsResource(SyncAPIResource):
         secret_id: str,
         *,
         name: str,
+        chartmetric_consent: Optional[secret_update_params.ChartmetricConsent] | Omit = omit,
         description: str | Omit = omit,
         secret: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -151,6 +159,9 @@ class SecretsResource(SyncAPIResource):
 
         Args:
           name: Name of the secret
+
+          chartmetric_consent: Explicit consent for the Chartmetric plan and build-embedded data-use profile.
+              This object is required only when creating a Chartmetric secret.
 
           description: Description of the secret
 
@@ -171,6 +182,7 @@ class SecretsResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "name": name,
+                    "chartmetric_consent": chartmetric_consent,
                     "description": description,
                     "secret": secret,
                 },
@@ -296,6 +308,7 @@ class AsyncSecretsResource(AsyncAPIResource):
         name: str,
         secret: str,
         type: SecretType,
+        chartmetric_consent: Optional[secret_create_params.ChartmetricConsent] | Omit = omit,
         description: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -315,6 +328,9 @@ class AsyncSecretsResource(AsyncAPIResource):
 
           type: The type of the secret
 
+          chartmetric_consent: Explicit consent for the Chartmetric plan and build-embedded data-use profile.
+              This object is required only when creating a Chartmetric secret.
+
           description: Description of the secret
 
           extra_headers: Send extra headers
@@ -332,6 +348,7 @@ class AsyncSecretsResource(AsyncAPIResource):
                     "name": name,
                     "secret": secret,
                     "type": type,
+                    "chartmetric_consent": chartmetric_consent,
                     "description": description,
                 },
                 secret_create_params.SecretCreateParams,
@@ -381,6 +398,7 @@ class AsyncSecretsResource(AsyncAPIResource):
         secret_id: str,
         *,
         name: str,
+        chartmetric_consent: Optional[secret_update_params.ChartmetricConsent] | Omit = omit,
         description: str | Omit = omit,
         secret: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -396,6 +414,9 @@ class AsyncSecretsResource(AsyncAPIResource):
 
         Args:
           name: Name of the secret
+
+          chartmetric_consent: Explicit consent for the Chartmetric plan and build-embedded data-use profile.
+              This object is required only when creating a Chartmetric secret.
 
           description: Description of the secret
 
@@ -416,6 +437,7 @@ class AsyncSecretsResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "name": name,
+                    "chartmetric_consent": chartmetric_consent,
                     "description": description,
                     "secret": secret,
                 },
