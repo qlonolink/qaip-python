@@ -48,3 +48,7 @@ class AgentRun(BaseModel):
     started_at: Optional[datetime] = None
 
     trace_id: Optional[str] = None
+    """
+    保存済み W3C trace context から導出した lowercase OpenTelemetry trace ID。移行前
+    の行は null。
+    """
