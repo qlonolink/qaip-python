@@ -2,15 +2,27 @@
 
 from __future__ import annotations
 
-from typing import Dict, Iterable, Optional
-from typing_extensions import Annotated, TypedDict
+from typing import Dict, Union, Iterable, Optional
+from typing_extensions import Literal, Required, Annotated, TypeAlias, TypedDict
 
 from .._utils import PropertyInfo
 
-__all__ = ["CreateAgentRunInputParam"]
+__all__ = [
+    "CreateAgentRunInputParam",
+    "LegacyFullAgentRunInput",
+    "DeltaV1AgentRunInput",
+    "DeltaV1AgentRunInputNewUserMessage",
+    "DeltaV1AgentRunInputNewUserMessageContentUnionMember1",
+]
 
 
-class CreateAgentRunInputParam(TypedDict, total=False):
+class LegacyFullAgentRunInput(TypedDict, total=False):
+    agent_id: Annotated[str, PropertyInfo(alias="agentId")]
+    """Agent that owns the thread.
+
+    Required by the service when first-class history is used.
+    """
+
     context: Iterable[Dict[str, object]]
 
     forwarded_props: Annotated[Dict[str, object], PropertyInfo(alias="forwardedProps")]
@@ -27,6 +39,9 @@ class CreateAgentRunInputParam(TypedDict, total=False):
     omitted. It does not disable explicitly configured external-table tools or
     Google grounding.
     """
+
+    input_history_mode: Annotated[Literal["legacy_full"], PropertyInfo(alias="inputHistoryMode")]
+    """Complete-history compatibility mode. May be omitted."""
 
     messages: Iterable[Dict[str, object]]
 
@@ -82,3 +97,95 @@ class CreateAgentRunInputParam(TypedDict, total=False):
     """Server-issued thread ID to continue. Omit to create a new thread."""
 
     tools: Iterable[Dict[str, object]]
+
+
+class DeltaV1AgentRunInputNewUserMessageContentUnionMember1(TypedDict, total=False):
+    type: Required[Literal["text", "image", "audio", "video", "document", "binary"]]
+
+    id: str
+
+    data: str
+
+    filename: str
+
+    metadata: Dict[str, object]
+
+    mime_type: Annotated[str, PropertyInfo(alias="mimeType")]
+
+    source: Dict[str, object]
+
+    text: str
+
+    url: str
+
+
+class DeltaV1AgentRunInputNewUserMessage(TypedDict, total=False):
+    id: Required[str]
+
+    content: Required[Union[str, Iterable[DeltaV1AgentRunInputNewUserMessageContentUnionMember1]]]
+    """AG-UI user message text or multimodal content-part array."""
+
+    role: Required[Literal["user"]]
+
+    encrypted_value: Annotated[Optional[str], PropertyInfo(alias="encryptedValue")]
+
+    name: Optional[str]
+
+
+class DeltaV1AgentRunInput(TypedDict, total=False):
+    agent_id: Required[Annotated[str, PropertyInfo(alias="agentId")]]
+    """Agent that owns the new or continued thread."""
+
+    input_history_mode: Required[Annotated[Literal["delta_v1"], PropertyInfo(alias="inputHistoryMode")]]
+    """Server-managed rolling-window history mode."""
+
+    new_user_message: Required[Annotated[DeltaV1AgentRunInputNewUserMessage, PropertyInfo(alias="newUserMessage")]]
+
+    base_run_id: Annotated[str, PropertyInfo(alias="baseRunId")]
+    """Authoritative `current_run_id` returned by `GET /agent/threads`.
+
+    Required when `threadId` is present and rejected for a new thread. A stale value
+    returns `409 THREAD_ADVANCED`.
+    """
+
+    context: Iterable[Dict[str, object]]
+
+    forwarded_props: Annotated[Dict[str, object], PropertyInfo(alias="forwardedProps")]
+    """AG-UI extension properties.
+
+    `retrieval_mode` accepts `required` (default) or `disabled`; the server
+    validates known QAIP keys before use.
+    """
+
+    messages: Iterable[Dict[str, object]]
+    """Compatibility field; if present it must be an empty array."""
+
+    redaction_policy_id: Annotated[Optional[str], PropertyInfo(alias="redactionPolicyId")]
+    """Versioned redaction policy applied before external provider calls.
+
+    Omitted or `null` means no redaction. Unknown IDs return
+    `422 UNKNOWN_REDACTION_POLICY`; unavailable redaction returns 503 and never
+    falls back to unmasked forwarding.
+    """
+
+    resume: Optional[Iterable[Dict[str, object]]]
+
+    retry_run_id: Annotated[str, PropertyInfo(alias="retryRunId")]
+    """
+    Retry the current failed or cancelled run without duplicating its user turn.
+    When present, it must equal `baseRunId` and use the same `newUserMessage`.
+    """
+
+    thread_id: Annotated[str, PropertyInfo(alias="threadId")]
+    """Server-issued thread ID to continue.
+
+    Omit together with `baseRunId` to create a new thread.
+    """
+
+    tools: Iterable[Dict[str, object]]
+
+    ui_state_delta: Annotated[Optional[Dict[str, object]], PropertyInfo(alias="uiStateDelta")]
+    """Current-turn UI state delta. Omit when no state changed."""
+
+
+CreateAgentRunInputParam: TypeAlias = Union[LegacyFullAgentRunInput, DeltaV1AgentRunInput]

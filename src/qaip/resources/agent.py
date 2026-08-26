@@ -111,9 +111,13 @@ class AgentResource(SyncAPIResource):
     ) -> AgentRun:
         """<p> Create an asynchronous agent run and start execution in the background.
 
-        </p> <p> Required scope: `inference:run` </p>
+        </p> <p> Use `inputHistoryMode=delta_v1` to send only `newUserMessage` and let the server reconstruct a bounded rolling context. A continuation supplies the thread's authoritative `current_run_id` as `baseRunId`. </p> <p> Required scope: `inference:run` </p>
 
         Args:
+          input: Agent run input. `legacy_full` accepts a complete AG-UI history; `delta_v1`
+              accepts only the newest user turn and lets the server rebuild a bounded rolling
+              context.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -408,9 +412,13 @@ class AsyncAgentResource(AsyncAPIResource):
     ) -> AgentRun:
         """<p> Create an asynchronous agent run and start execution in the background.
 
-        </p> <p> Required scope: `inference:run` </p>
+        </p> <p> Use `inputHistoryMode=delta_v1` to send only `newUserMessage` and let the server reconstruct a bounded rolling context. A continuation supplies the thread's authoritative `current_run_id` as `baseRunId`. </p> <p> Required scope: `inference:run` </p>
 
         Args:
+          input: Agent run input. `legacy_full` accepts a complete AG-UI history; `delta_v1`
+              accepts only the newest user turn and lets the server rebuild a bounded rolling
+              context.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request

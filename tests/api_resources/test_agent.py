@@ -85,8 +85,10 @@ class TestAgent:
     def test_method_create_run_with_all_params(self, client: Qaip) -> None:
         agent = client.agent.create_run(
             input={
+                "agent_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
                 "context": [{"foo": "bar"}],
                 "forwarded_props": {"foo": "bar"},
+                "input_history_mode": "legacy_full",
                 "messages": [{"foo": "bar"}],
                 "parent_run_id": "x",
                 "redaction_policy_id": "pii-standard",
@@ -402,8 +404,10 @@ class TestAsyncAgent:
     async def test_method_create_run_with_all_params(self, async_client: AsyncQaip) -> None:
         agent = await async_client.agent.create_run(
             input={
+                "agent_id": "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
                 "context": [{"foo": "bar"}],
                 "forwarded_props": {"foo": "bar"},
+                "input_history_mode": "legacy_full",
                 "messages": [{"foo": "bar"}],
                 "parent_run_id": "x",
                 "redaction_policy_id": "pii-standard",
