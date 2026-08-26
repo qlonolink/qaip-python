@@ -2,6 +2,7 @@
 
 from typing import Dict, Optional
 from datetime import datetime
+from typing_extensions import Literal
 
 from .._models import BaseModel
 from .agent_provider import AgentProvider
@@ -12,7 +13,19 @@ __all__ = ["AgentRun"]
 
 
 class AgentRun(BaseModel):
+    context_start_run_id: Optional[str] = None
+    """
+    Oldest run included in the reconstructed rolling context, or null when none was
+    needed.
+    """
+
+    context_truncated: bool
+    """Whether older turns were omitted to stay within the server context budget."""
+
     execution_mode: AgentExecutionMode
+
+    input_history_mode: Literal["legacy_full", "delta_v1"]
+    """How the request supplied conversation history for this run."""
 
     provider: AgentProvider
 

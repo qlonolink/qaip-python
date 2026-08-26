@@ -12,5 +12,10 @@ __all__ = ["AgentCreateRunParams"]
 
 class AgentCreateRunParams(TypedDict, total=False):
     input: Required[CreateAgentRunInputParam]
+    """Agent run input.
+
+    `legacy_full` accepts a complete AG-UI history; `delta_v1` accepts only the
+    newest user turn and lets the server rebuild a bounded rolling context.
+    """
 
     idempotency_key: Annotated[str, PropertyInfo(alias="Idempotency-Key")]
