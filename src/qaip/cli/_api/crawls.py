@@ -34,6 +34,7 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
     sub.add_argument("--path-filters", help="Comma-separated path filter patterns")
     sub.add_argument("--html-only", action="store_true", default=None, help="Process HTML files only")
     sub.add_argument("--use-browser", action="store_true", default=None, help="Use headless browser for rendering")
+    sub.add_argument("--no-canonical-check", action="store_true", default=None, help="Disable duplicate filtering by canonical URL")
     sub.add_argument("--rrule", help="Recurrence rule (RFC 5545 RRULE)")
     add_dry_run(sub)
     add_fields(sub)
@@ -79,6 +80,7 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
     sub.add_argument("--name", help="Name of the web crawl data source")
     sub.add_argument("--urls", help="Comma-separated list of URLs to download (target_urls)")
     sub.add_argument("--max-num-files", type=int, help="Maximum number of files to download")
+    sub.add_argument("--no-canonical-check", action="store_true", default=None, help="Disable duplicate filtering by canonical URL")
     sub.add_argument("--rrule", help="Recurrence rule (RFC 5545 RRULE)")
     add_dry_run(sub)
     add_fields(sub)
@@ -105,6 +107,8 @@ def _create(args: Namespace) -> None:
         body["html_only"] = args.html_only
     if args.use_browser is not None and "use_browser" not in body:
         body["use_browser"] = args.use_browser
+    if args.no_canonical_check is not None and "no_canonical_check" not in body:
+        body["no_canonical_check"] = args.no_canonical_check
     if args.rrule and "rrule" not in body:
         body["rrule"] = args.rrule
 
@@ -192,6 +196,8 @@ def _create_url_list(args: Namespace) -> None:
         body["target_urls"] = [u.strip() for u in args.urls.split(",")]
     if args.max_num_files is not None and "max_num_files" not in body:
         body["max_num_files"] = args.max_num_files
+    if args.no_canonical_check is not None and "no_canonical_check" not in body:
+        body["no_canonical_check"] = args.no_canonical_check
     if args.rrule and "rrule" not in body:
         body["rrule"] = args.rrule
 

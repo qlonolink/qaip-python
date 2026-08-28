@@ -63,6 +63,7 @@ class CrawlsResource(SyncAPIResource):
         path_filters: SequenceNotStr[str] | Omit = omit,
         rrule: str | Omit = omit,
         use_browser: bool | Omit = omit,
+        no_canonical_check: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -124,6 +125,7 @@ class CrawlsResource(SyncAPIResource):
                     "path_filters": path_filters,
                     "rrule": rrule,
                     "use_browser": use_browser,
+                    "no_canonical_check": no_canonical_check,
                 },
                 crawl_create_params.CrawlCreateParams,
             ),
@@ -253,6 +255,7 @@ class CrawlsResource(SyncAPIResource):
         name: str,
         target_urls: SequenceNotStr[str],
         max_num_files: int | Omit = omit,
+        no_canonical_check: bool | Omit = omit,
         metadata: Metadata | Omit = omit,
         rrule: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -293,6 +296,7 @@ class CrawlsResource(SyncAPIResource):
                     "name": name,
                     "target_urls": target_urls,
                     "max_num_files": max_num_files,
+                    "no_canonical_check": no_canonical_check,
                     "metadata": metadata,
                     "rrule": rrule,
                 },
@@ -421,6 +425,7 @@ class AsyncCrawlsResource(AsyncAPIResource):
         path_filters: SequenceNotStr[str] | Omit = omit,
         rrule: str | Omit = omit,
         use_browser: bool | Omit = omit,
+        no_canonical_check: bool | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -482,6 +487,7 @@ class AsyncCrawlsResource(AsyncAPIResource):
                     "path_filters": path_filters,
                     "rrule": rrule,
                     "use_browser": use_browser,
+                    "no_canonical_check": no_canonical_check,
                 },
                 crawl_create_params.CrawlCreateParams,
             ),
@@ -611,6 +617,7 @@ class AsyncCrawlsResource(AsyncAPIResource):
         name: str,
         target_urls: SequenceNotStr[str],
         max_num_files: int | Omit = omit,
+        no_canonical_check: bool | Omit = omit,
         metadata: Metadata | Omit = omit,
         rrule: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -651,6 +658,7 @@ class AsyncCrawlsResource(AsyncAPIResource):
                     "name": name,
                     "target_urls": target_urls,
                     "max_num_files": max_num_files,
+                    "no_canonical_check": no_canonical_check,
                     "metadata": metadata,
                     "rrule": rrule,
                 },

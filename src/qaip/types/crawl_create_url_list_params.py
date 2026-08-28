@@ -23,6 +23,9 @@ class CrawlCreateURLListParams(TypedDict, total=False):
     Defaults to the number of target URLs if omitted.
     """
 
+    no_canonical_check: bool
+    """Whether to disable duplicate filtering by canonical URL"""
+
     metadata: Metadata
     """(reserved for future use) Additional metadata for the web crawl data source"""
 
