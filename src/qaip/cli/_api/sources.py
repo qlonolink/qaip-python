@@ -76,6 +76,7 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
     sub.add_argument(
         "-i", "--id", required=True, dest="source_id", help="Crawl source ID returned in content.source_id"
     )
+    sub.add_argument("--crawl-id", help="Parent crawl ID (uses the manifest fast path)")
     sub.add_argument("-o", "--output", help="Write downloaded bytes to this file")
     sub.add_argument(
         "--force",
@@ -188,6 +189,7 @@ def _download_raw(args: Namespace) -> None:
 
     if args.dry_run:
         body: dict[str, Any] = {}
+        query: dict[str, Any] = {}
         if args.output:
             body["output"] = args.output
             body["would_overwrite"] = Path(args.output).exists()
@@ -195,10 +197,19 @@ def _download_raw(args: Namespace) -> None:
             body["force"] = True
         if args.stdout:
             body["stdout"] = True
-        print_dry_run("GET", f"/sources/{args.source_id}/raw", body if body else None)
+        if args.crawl_id:
+            query["crawl_id"] = args.crawl_id
+        print_dry_run(
+            "GET",
+            f"/sources/{args.source_id}/raw",
+            body if body else None,
+            query=query if query else None,
+        )
         return
 
     validate_id(args.source_id, label="source_id")
+    if args.crawl_id:
+        validate_id(args.crawl_id, label="crawl_id")
 
     if not args.output and not args.stdout:
         raise CLIError(
@@ -209,7 +220,10 @@ def _download_raw(args: Namespace) -> None:
 
     output_path = _prepare_output_path(args.output, force=args.force) if args.output else None
     client = get_client(args)
-    with client.sources.with_streaming_response.download_raw(args.source_id) as response:
+    with client.sources.with_streaming_response.download_raw(
+        args.source_id,
+        crawl_id=args.crawl_id if args.crawl_id else omit,
+    ) as response:
         if output_path is None:
             _stream_response_to_stdout(response)
             return
@@ -277,9 +291,7 @@ def _stream_response_to_stdout(response: Any) -> None:  # noqa: ANN401
         stdout.write(chunk)
 
 
-def _download_raw_result(
-    response: Any, output: Path, bytes_written: int, sha256: str
-) -> dict[str, Any]:  # noqa: ANN401
+def _download_raw_result(response: Any, output: Path, bytes_written: int, sha256: str) -> dict[str, Any]:  # noqa: ANN401
     headers = response.http_response.headers
     result: dict[str, Any] = {
         "path": str(output.resolve()),
