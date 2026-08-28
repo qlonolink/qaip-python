@@ -43,6 +43,9 @@ class CrawlCreateParams(TypedDict, total=False):
     metadata: Metadata
     """(reserved for future use) Additional metadata for the web crawl data source"""
 
+    no_canonical_check: bool
+    """Whether to disable duplicate filtering by canonical URL"""
+
     path_filters: SequenceNotStr[str]
     """Path filters for crawling.
 

@@ -38,6 +38,9 @@ class CrawlSetting(BaseModel):
     max_num_files: Optional[int] = None
     """Maximum number of files to crawl"""
 
+    no_canonical_check: Optional[bool] = None
+    """Whether to disable duplicate filtering by canonical URL"""
+
     path_filters: Optional[List[str]] = None
     """Path filters for crawling"""
 

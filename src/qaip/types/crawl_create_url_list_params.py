@@ -29,5 +29,8 @@ class CrawlCreateURLListParams(TypedDict, total=False):
     metadata: Metadata
     """(reserved for future use) Additional metadata for the web crawl data source"""
 
+    no_canonical_check: bool
+    """Whether to disable duplicate filtering by canonical URL"""
+
     rrule: str
     """Recurrence rule (RFC 5545 RRULE)"""
