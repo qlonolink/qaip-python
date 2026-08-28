@@ -6,7 +6,12 @@ from typing import Iterable
 
 import httpx
 
-from ..types import source_list_params, source_update_metadata_params, source_batch_set_metadata_params
+from ..types import (
+    source_list_params,
+    source_download_raw_params,
+    source_update_metadata_params,
+    source_batch_set_metadata_params,
+)
 from .._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from .._utils import path_template, maybe_transform, async_maybe_transform
 from .._compat import cached_property
@@ -212,6 +217,7 @@ class SourcesResource(SyncAPIResource):
         self,
         source_id: str,
         *,
+        crawl_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -224,6 +230,9 @@ class SourcesResource(SyncAPIResource):
         Only crawl source IDs returned as content.source_id from /search, GET /contents/{id}, or POST /completions citations are valid. Local file source IDs accepted by GET /sources/{source_id} return 404 here. </p> <p> The endpoint checks tenant ownership of the crawl source and returns the entire stored file. It does not apply per-chunk authorization policies; applications using enforce authorization should decide whether to expose raw files to each principal. </p> <p> Required roles: All, App </p>
 
         Args:
+          crawl_id: Parent crawl ID. Supplying it uses the crawl manifest fast path; omission uses
+              the deprecated global lookup fallback.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -238,7 +247,14 @@ class SourcesResource(SyncAPIResource):
         return self._get(
             path_template("/sources/{source_id}/raw", source_id=source_id),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform(
+                    {"crawl_id": crawl_id},
+                    source_download_raw_params.SourceDownloadRawParams,
+                ),
             ),
             cast_to=BinaryAPIResponse,
         )
@@ -492,6 +508,7 @@ class AsyncSourcesResource(AsyncAPIResource):
         self,
         source_id: str,
         *,
+        crawl_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -504,6 +521,9 @@ class AsyncSourcesResource(AsyncAPIResource):
         Only crawl source IDs returned as content.source_id from /search, GET /contents/{id}, or POST /completions citations are valid. Local file source IDs accepted by GET /sources/{source_id} return 404 here. </p> <p> The endpoint checks tenant ownership of the crawl source and returns the entire stored file. It does not apply per-chunk authorization policies; applications using enforce authorization should decide whether to expose raw files to each principal. </p> <p> Required roles: All, App </p>
 
         Args:
+          crawl_id: Parent crawl ID. Supplying it uses the crawl manifest fast path; omission uses
+              the deprecated global lookup fallback.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -518,7 +538,14 @@ class AsyncSourcesResource(AsyncAPIResource):
         return await self._get(
             path_template("/sources/{source_id}/raw", source_id=source_id),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {"crawl_id": crawl_id},
+                    source_download_raw_params.SourceDownloadRawParams,
+                ),
             ),
             cast_to=AsyncBinaryAPIResponse,
         )

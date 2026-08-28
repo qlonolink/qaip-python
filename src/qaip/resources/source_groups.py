@@ -8,6 +8,7 @@ import httpx
 
 from ..types import (
     source_group_list_params,
+    source_group_list_sources_params,
     source_group_update_metadata_params,
     source_group_batch_set_metadata_params,
 )
@@ -215,6 +216,8 @@ class SourceGroupsResource(SyncAPIResource):
         self,
         source_group_id: str,
         *,
+        after_id: str | Omit = omit,
+        limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -227,6 +230,10 @@ class SourceGroupsResource(SyncAPIResource):
         </p> <p> Required roles: All, App </p>
 
         Args:
+          after_id: Fetch sources after this source ID
+
+          limit: Maximum number of results to return. Omit to return all sources.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -240,7 +247,14 @@ class SourceGroupsResource(SyncAPIResource):
         return self._get(
             path_template("/source-groups/{source_group_id}/sources", source_group_id=source_group_id),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform(
+                    {"after_id": after_id, "limit": limit},
+                    source_group_list_sources_params.SourceGroupListSourcesParams,
+                ),
             ),
             cast_to=SourceGroupListSourcesResponse,
         )
@@ -499,6 +513,8 @@ class AsyncSourceGroupsResource(AsyncAPIResource):
         self,
         source_group_id: str,
         *,
+        after_id: str | Omit = omit,
+        limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -511,6 +527,10 @@ class AsyncSourceGroupsResource(AsyncAPIResource):
         </p> <p> Required roles: All, App </p>
 
         Args:
+          after_id: Fetch sources after this source ID
+
+          limit: Maximum number of results to return. Omit to return all sources.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -524,7 +544,14 @@ class AsyncSourceGroupsResource(AsyncAPIResource):
         return await self._get(
             path_template("/source-groups/{source_group_id}/sources", source_group_id=source_group_id),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {"after_id": after_id, "limit": limit},
+                    source_group_list_sources_params.SourceGroupListSourcesParams,
+                ),
             ),
             cast_to=SourceGroupListSourcesResponse,
         )

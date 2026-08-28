@@ -42,6 +42,8 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
 
     sub = subparser.add_parser("source-groups.list_sources", help="List sources in a source group")
     sub.add_argument("-i", "--id", required=True, dest="source_group_id", help="Source group ID")
+    sub.add_argument("--limit", type=int, help="Maximum number of results")
+    sub.add_argument("--after-id", help="Source ID cursor for pagination")
     add_dry_run(sub)
     add_fields(sub)
     sub.set_defaults(func=_list_sources)
@@ -106,12 +108,26 @@ def _list(args: Namespace) -> None:
 
 
 def _list_sources(args: Namespace) -> None:
+    limit: int | None = args.limit
+    after_id: str | None = args.after_id
+
     if args.dry_run:
-        print_dry_run("GET", f"/source-groups/{args.source_group_id}/sources")
+        params: dict[str, Any] = {}
+        if limit is not None:
+            params["limit"] = limit
+        if after_id is not None:
+            params["after_id"] = after_id
+        print_dry_run("GET", f"/source-groups/{args.source_group_id}/sources", params if params else None)
         return
     validate_id(args.source_group_id, label="source_group_id")
+    if after_id is not None:
+        validate_id(after_id, label="after_id")
     client = get_client(args)
-    result = client.source_groups.list_sources(args.source_group_id)
+    result = client.source_groups.list_sources(
+        args.source_group_id,
+        limit=limit if limit is not None else omit,
+        after_id=after_id if after_id is not None else omit,
+    )
     print_result(result.model_dump(), args)
 
 

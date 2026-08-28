@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
+from pathlib import Path
 from argparse import ArgumentParser
 
 from .._utils import get_client
@@ -14,6 +15,12 @@ from ._common import (
     print_dry_run,
     add_json_param,
     parse_json_body,
+)
+from .sources import (
+    _download_raw_result,
+    _prepare_output_path,
+    _stream_response_to_path,
+    _stream_response_to_stdout,
 )
 from ..._types import omit
 from .._errors import CLIError
@@ -34,7 +41,9 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
     sub.add_argument("--path-filters", help="Comma-separated path filter patterns")
     sub.add_argument("--html-only", action="store_true", default=None, help="Process HTML files only")
     sub.add_argument("--use-browser", action="store_true", default=None, help="Use headless browser for rendering")
-    sub.add_argument("--no-canonical-check", action="store_true", default=None, help="Disable duplicate filtering by canonical URL")
+    sub.add_argument(
+        "--no-canonical-check", action="store_true", default=None, help="Disable duplicate filtering by canonical URL"
+    )
     sub.add_argument("--rrule", help="Recurrence rule (RFC 5545 RRULE)")
     add_dry_run(sub)
     add_fields(sub)
@@ -59,6 +68,31 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
     add_yes(sub)
     sub.set_defaults(func=_delete)
 
+    sub = subparser.add_parser("crawls.download_raw_archive", help="Download crawl raw files as a ZIP archive")
+    sub.add_argument("-i", "--id", required=True, dest="crawl_id", help="Crawl ID")
+    sub.add_argument(
+        "--source-id",
+        action="append",
+        dest="source_ids",
+        help="Source ID to include; repeat to select multiple files (omit to include all)",
+    )
+    sub.add_argument("-o", "--output", help="Write downloaded ZIP bytes to this file")
+    sub.add_argument(
+        "--force",
+        action="store_true",
+        default=False,
+        help="Overwrite --output if it already exists",
+    )
+    sub.add_argument(
+        "--stdout",
+        action="store_true",
+        default=False,
+        help="Write ZIP bytes to stdout instead of a file",
+    )
+    add_dry_run(sub)
+    add_fields(sub)
+    sub.set_defaults(func=_download_raw_archive)
+
     sub = subparser.add_parser("crawls.retrieve_setting", help="Get crawl settings")
     sub.add_argument("-i", "--id", required=True, help="Crawl ID")
     add_dry_run(sub)
@@ -80,7 +114,9 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
     sub.add_argument("--name", help="Name of the web crawl data source")
     sub.add_argument("--urls", help="Comma-separated list of URLs to download (target_urls)")
     sub.add_argument("--max-num-files", type=int, help="Maximum number of files to download")
-    sub.add_argument("--no-canonical-check", action="store_true", default=None, help="Disable duplicate filtering by canonical URL")
+    sub.add_argument(
+        "--no-canonical-check", action="store_true", default=None, help="Disable duplicate filtering by canonical URL"
+    )
     sub.add_argument("--rrule", help="Recurrence rule (RFC 5545 RRULE)")
     add_dry_run(sub)
     add_fields(sub)
@@ -163,6 +199,59 @@ def _delete(args: Namespace) -> None:
     client = get_client(args)
     result = client.crawls.delete(args.id)
     print_result(result.model_dump(), args)
+
+
+def _download_raw_archive(args: Namespace) -> None:
+    source_ids: list[str] | None = args.source_ids
+    if args.output and args.stdout:
+        raise CLIError("--output and --stdout cannot be used together", code="invalid_argument")
+    if args.stdout and args.force:
+        raise CLIError("--force can only be used with --output", code="invalid_argument")
+    if args.stdout and args.fields:
+        raise CLIError("--fields cannot be used with --stdout", code="invalid_argument")
+
+    if args.dry_run:
+        body: dict[str, Any] = {}
+        if source_ids is not None:
+            body["source_ids"] = source_ids
+        if args.output:
+            body["output"] = args.output
+            body["would_overwrite"] = Path(args.output).exists()
+        if args.force:
+            body["force"] = True
+        if args.stdout:
+            body["stdout"] = True
+        print_dry_run("POST", f"/crawls/{args.crawl_id}/raw-archive", body if body else None)
+        return
+
+    validate_id(args.crawl_id, label="crawl_id")
+    if source_ids is not None:
+        if len(source_ids) > 10_000:
+            raise CLIError("--source-id can be specified at most 10000 times", code="invalid_argument")
+        if len(source_ids) != len(set(source_ids)):
+            raise CLIError("Duplicate --source-id values are not allowed", code="invalid_argument")
+        for source_id in source_ids:
+            validate_id(source_id, label="source_id")
+
+    if not args.output and not args.stdout:
+        raise CLIError(
+            "--output is required unless --stdout is set",
+            code="invalid_argument",
+            hint="Pass --output PATH to save the ZIP archive, or --stdout to stream raw bytes to stdout.",
+        )
+
+    output_path = _prepare_output_path(args.output, force=args.force) if args.output else None
+    client = get_client(args)
+    with client.crawls.with_streaming_response.download_raw_archive(
+        args.crawl_id,
+        source_ids=source_ids if source_ids is not None else omit,
+    ) as response:
+        if output_path is None:
+            _stream_response_to_stdout(response)
+            return
+
+        bytes_written, sha256 = _stream_response_to_path(response, output_path)
+        print_result(_download_raw_result(response, output_path, bytes_written, sha256), args)
 
 
 def _retrieve_setting(args: Namespace) -> None:

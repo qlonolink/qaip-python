@@ -9,16 +9,25 @@ from ..types import (
     crawl_create_params,
     crawl_update_setting_params,
     crawl_create_url_list_params,
+    crawl_download_raw_archive_params,
 )
 from .._types import Body, Omit, Query, Headers, NotGiven, SequenceNotStr, omit, not_given
 from .._utils import path_template, maybe_transform, async_maybe_transform
 from .._compat import cached_property
 from .._resource import SyncAPIResource, AsyncAPIResource
 from .._response import (
+    BinaryAPIResponse,
+    AsyncBinaryAPIResponse,
+    StreamedBinaryAPIResponse,
+    AsyncStreamedBinaryAPIResponse,
     to_raw_response_wrapper,
     to_streamed_response_wrapper,
     async_to_raw_response_wrapper,
+    to_custom_raw_response_wrapper,
     async_to_streamed_response_wrapper,
+    to_custom_streamed_response_wrapper,
+    async_to_custom_raw_response_wrapper,
+    async_to_custom_streamed_response_wrapper,
 )
 from ..types.crawl import Crawl
 from .._base_client import make_request_options
@@ -247,6 +256,49 @@ class CrawlsResource(SyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Crawl,
+        )
+
+    def download_raw_archive(
+        self,
+        crawl_id: str,
+        *,
+        source_ids: SequenceNotStr[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> BinaryAPIResponse:
+        """Downloads raw files belonging to a crawl as a ZIP archive.
+
+        Omit ``source_ids`` to include every source in the crawl, or provide source IDs to
+        include only those files.
+
+        Args:
+          source_ids: Source IDs to include. Omit to include every source in the crawl.
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not crawl_id:
+            raise ValueError(f"Expected a non-empty value for `crawl_id` but received {crawl_id!r}")
+        extra_headers = {"Accept": "application/zip", **(extra_headers or {})}
+        return self._post(
+            path_template("/crawls/{crawl_id}/raw-archive", crawl_id=crawl_id),
+            body=maybe_transform(
+                {"source_ids": source_ids},
+                crawl_download_raw_archive_params.CrawlDownloadRawArchiveParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=BinaryAPIResponse,
         )
 
     def create_url_list(
@@ -611,6 +663,49 @@ class AsyncCrawlsResource(AsyncAPIResource):
             cast_to=Crawl,
         )
 
+    async def download_raw_archive(
+        self,
+        crawl_id: str,
+        *,
+        source_ids: SequenceNotStr[str] | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> AsyncBinaryAPIResponse:
+        """Downloads raw files belonging to a crawl as a ZIP archive.
+
+        Omit ``source_ids`` to include every source in the crawl, or provide source IDs to
+        include only those files.
+
+        Args:
+          source_ids: Source IDs to include. Omit to include every source in the crawl.
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not crawl_id:
+            raise ValueError(f"Expected a non-empty value for `crawl_id` but received {crawl_id!r}")
+        extra_headers = {"Accept": "application/zip", **(extra_headers or {})}
+        return await self._post(
+            path_template("/crawls/{crawl_id}/raw-archive", crawl_id=crawl_id),
+            body=await async_maybe_transform(
+                {"source_ids": source_ids},
+                crawl_download_raw_archive_params.CrawlDownloadRawArchiveParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=AsyncBinaryAPIResponse,
+        )
+
     async def create_url_list(
         self,
         *,
@@ -769,6 +864,10 @@ class CrawlsResourceWithRawResponse:
         self.delete = to_raw_response_wrapper(
             crawls.delete,
         )
+        self.download_raw_archive = to_custom_raw_response_wrapper(
+            crawls.download_raw_archive,
+            BinaryAPIResponse,
+        )
         self.create_url_list = to_raw_response_wrapper(
             crawls.create_url_list,
         )
@@ -795,6 +894,10 @@ class AsyncCrawlsResourceWithRawResponse:
         )
         self.delete = async_to_raw_response_wrapper(
             crawls.delete,
+        )
+        self.download_raw_archive = async_to_custom_raw_response_wrapper(
+            crawls.download_raw_archive,
+            AsyncBinaryAPIResponse,
         )
         self.create_url_list = async_to_raw_response_wrapper(
             crawls.create_url_list,
@@ -823,6 +926,10 @@ class CrawlsResourceWithStreamingResponse:
         self.delete = to_streamed_response_wrapper(
             crawls.delete,
         )
+        self.download_raw_archive = to_custom_streamed_response_wrapper(
+            crawls.download_raw_archive,
+            StreamedBinaryAPIResponse,
+        )
         self.create_url_list = to_streamed_response_wrapper(
             crawls.create_url_list,
         )
@@ -849,6 +956,10 @@ class AsyncCrawlsResourceWithStreamingResponse:
         )
         self.delete = async_to_streamed_response_wrapper(
             crawls.delete,
+        )
+        self.download_raw_archive = async_to_custom_streamed_response_wrapper(
+            crawls.download_raw_archive,
+            AsyncStreamedBinaryAPIResponse,
         )
         self.create_url_list = async_to_streamed_response_wrapper(
             crawls.create_url_list,

@@ -66,6 +66,21 @@ class TestSchemaCommand:
         assert data["methods"]["download_raw"]["required_one_of"] == [["output", "stdout"]]
         assert ["output", "stdout"] in data["methods"]["download_raw"]["mutually_exclusive"]
 
+    def test_schema_crawl_raw_methods(self, capsys: pytest.CaptureFixture[str]) -> None:
+        parser = _build_parser()
+
+        args = parser.parse_args(["schema", "source-groups"])
+        args.func(args)
+        source_group_schema = json.loads(capsys.readouterr().out)
+        assert source_group_schema["methods"]["list_sources"]["optional_params"] == ["after_id", "limit"]
+
+        args = parser.parse_args(["schema", "crawls"])
+        args.func(args)
+        archive_schema = json.loads(capsys.readouterr().out)
+        method = archive_schema["methods"]["download_raw_archive"]
+        assert method["optional_params"] == ["source_ids", "output", "stdout", "force", "fields"]
+        assert method["stdout_kind"] == "binary"
+
     def test_schema_unknown_resource(self) -> None:
         parser = _build_parser()
         args = parser.parse_args(["schema", "nonexistent"])
@@ -446,6 +461,56 @@ class TestDryRun:
         assert data["method"] == "GET"
         assert data["path"] == "/sources/src-1/raw"
         assert "body" not in data
+
+    def test_sources_download_raw_with_crawl_id_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(["api", "sources.download_raw", "--id", "src-1", "--crawl-id", "crawl-1", "--dry-run"])
+        args.func(args)
+        data = json.loads(capsys.readouterr().out)
+        assert data["query"] == {"crawl_id": "crawl-1"}
+
+    def test_source_groups_list_sources_with_cursor_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(
+            [
+                "api",
+                "source-groups.list_sources",
+                "--id",
+                "crawl-1",
+                "--limit",
+                "100",
+                "--after-id",
+                "src-1",
+                "--dry-run",
+            ]
+        )
+        args.func(args)
+        data = json.loads(capsys.readouterr().out)
+        assert data["body"] == {"limit": 100, "after_id": "src-1"}
+
+    def test_crawls_download_raw_archive_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(
+            [
+                "api",
+                "crawls.download_raw_archive",
+                "--id",
+                "crawl-1",
+                "--source-id",
+                "src-1",
+                "--source-id",
+                "src-2",
+                "--output",
+                "crawl.zip",
+                "--dry-run",
+            ]
+        )
+        args.func(args)
+        data = json.loads(capsys.readouterr().out)
+        assert data["method"] == "POST"
+        assert data["path"] == "/crawls/crawl-1/raw-archive"
+        assert data["body"]["source_ids"] == ["src-1", "src-2"]
+        assert data["body"]["output"] == "crawl.zip"
 
     def test_source_groups_list_with_source_type(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
@@ -1463,6 +1528,86 @@ class TestSourcesDownloadRaw:
             "content_length": 16,
             "content_disposition": 'attachment; filename="raw.html"',
         }
+
+
+class TestCrawlsDownloadRawArchive:
+    def test_downloads_selected_sources_to_output_file(
+        self,
+        tmp_path: Path,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        output = tmp_path / "crawl.zip"
+        seen_requests: list[tuple[str, bytes]] = []
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            seen_requests.append((request.url.path, request.read()))
+            return httpx.Response(
+                200,
+                content=b"PK-archive",
+                headers={
+                    "content-type": "application/zip",
+                    "content-length": "10",
+                    "content-disposition": 'attachment; filename="crawl.zip"',
+                },
+            )
+
+        transport = httpx.MockTransport(handler)
+        client = Qaip(
+            base_url="http://test.local",
+            api_key="test-key",
+            http_client=httpx.Client(transport=transport),
+        )
+        parser = _build_parser()
+        args = parser.parse_args(
+            [
+                "api",
+                "crawls.download_raw_archive",
+                "--id",
+                _VALID_UUID,
+                "--source-id",
+                _VALID_UUID,
+                "--output",
+                str(output),
+            ]
+        )
+
+        with client:
+            with patch("qaip.cli._api.crawls.get_client", return_value=client):
+                args.func(args)
+
+        result = json.loads(capsys.readouterr().out)
+        assert seen_requests == [
+            (
+                f"/crawls/{_VALID_UUID}/raw-archive",
+                f'{{"source_ids":["{_VALID_UUID}"]}}'.encode(),
+            )
+        ]
+        assert output.read_bytes() == b"PK-archive"
+        assert result["bytes_written"] == 10
+        assert result["content_type"] == "application/zip"
+
+    def test_duplicate_source_id_rejected_before_request(self) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(
+            [
+                "api",
+                "crawls.download_raw_archive",
+                "--id",
+                _VALID_UUID,
+                "--source-id",
+                _VALID_UUID,
+                "--source-id",
+                _VALID_UUID,
+                "--stdout",
+            ]
+        )
+
+        with patch("qaip.cli._api.crawls.get_client") as mock_get_client:
+            with pytest.raises(CLIError) as exc_info:
+                args.func(args)
+
+        assert exc_info.value.code == "invalid_argument"
+        mock_get_client.assert_not_called()
 
 
 class TestMainTypeErrorHandling:
