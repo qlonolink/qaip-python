@@ -52,6 +52,7 @@ class TestCrawls:
                     }
                 ]
             },
+            no_canonical_check=True,
             path_filters=["string"],
             rrule="rrule",
             use_browser=True,
@@ -236,6 +237,7 @@ class TestCrawls:
                     }
                 ]
             },
+            no_canonical_check=True,
             rrule="rrule",
         )
         assert_matches_type(Crawl, crawl, path=["response"])
@@ -403,6 +405,7 @@ class TestAsyncCrawls:
                     }
                 ]
             },
+            no_canonical_check=True,
             path_filters=["string"],
             rrule="rrule",
             use_browser=True,
@@ -587,6 +590,7 @@ class TestAsyncCrawls:
                     }
                 ]
             },
+            no_canonical_check=True,
             rrule="rrule",
         )
         assert_matches_type(Crawl, crawl, path=["response"])

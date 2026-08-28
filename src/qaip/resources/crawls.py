@@ -60,6 +60,7 @@ class CrawlsResource(SyncAPIResource):
         file_extensions: SequenceNotStr[str] | Omit = omit,
         html_only: bool | Omit = omit,
         metadata: Metadata | Omit = omit,
+        no_canonical_check: bool | Omit = omit,
         path_filters: SequenceNotStr[str] | Omit = omit,
         rrule: str | Omit = omit,
         use_browser: bool | Omit = omit,
@@ -94,6 +95,8 @@ class CrawlsResource(SyncAPIResource):
 
           metadata: (reserved for future use) Additional metadata for the web crawl data source
 
+          no_canonical_check: Whether to disable duplicate filtering by canonical URL
+
           path_filters: Path filters for crawling. The total number of characters across all elements in
               the array must be 2000 or fewer.
 
@@ -121,6 +124,7 @@ class CrawlsResource(SyncAPIResource):
                     "file_extensions": file_extensions,
                     "html_only": html_only,
                     "metadata": metadata,
+                    "no_canonical_check": no_canonical_check,
                     "path_filters": path_filters,
                     "rrule": rrule,
                     "use_browser": use_browser,
@@ -254,6 +258,7 @@ class CrawlsResource(SyncAPIResource):
         target_urls: SequenceNotStr[str],
         max_num_files: int | Omit = omit,
         metadata: Metadata | Omit = omit,
+        no_canonical_check: bool | Omit = omit,
         rrule: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -276,6 +281,8 @@ class CrawlsResource(SyncAPIResource):
 
           metadata: (reserved for future use) Additional metadata for the web crawl data source
 
+          no_canonical_check: Whether to disable duplicate filtering by canonical URL
+
           rrule: Recurrence rule (RFC 5545 RRULE)
 
           extra_headers: Send extra headers
@@ -294,6 +301,7 @@ class CrawlsResource(SyncAPIResource):
                     "target_urls": target_urls,
                     "max_num_files": max_num_files,
                     "metadata": metadata,
+                    "no_canonical_check": no_canonical_check,
                     "rrule": rrule,
                 },
                 crawl_create_url_list_params.CrawlCreateURLListParams,
@@ -418,6 +426,7 @@ class AsyncCrawlsResource(AsyncAPIResource):
         file_extensions: SequenceNotStr[str] | Omit = omit,
         html_only: bool | Omit = omit,
         metadata: Metadata | Omit = omit,
+        no_canonical_check: bool | Omit = omit,
         path_filters: SequenceNotStr[str] | Omit = omit,
         rrule: str | Omit = omit,
         use_browser: bool | Omit = omit,
@@ -452,6 +461,8 @@ class AsyncCrawlsResource(AsyncAPIResource):
 
           metadata: (reserved for future use) Additional metadata for the web crawl data source
 
+          no_canonical_check: Whether to disable duplicate filtering by canonical URL
+
           path_filters: Path filters for crawling. The total number of characters across all elements in
               the array must be 2000 or fewer.
 
@@ -479,6 +490,7 @@ class AsyncCrawlsResource(AsyncAPIResource):
                     "file_extensions": file_extensions,
                     "html_only": html_only,
                     "metadata": metadata,
+                    "no_canonical_check": no_canonical_check,
                     "path_filters": path_filters,
                     "rrule": rrule,
                     "use_browser": use_browser,
@@ -612,6 +624,7 @@ class AsyncCrawlsResource(AsyncAPIResource):
         target_urls: SequenceNotStr[str],
         max_num_files: int | Omit = omit,
         metadata: Metadata | Omit = omit,
+        no_canonical_check: bool | Omit = omit,
         rrule: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -634,6 +647,8 @@ class AsyncCrawlsResource(AsyncAPIResource):
 
           metadata: (reserved for future use) Additional metadata for the web crawl data source
 
+          no_canonical_check: Whether to disable duplicate filtering by canonical URL
+
           rrule: Recurrence rule (RFC 5545 RRULE)
 
           extra_headers: Send extra headers
@@ -652,6 +667,7 @@ class AsyncCrawlsResource(AsyncAPIResource):
                     "target_urls": target_urls,
                     "max_num_files": max_num_files,
                     "metadata": metadata,
+                    "no_canonical_check": no_canonical_check,
                     "rrule": rrule,
                 },
                 crawl_create_url_list_params.CrawlCreateURLListParams,
