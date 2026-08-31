@@ -48,7 +48,6 @@ RESOURCES: dict[str, dict[str, Any]] = {
                     "limit",
                     "metadata",
                     "offset",
-                    "source_group_id",
                     "source_metadata",
                     "source_types",
                     "tag_filter_logic",

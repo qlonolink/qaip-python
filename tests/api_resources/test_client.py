@@ -3,12 +3,9 @@
 from __future__ import annotations
 
 import os
-import json
 from typing import Any, cast
 
-import httpx
 import pytest
-from respx import MockRouter
 
 from qaip import Qaip, AsyncQaip
 from qaip.types import (
@@ -460,7 +457,6 @@ class TestClient:
             },
             offset=0,
             principal_id="user-123",
-            source_group_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             source_metadata={
                 "filters": [
                     {
@@ -482,22 +478,6 @@ class TestClient:
             use_postfilter=True,
         )
         assert_matches_type(SearchResponse, client_, path=["response"])
-
-    @parametrize
-    @pytest.mark.respx(base_url=base_url)
-    def test_method_search_sends_source_group_id(self, client: Qaip, respx_mock: MockRouter) -> None:
-        source_group_id = "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"
-        route = respx_mock.post("/search").mock(
-            return_value=httpx.Response(200, json={"created": 0, "results": []})
-        )
-
-        response = client.search(query="test", source_group_id=source_group_id)
-
-        assert_matches_type(SearchResponse, response, path=["response"])
-        assert json.loads(route.calls.last.request.content) == {
-            "query": "test",
-            "source_group_id": source_group_id,
-        }
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -993,7 +973,6 @@ class TestAsyncClient:
             },
             offset=0,
             principal_id="user-123",
-            source_group_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             source_metadata={
                 "filters": [
                     {
@@ -1015,24 +994,6 @@ class TestAsyncClient:
             use_postfilter=True,
         )
         assert_matches_type(SearchResponse, client, path=["response"])
-
-    @parametrize
-    @pytest.mark.respx(base_url=base_url)
-    async def test_method_search_sends_source_group_id(
-        self, async_client: AsyncQaip, respx_mock: MockRouter
-    ) -> None:
-        source_group_id = "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"
-        route = respx_mock.post("/search").mock(
-            return_value=httpx.Response(200, json={"created": 0, "results": []})
-        )
-
-        response = await async_client.search(query="test", source_group_id=source_group_id)
-
-        assert_matches_type(SearchResponse, response, path=["response"])
-        assert json.loads(route.calls.last.request.content) == {
-            "query": "test",
-            "source_group_id": source_group_id,
-        }
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
