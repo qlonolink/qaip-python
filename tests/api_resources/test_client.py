@@ -457,6 +457,7 @@ class TestClient:
             },
             offset=0,
             principal_id="user-123",
+            source_group_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             source_metadata={
                 "filters": [
                     {
@@ -973,6 +974,7 @@ class TestAsyncClient:
             },
             offset=0,
             principal_id="user-123",
+            source_group_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
             source_metadata={
                 "filters": [
                     {
