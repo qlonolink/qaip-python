@@ -81,6 +81,14 @@ class TestSchemaCommand:
         assert method["optional_params"] == ["source_ids", "output", "stdout", "force", "fields"]
         assert method["stdout_kind"] == "binary"
 
+    def test_search_schema_includes_source_group_id(self, capsys: pytest.CaptureFixture[str]) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(["schema", "search"])
+        args.func(args)
+        captured = capsys.readouterr()
+        data = json.loads(captured.out)
+        assert "source_group_id" in data["methods"]["create"]["optional_params"]
+
     def test_schema_unknown_resource(self) -> None:
         parser = _build_parser()
         args = parser.parse_args(["schema", "nonexistent"])
@@ -92,13 +100,25 @@ class TestSchemaCommand:
 class TestDryRun:
     def test_search_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
-        args = parser.parse_args(["api", "search.create", "--query", "test", "--dry-run"])
+        source_group_id = "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"
+        args = parser.parse_args(
+            [
+                "api",
+                "search.create",
+                "--query",
+                "test",
+                "--source-group-id",
+                source_group_id,
+                "--dry-run",
+            ]
+        )
         args.func(args)
         captured = capsys.readouterr()
         data = json.loads(captured.out)
         assert data["method"] == "POST"
         assert data["path"] == "/search"
         assert data["body"]["query"] == "test"
+        assert data["body"]["source_group_id"] == source_group_id
 
     def test_completion_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
@@ -896,6 +916,15 @@ class TestValidation:
         args = parser.parse_args(["api", "search.create", "--dry-run"])
         with pytest.raises(CLIError, match="--query"):
             args.func(args)
+
+    def test_search_rejects_invalid_source_group_id(self) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(
+            ["api", "search.create", "--query", "test", "--source-group-id", "not-a-uuid"]
+        )
+        with pytest.raises(CLIError, match="Invalid source_group_id") as exc_info:
+            args.func(args)
+        assert exc_info.value.code == "invalid_id"
 
     def test_secrets_create_missing_fields(self) -> None:
         parser = _build_parser()
