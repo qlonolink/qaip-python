@@ -65,12 +65,6 @@ class ClientSearchParams(TypedDict, total=False):
     authz is disabled.
     """
 
-    source_group_id: str
-    """Source group ID to search within.
-
-    For crawl data, specify the crawl_id returned by the crawl API.
-    """
-
     source_metadata: "MetadataFilterGroup"
     """Filter by individual source/file metadata from source_metadatas table"""
 
