@@ -649,6 +649,7 @@ class Qaip(SyncAPIClient):
         metadata_filter: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
         principal_id: str | Omit = omit,
+        source_group_id: str | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         tag_filter_logic: LogicalOperator | Omit = omit,
@@ -697,6 +698,9 @@ class Qaip(SyncAPIClient):
               When omitted, subject attributes are empty (most restrictive). Ignored when
               authz is disabled.
 
+          source_group_id: Source group ID to search within. For crawl data, specify the crawl_id returned
+              by the crawl API.
+
           source_metadata: Filter by individual source/file metadata from source_metadatas table
 
           tag_filter_logic: Logical operator for combining filter conditions
@@ -734,6 +738,7 @@ class Qaip(SyncAPIClient):
                     "metadata_filter": metadata_filter,
                     "offset": offset,
                     "principal_id": principal_id,
+                    "source_group_id": source_group_id,
                     "source_metadata": source_metadata,
                     "source_types": source_types,
                     "tag_filter_logic": tag_filter_logic,
@@ -1363,6 +1368,7 @@ class AsyncQaip(AsyncAPIClient):
         metadata_filter: MetadataFilterGroup | Omit = omit,
         offset: int | Omit = omit,
         principal_id: str | Omit = omit,
+        source_group_id: str | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
         tag_filter_logic: LogicalOperator | Omit = omit,
@@ -1411,6 +1417,9 @@ class AsyncQaip(AsyncAPIClient):
               When omitted, subject attributes are empty (most restrictive). Ignored when
               authz is disabled.
 
+          source_group_id: Source group ID to search within. For crawl data, specify the crawl_id returned
+              by the crawl API.
+
           source_metadata: Filter by individual source/file metadata from source_metadatas table
 
           tag_filter_logic: Logical operator for combining filter conditions
@@ -1448,6 +1457,7 @@ class AsyncQaip(AsyncAPIClient):
                     "metadata_filter": metadata_filter,
                     "offset": offset,
                     "principal_id": principal_id,
+                    "source_group_id": source_group_id,
                     "source_metadata": source_metadata,
                     "source_types": source_types,
                     "tag_filter_logic": tag_filter_logic,
