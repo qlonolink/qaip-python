@@ -232,7 +232,8 @@ class SourceGroupsResource(SyncAPIResource):
         Args:
           after_id: Fetch sources after this source ID
 
-          limit: Maximum number of results to return. Omit to return all sources.
+          limit: Maximum number of results to return. Omit to return all sources for backward
+              compatibility.
 
           extra_headers: Send extra headers
 
@@ -252,7 +253,10 @@ class SourceGroupsResource(SyncAPIResource):
                 extra_body=extra_body,
                 timeout=timeout,
                 query=maybe_transform(
-                    {"after_id": after_id, "limit": limit},
+                    {
+                        "after_id": after_id,
+                        "limit": limit,
+                    },
                     source_group_list_sources_params.SourceGroupListSourcesParams,
                 ),
             ),
@@ -529,7 +533,8 @@ class AsyncSourceGroupsResource(AsyncAPIResource):
         Args:
           after_id: Fetch sources after this source ID
 
-          limit: Maximum number of results to return. Omit to return all sources.
+          limit: Maximum number of results to return. Omit to return all sources for backward
+              compatibility.
 
           extra_headers: Send extra headers
 
@@ -549,7 +554,10 @@ class AsyncSourceGroupsResource(AsyncAPIResource):
                 extra_body=extra_body,
                 timeout=timeout,
                 query=await async_maybe_transform(
-                    {"after_id": after_id, "limit": limit},
+                    {
+                        "after_id": after_id,
+                        "limit": limit,
+                    },
                     source_group_list_sources_params.SourceGroupListSourcesParams,
                 ),
             ),

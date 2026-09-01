@@ -5,7 +5,9 @@ from __future__ import annotations
 import os
 from typing import Any, cast
 
+import httpx
 import pytest
+from respx import MockRouter
 
 from qaip import Qaip, AsyncQaip
 from qaip.types import (
@@ -14,6 +16,12 @@ from qaip.types import (
     CrawlListResponse,
 )
 from tests.utils import assert_matches_type
+from qaip._response import (
+    BinaryAPIResponse,
+    AsyncBinaryAPIResponse,
+    StreamedBinaryAPIResponse,
+    AsyncStreamedBinaryAPIResponse,
+)
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
@@ -269,6 +277,77 @@ class TestCrawls:
             assert_matches_type(Crawl, crawl, path=["response"])
 
         assert cast(Any, response.is_closed) is True
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    def test_method_download_raw_archive(self, client: Qaip, respx_mock: MockRouter) -> None:
+        respx_mock.post("/crawls/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw-archive").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+        crawl = client.crawls.download_raw_archive(
+            crawl_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert crawl.is_closed
+        assert crawl.json() == {"foo": "bar"}
+        assert cast(Any, crawl.is_closed) is True
+        assert isinstance(crawl, BinaryAPIResponse)
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    def test_method_download_raw_archive_with_all_params(self, client: Qaip, respx_mock: MockRouter) -> None:
+        respx_mock.post("/crawls/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw-archive").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+        crawl = client.crawls.download_raw_archive(
+            crawl_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            source_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+        )
+        assert crawl.is_closed
+        assert crawl.json() == {"foo": "bar"}
+        assert cast(Any, crawl.is_closed) is True
+        assert isinstance(crawl, BinaryAPIResponse)
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    def test_raw_response_download_raw_archive(self, client: Qaip, respx_mock: MockRouter) -> None:
+        respx_mock.post("/crawls/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw-archive").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+
+        crawl = client.crawls.with_raw_response.download_raw_archive(
+            crawl_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert crawl.is_closed is True
+        assert crawl.http_request.headers.get("X-Stainless-Lang") == "python"
+        assert crawl.json() == {"foo": "bar"}
+        assert isinstance(crawl, BinaryAPIResponse)
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    def test_streaming_response_download_raw_archive(self, client: Qaip, respx_mock: MockRouter) -> None:
+        respx_mock.post("/crawls/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw-archive").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+        with client.crawls.with_streaming_response.download_raw_archive(
+            crawl_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as crawl:
+            assert not crawl.is_closed
+            assert crawl.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            assert crawl.json() == {"foo": "bar"}
+            assert cast(Any, crawl.is_closed) is True
+            assert isinstance(crawl, StreamedBinaryAPIResponse)
+
+        assert cast(Any, crawl.is_closed) is True
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    def test_path_params_download_raw_archive(self, client: Qaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `crawl_id` but received ''"):
+            client.crawls.with_raw_response.download_raw_archive(
+                crawl_id="",
+            )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -622,6 +701,81 @@ class TestAsyncCrawls:
             assert_matches_type(Crawl, crawl, path=["response"])
 
         assert cast(Any, response.is_closed) is True
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    async def test_method_download_raw_archive(self, async_client: AsyncQaip, respx_mock: MockRouter) -> None:
+        respx_mock.post("/crawls/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw-archive").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+        crawl = await async_client.crawls.download_raw_archive(
+            crawl_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert crawl.is_closed
+        assert await crawl.json() == {"foo": "bar"}
+        assert cast(Any, crawl.is_closed) is True
+        assert isinstance(crawl, AsyncBinaryAPIResponse)
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    async def test_method_download_raw_archive_with_all_params(
+        self, async_client: AsyncQaip, respx_mock: MockRouter
+    ) -> None:
+        respx_mock.post("/crawls/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw-archive").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+        crawl = await async_client.crawls.download_raw_archive(
+            crawl_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            source_ids=["182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"],
+        )
+        assert crawl.is_closed
+        assert await crawl.json() == {"foo": "bar"}
+        assert cast(Any, crawl.is_closed) is True
+        assert isinstance(crawl, AsyncBinaryAPIResponse)
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    async def test_raw_response_download_raw_archive(self, async_client: AsyncQaip, respx_mock: MockRouter) -> None:
+        respx_mock.post("/crawls/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw-archive").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+
+        crawl = await async_client.crawls.with_raw_response.download_raw_archive(
+            crawl_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert crawl.is_closed is True
+        assert crawl.http_request.headers.get("X-Stainless-Lang") == "python"
+        assert await crawl.json() == {"foo": "bar"}
+        assert isinstance(crawl, AsyncBinaryAPIResponse)
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    async def test_streaming_response_download_raw_archive(
+        self, async_client: AsyncQaip, respx_mock: MockRouter
+    ) -> None:
+        respx_mock.post("/crawls/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw-archive").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+        async with async_client.crawls.with_streaming_response.download_raw_archive(
+            crawl_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as crawl:
+            assert not crawl.is_closed
+            assert crawl.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            assert await crawl.json() == {"foo": "bar"}
+            assert cast(Any, crawl.is_closed) is True
+            assert isinstance(crawl, AsyncStreamedBinaryAPIResponse)
+
+        assert cast(Any, crawl.is_closed) is True
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    async def test_path_params_download_raw_archive(self, async_client: AsyncQaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `crawl_id` but received ''"):
+            await async_client.crawls.with_raw_response.download_raw_archive(
+                crawl_id="",
+            )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize

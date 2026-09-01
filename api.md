@@ -286,8 +286,8 @@ Methods:
 - <code title="get /crawls/{id}">client.crawls.<a href="./src/qaip/resources/crawls.py">retrieve</a>(id) -> <a href="./src/qaip/types/crawl.py">Crawl</a></code>
 - <code title="get /crawls">client.crawls.<a href="./src/qaip/resources/crawls.py">list</a>(\*\*<a href="src/qaip/types/crawl_list_params.py">params</a>) -> <a href="./src/qaip/types/crawl_list_response.py">CrawlListResponse</a></code>
 - <code title="delete /crawls/{id}">client.crawls.<a href="./src/qaip/resources/crawls.py">delete</a>(id) -> <a href="./src/qaip/types/crawl.py">Crawl</a></code>
-- <code title="post /crawls/{crawl_id}/raw-archive">client.crawls.<a href="./src/qaip/resources/crawls.py">download_raw_archive</a>(crawl_id, \*\*<a href="src/qaip/types/crawl_download_raw_archive_params.py">params</a>) -> BinaryAPIResponse</code>
 - <code title="post /crawl-url-lists">client.crawls.<a href="./src/qaip/resources/crawls.py">create_url_list</a>(\*\*<a href="src/qaip/types/crawl_create_url_list_params.py">params</a>) -> <a href="./src/qaip/types/crawl.py">Crawl</a></code>
+- <code title="post /crawls/{crawl_id}/raw-archive">client.crawls.<a href="./src/qaip/resources/crawls.py">download_raw_archive</a>(crawl_id, \*\*<a href="src/qaip/types/crawl_download_raw_archive_params.py">params</a>) -> BinaryAPIResponse</code>
 - <code title="get /crawl-settings/{id}">client.crawls.<a href="./src/qaip/resources/crawls.py">retrieve_setting</a>(id) -> <a href="./src/qaip/types/crawl_setting.py">CrawlSetting</a></code>
 - <code title="put /crawl-settings/{id}">client.crawls.<a href="./src/qaip/resources/crawls.py">update_setting</a>(id, \*\*<a href="src/qaip/types/crawl_update_setting_params.py">params</a>) -> <a href="./src/qaip/types/crawl_setting.py">CrawlSetting</a></code>
 

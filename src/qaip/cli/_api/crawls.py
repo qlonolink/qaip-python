@@ -209,6 +209,13 @@ def _download_raw_archive(args: Namespace) -> None:
         raise CLIError("--force can only be used with --output", code="invalid_argument")
     if args.stdout and args.fields:
         raise CLIError("--fields cannot be used with --stdout", code="invalid_argument")
+    if source_ids is not None:
+        if not source_ids:
+            raise CLIError("--source-id must be specified at least once", code="invalid_argument")
+        if len(source_ids) > 10_000:
+            raise CLIError("--source-id can be specified at most 10000 times", code="invalid_argument")
+        if len(source_ids) != len(set(source_ids)):
+            raise CLIError("Duplicate --source-id values are not allowed", code="invalid_argument")
 
     if args.dry_run:
         body: dict[str, Any] = {}
@@ -226,10 +233,6 @@ def _download_raw_archive(args: Namespace) -> None:
 
     validate_id(args.crawl_id, label="crawl_id")
     if source_ids is not None:
-        if len(source_ids) > 10_000:
-            raise CLIError("--source-id can be specified at most 10000 times", code="invalid_argument")
-        if len(source_ids) != len(set(source_ids)):
-            raise CLIError("Duplicate --source-id values are not allowed", code="invalid_argument")
         for source_id in source_ids:
             validate_id(source_id, label="source_id")
 

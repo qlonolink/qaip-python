@@ -12,4 +12,7 @@ class SourceGroupListSourcesParams(TypedDict, total=False):
     """Fetch sources after this source ID"""
 
     limit: int
-    """Maximum number of results to return"""
+    """Maximum number of results to return.
+
+    Omit to return all sources for backward compatibility.
+    """

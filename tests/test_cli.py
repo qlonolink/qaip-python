@@ -507,6 +507,26 @@ class TestDryRun:
         data = json.loads(capsys.readouterr().out)
         assert data["body"] == {"limit": 100, "after_id": "src-1"}
 
+    @pytest.mark.parametrize("limit", [0, 1001])
+    def test_source_groups_list_sources_rejects_invalid_limit_dry_run(self, limit: int) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(
+            [
+                "api",
+                "source-groups.list_sources",
+                "--id",
+                "crawl-placeholder",
+                "--limit",
+                str(limit),
+                "--dry-run",
+            ]
+        )
+
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+
+        assert exc_info.value.code == "invalid_argument"
+
     def test_crawls_download_raw_archive_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
         args = parser.parse_args(
@@ -530,6 +550,37 @@ class TestDryRun:
         assert data["path"] == "/crawls/crawl-1/raw-archive"
         assert data["body"]["source_ids"] == ["src-1", "src-2"]
         assert data["body"]["output"] == "crawl.zip"
+
+    def test_crawls_download_raw_archive_rejects_duplicate_source_ids_dry_run(self) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(
+            [
+                "api",
+                "crawls.download_raw_archive",
+                "--id",
+                "crawl-placeholder",
+                "--source-id",
+                "source-placeholder",
+                "--source-id",
+                "source-placeholder",
+                "--dry-run",
+            ]
+        )
+
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+
+        assert exc_info.value.code == "invalid_argument"
+
+    def test_crawls_download_raw_archive_rejects_too_many_source_ids_dry_run(self) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(["api", "crawls.download_raw_archive", "--id", "crawl-placeholder", "--dry-run"])
+        args.source_ids = [f"source-{index}" for index in range(10_001)]
+
+        with pytest.raises(CLIError) as exc_info:
+            args.func(args)
+
+        assert exc_info.value.code == "invalid_argument"
 
     def test_source_groups_list_with_source_type(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()

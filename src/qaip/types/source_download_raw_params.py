@@ -9,4 +9,8 @@ __all__ = ["SourceDownloadRawParams"]
 
 class SourceDownloadRawParams(TypedDict, total=False):
     crawl_id: str
-    """Parent crawl ID used to resolve the file without a global table scan"""
+    """Parent crawl ID.
+
+    When supplied, the raw file is resolved through the crawl manifest without
+    scanning the global crawled_files table. Omission uses the deprecated fallback.
+    """

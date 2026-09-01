@@ -198,7 +198,17 @@ class TestSourceGroups:
     @parametrize
     def test_method_list_sources(self, client: Qaip) -> None:
         source_group = client.source_groups.list_sources(
-            "source_group_id",
+            source_group_id="source_group_id",
+        )
+        assert_matches_type(SourceGroupListSourcesResponse, source_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_list_sources_with_all_params(self, client: Qaip) -> None:
+        source_group = client.source_groups.list_sources(
+            source_group_id="source_group_id",
+            after_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            limit=1,
         )
         assert_matches_type(SourceGroupListSourcesResponse, source_group, path=["response"])
 
@@ -206,7 +216,7 @@ class TestSourceGroups:
     @parametrize
     def test_raw_response_list_sources(self, client: Qaip) -> None:
         response = client.source_groups.with_raw_response.list_sources(
-            "source_group_id",
+            source_group_id="source_group_id",
         )
 
         assert response.is_closed is True
@@ -218,7 +228,7 @@ class TestSourceGroups:
     @parametrize
     def test_streaming_response_list_sources(self, client: Qaip) -> None:
         with client.source_groups.with_streaming_response.list_sources(
-            "source_group_id",
+            source_group_id="source_group_id",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -233,7 +243,7 @@ class TestSourceGroups:
     def test_path_params_list_sources(self, client: Qaip) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `source_group_id` but received ''"):
             client.source_groups.with_raw_response.list_sources(
-                "",
+                source_group_id="",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
@@ -522,7 +532,17 @@ class TestAsyncSourceGroups:
     @parametrize
     async def test_method_list_sources(self, async_client: AsyncQaip) -> None:
         source_group = await async_client.source_groups.list_sources(
-            "source_group_id",
+            source_group_id="source_group_id",
+        )
+        assert_matches_type(SourceGroupListSourcesResponse, source_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_list_sources_with_all_params(self, async_client: AsyncQaip) -> None:
+        source_group = await async_client.source_groups.list_sources(
+            source_group_id="source_group_id",
+            after_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            limit=1,
         )
         assert_matches_type(SourceGroupListSourcesResponse, source_group, path=["response"])
 
@@ -530,7 +550,7 @@ class TestAsyncSourceGroups:
     @parametrize
     async def test_raw_response_list_sources(self, async_client: AsyncQaip) -> None:
         response = await async_client.source_groups.with_raw_response.list_sources(
-            "source_group_id",
+            source_group_id="source_group_id",
         )
 
         assert response.is_closed is True
@@ -542,7 +562,7 @@ class TestAsyncSourceGroups:
     @parametrize
     async def test_streaming_response_list_sources(self, async_client: AsyncQaip) -> None:
         async with async_client.source_groups.with_streaming_response.list_sources(
-            "source_group_id",
+            source_group_id="source_group_id",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -557,7 +577,7 @@ class TestAsyncSourceGroups:
     async def test_path_params_list_sources(self, async_client: AsyncQaip) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `source_group_id` but received ''"):
             await async_client.source_groups.with_raw_response.list_sources(
-                "",
+                source_group_id="",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")

@@ -11,4 +11,7 @@ __all__ = ["CrawlDownloadRawArchiveParams"]
 
 class CrawlDownloadRawArchiveParams(TypedDict, total=False):
     source_ids: SequenceNotStr[str]
-    """Source IDs to include; omit to include every source in the crawl"""
+    """Source IDs to include.
+
+    Omit to include every source in the crawl; an empty array is invalid.
+    """

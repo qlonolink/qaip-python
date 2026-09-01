@@ -110,6 +110,8 @@ def _list(args: Namespace) -> None:
 def _list_sources(args: Namespace) -> None:
     limit: int | None = args.limit
     after_id: str | None = args.after_id
+    if limit is not None and not 1 <= limit <= 1000:
+        raise CLIError("--limit must be between 1 and 1000", code="invalid_argument")
 
     if args.dry_run:
         params: dict[str, Any] = {}

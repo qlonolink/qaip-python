@@ -210,7 +210,22 @@ class TestSources:
             return_value=httpx.Response(200, json={"foo": "bar"})
         )
         source = client.sources.download_raw(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            source_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert source.is_closed
+        assert source.json() == {"foo": "bar"}
+        assert cast(Any, source.is_closed) is True
+        assert isinstance(source, BinaryAPIResponse)
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    def test_method_download_raw_with_all_params(self, client: Qaip, respx_mock: MockRouter) -> None:
+        respx_mock.get("/sources/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+        source = client.sources.download_raw(
+            source_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            crawl_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert source.is_closed
         assert source.json() == {"foo": "bar"}
@@ -225,7 +240,7 @@ class TestSources:
         )
 
         source = client.sources.with_raw_response.download_raw(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            source_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert source.is_closed is True
@@ -240,7 +255,7 @@ class TestSources:
             return_value=httpx.Response(200, json={"foo": "bar"})
         )
         with client.sources.with_streaming_response.download_raw(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            source_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as source:
             assert not source.is_closed
             assert source.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -256,7 +271,7 @@ class TestSources:
     def test_path_params_download_raw(self, client: Qaip) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `source_id` but received ''"):
             client.sources.with_raw_response.download_raw(
-                "",
+                source_id="",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
@@ -550,7 +565,22 @@ class TestAsyncSources:
             return_value=httpx.Response(200, json={"foo": "bar"})
         )
         source = await async_client.sources.download_raw(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            source_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert source.is_closed
+        assert await source.json() == {"foo": "bar"}
+        assert cast(Any, source.is_closed) is True
+        assert isinstance(source, AsyncBinaryAPIResponse)
+
+    @parametrize
+    @pytest.mark.respx(base_url=base_url)
+    async def test_method_download_raw_with_all_params(self, async_client: AsyncQaip, respx_mock: MockRouter) -> None:
+        respx_mock.get("/sources/182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e/raw").mock(
+            return_value=httpx.Response(200, json={"foo": "bar"})
+        )
+        source = await async_client.sources.download_raw(
+            source_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            crawl_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
         assert source.is_closed
         assert await source.json() == {"foo": "bar"}
@@ -565,7 +595,7 @@ class TestAsyncSources:
         )
 
         source = await async_client.sources.with_raw_response.download_raw(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            source_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
 
         assert source.is_closed is True
@@ -580,7 +610,7 @@ class TestAsyncSources:
             return_value=httpx.Response(200, json={"foo": "bar"})
         )
         async with async_client.sources.with_streaming_response.download_raw(
-            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+            source_id="182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         ) as source:
             assert not source.is_closed
             assert source.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -596,7 +626,7 @@ class TestAsyncSources:
     async def test_path_params_download_raw(self, async_client: AsyncQaip) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `source_id` but received ''"):
             await async_client.sources.with_raw_response.download_raw(
-                "",
+                source_id="",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
