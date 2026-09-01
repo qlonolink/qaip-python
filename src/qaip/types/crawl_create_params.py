@@ -58,6 +58,3 @@ class CrawlCreateParams(TypedDict, total=False):
 
     use_browser: bool
     """Whether to use a headless browser for crawling"""
-
-    no_canonical_check: bool
-    """Whether to disable duplicate filtering by canonical URL"""

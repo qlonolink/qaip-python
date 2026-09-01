@@ -230,8 +230,9 @@ class SourcesResource(SyncAPIResource):
         Only crawl source IDs returned as content.source_id from /search, GET /contents/{id}, or POST /completions citations are valid. Local file source IDs accepted by GET /sources/{source_id} return 404 here. </p> <p> The endpoint checks tenant ownership of the crawl source and returns the entire stored file. It does not apply per-chunk authorization policies; applications using enforce authorization should decide whether to expose raw files to each principal. </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
-          crawl_id: Parent crawl ID. Supplying it uses the crawl manifest fast path; omission uses
-              the deprecated global lookup fallback.
+          crawl_id: Parent crawl ID. When supplied, the raw file is resolved through the crawl
+              manifest without scanning the global crawled_files table. Omission uses the
+              deprecated fallback.
 
           extra_headers: Send extra headers
 
@@ -251,10 +252,7 @@ class SourcesResource(SyncAPIResource):
                 extra_query=extra_query,
                 extra_body=extra_body,
                 timeout=timeout,
-                query=maybe_transform(
-                    {"crawl_id": crawl_id},
-                    source_download_raw_params.SourceDownloadRawParams,
-                ),
+                query=maybe_transform({"crawl_id": crawl_id}, source_download_raw_params.SourceDownloadRawParams),
             ),
             cast_to=BinaryAPIResponse,
         )
@@ -521,8 +519,9 @@ class AsyncSourcesResource(AsyncAPIResource):
         Only crawl source IDs returned as content.source_id from /search, GET /contents/{id}, or POST /completions citations are valid. Local file source IDs accepted by GET /sources/{source_id} return 404 here. </p> <p> The endpoint checks tenant ownership of the crawl source and returns the entire stored file. It does not apply per-chunk authorization policies; applications using enforce authorization should decide whether to expose raw files to each principal. </p> <p> Required scope: `knowledge:read` </p>
 
         Args:
-          crawl_id: Parent crawl ID. Supplying it uses the crawl manifest fast path; omission uses
-              the deprecated global lookup fallback.
+          crawl_id: Parent crawl ID. When supplied, the raw file is resolved through the crawl
+              manifest without scanning the global crawled_files table. Omission uses the
+              deprecated fallback.
 
           extra_headers: Send extra headers
 
@@ -543,8 +542,7 @@ class AsyncSourcesResource(AsyncAPIResource):
                 extra_body=extra_body,
                 timeout=timeout,
                 query=await async_maybe_transform(
-                    {"crawl_id": crawl_id},
-                    source_download_raw_params.SourceDownloadRawParams,
+                    {"crawl_id": crawl_id}, source_download_raw_params.SourceDownloadRawParams
                 ),
             ),
             cast_to=AsyncBinaryAPIResponse,

@@ -26,9 +26,6 @@ class CrawlSetting(BaseModel):
     use_browser: bool
     """Whether to use a headless browser for crawling"""
 
-    no_canonical_check: Optional[bool] = None
-    """Whether to disable duplicate filtering by canonical URL"""
-
     content_pattern: Optional[List[str]] = None
     """Content patterns for filtering"""
 
