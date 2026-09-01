@@ -81,6 +81,25 @@ class TestSchemaCommand:
         assert method["optional_params"] == ["source_ids", "output", "stdout", "force", "fields"]
         assert method["stdout_kind"] == "binary"
 
+    def test_schema_agent_run_uses_durable_endpoint(self, capsys: pytest.CaptureFixture[str]) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(["schema", "agent"])
+        args.func(args)
+        method = json.loads(capsys.readouterr().out)["methods"]["run"]
+        assert method["http_method"] == "POST"
+        assert method["path"] == "/agent/runs"
+        assert method["optional_params"] == [
+            "context",
+            "forwarded_props",
+            "messages",
+            "parent_run_id",
+            "redaction_policy_id",
+            "resume",
+            "state",
+            "thread_id",
+            "tools",
+        ]
+
     def test_schema_unknown_resource(self) -> None:
         parser = _build_parser()
         args = parser.parse_args(["schema", "nonexistent"])
@@ -626,8 +645,8 @@ class TestDryRun:
                 "agent.run",
                 "--messages",
                 messages,
-                "--run-id",
-                "run-x",
+                "--redaction-policy-id",
+                "policy-x",
                 "--dry-run",
             ]
         )
@@ -635,9 +654,27 @@ class TestDryRun:
         captured = capsys.readouterr()
         data = json.loads(captured.out)
         assert data["method"] == "POST"
-        assert data["path"] == "/agent/run"
-        assert data["body"]["messages"][0]["content"] == "hi"
-        assert data["body"]["run_id"] == "run-x"
+        assert data["path"] == "/agent/runs"
+        assert data["body"]["input"]["messages"][0]["content"] == "hi"
+        assert data["body"]["input"]["redaction_policy_id"] == "policy-x"
+
+    def test_agent_run_dry_run_accepts_all_create_input_keys(self, capsys: pytest.CaptureFixture[str]) -> None:
+        parser = _build_parser()
+        input_body = {
+            "context": [{"source": "context"}],
+            "forwarded_props": {"principal_id": "principal-x"},
+            "messages": [{"role": "user", "content": "hi"}],
+            "parent_run_id": "parent-x",
+            "redaction_policy_id": "policy-x",
+            "resume": [{"interrupt": "continue"}],
+            "state": {"step": 1},
+            "thread_id": "thread-x",
+            "tools": [{"name": "search"}],
+        }
+        args = parser.parse_args(["api", "agent.run", "--json", json.dumps(input_body), "--dry-run"])
+        args.func(args)
+        data = json.loads(capsys.readouterr().out)
+        assert data == {"method": "POST", "path": "/agent/runs", "body": {"input": input_body}}
 
     def test_agent_create_run_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
@@ -662,7 +699,8 @@ class TestDryRun:
         assert data["path"] == "/agent/runs"
         assert data["body"]["input"]["messages"][0]["content"] == "hi"
         assert data["body"]["input"]["thread_id"] == "t-1"
-        assert data["body"]["idempotency_key"] == "abc"
+        assert "idempotency_key" not in data["body"]
+        assert data["headers"]["Idempotency-Key"] == "abc"
 
     def test_agent_retrieve_run_dry_run(self, capsys: pytest.CaptureFixture[str]) -> None:
         parser = _build_parser()
@@ -2083,11 +2121,7 @@ class TestQueryExecution:
 
 
 class TestAgentRunIdAcceptsCustomString:
-    """agent.* の retrieve/cancel/result/events は caller 発行 ID を許容する。
-
-    `agent.create_run` は input.run_id に任意の文字列を渡せる仕様のため、
-    follow-up コマンドで UUID 強制すると regression になる。
-    """
+    """agent.* の retrieve/cancel/result/events は server 発行の文字列 ID を許容する。"""
 
     def test_retrieve_run_accepts_non_uuid_id(self, monkeypatch: pytest.MonkeyPatch) -> None:
         from unittest.mock import MagicMock, patch as _patch
@@ -2126,7 +2160,7 @@ class TestAgentRunIdAcceptsCustomString:
         # run_id が SDK にそのまま渡っていることを位置引数で確認する。
         assert mock_client.agent.list_run_events.call_args.args == ("run-x",)
 
-    def test_stream_run_events_outputs_json_lines(
+    def test_stream_run_events_outputs_raw_sse_data_lines(
         self,
         monkeypatch: pytest.MonkeyPatch,
         capsys: pytest.CaptureFixture[str],
@@ -2135,17 +2169,44 @@ class TestAgentRunIdAcceptsCustomString:
 
         monkeypatch.setenv("QAIP_API_KEY", "fake")
         mock_client = MagicMock()
-        mock_client.agent.stream_run_events.return_value = iter([{"type": "RUN_STARTED", "runId": "run-x"}])
+        mock_client.agent.stream_run_events.return_value = iter(['{"type":"RUN_STARTED","runId":"run-x"}'])
         with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
             parser = _build_parser()
             args = parser.parse_args(["api", "agent.stream_run_events", "--id", "run-x"])
             args.func(args)
 
-        assert json.loads(capsys.readouterr().out) == {
-            "type": "RUN_STARTED",
-            "runId": "run-x",
-        }
+        assert capsys.readouterr().out == '{"type":"RUN_STARTED","runId":"run-x"}\n'
         assert mock_client.agent.stream_run_events.call_args.args == ("run-x",)
+
+    def test_run_composes_create_and_persisted_stream(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        from unittest.mock import MagicMock, patch as _patch
+
+        monkeypatch.setenv("QAIP_API_KEY", "fake")
+        mock_client = MagicMock()
+        mock_client.agent.create_run.return_value.run_id = "run-x"
+        mock_client.agent.stream_run_events.return_value = iter(['{"type":"RUN_STARTED"}'])
+        with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
+            parser = _build_parser()
+            args = parser.parse_args(
+                [
+                    "api",
+                    "agent.run",
+                    "--messages",
+                    '[{"role":"user","content":"hi"}]',
+                    "--forwarded-props",
+                    '{"principal_id":"principal-x"}',
+                ]
+            )
+            args.func(args)
+
+        mock_client.agent.create_run.assert_called_once()
+        assert mock_client.agent.create_run.call_args.kwargs["input"]["messages"][0]["content"] == "hi"
+        mock_client.agent.stream_run_events.assert_called_once_with("run-x", principal_id="principal-x")
+        assert capsys.readouterr().out == '{"type":"RUN_STARTED"}\n'
 
     @pytest.mark.parametrize(
         "subcommand",
@@ -2167,7 +2228,7 @@ class TestAgentRunIdAcceptsCustomString:
         bad_id: str,
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
-        """4 つの follow-up コマンドが揃って不正 run_id を弾くことを保証する。
+        """follow-up コマンドが揃って不正 run_id を弾くことを保証する。
         将来 validate_loose_id 呼び出しがどれか 1 つから消えても気付ける。"""
         monkeypatch.setenv("QAIP_API_KEY", "fake")
         parser = _build_parser()
@@ -2176,9 +2237,8 @@ class TestAgentRunIdAcceptsCustomString:
             args.func(args)
         assert exc_info.value.code == "invalid_id"
 
-    def test_create_run_rejects_invalid_run_id(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        """creation 側でも同じ loose_id 検証をかけないと、create で受け付けた
-        run_id が follow-up で拒否される非対称が起きる。"""
+    def test_create_run_rejects_invalid_thread_id(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """creation 側でも caller 指定 thread ID の path-safe 検証を保証する。"""
         monkeypatch.setenv("QAIP_API_KEY", "fake")
         parser = _build_parser()
         args = parser.parse_args(
@@ -2187,7 +2247,7 @@ class TestAgentRunIdAcceptsCustomString:
                 "agent.create_run",
                 "--messages",
                 json.dumps([{"role": "user", "content": "hi"}]),
-                "--run-id",
+                "--thread-id",
                 "../etc",
                 "--dry-run",
             ]

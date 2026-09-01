@@ -366,10 +366,11 @@ jq -n --arg name gdrive-ingest --arg type google_drive \
 ## 10. Agent run（同期ストリームと非同期）
 
 ```bash
-# 10-1. 同期ストリーム（1 イベント = 1 行）
+# 10-1. durable run を作成して persisted stream を追跡（1 イベント = 1 行）
 qaip api agent.run \
   --messages '[{"role":"user","content":"状況を要約して"}]'
 # | while read -r line; do ...; done で各行を処理
+# 内部では POST /agent/runs → GET /agent/runs/{run_id}/events/stream を使う。
 ```
 
 ### 非同期: create_run → retrieve / events / cancel

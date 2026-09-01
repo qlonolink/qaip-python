@@ -54,13 +54,13 @@ from qaip.types import (
     AgentRunEvent,
     AgentRunNode,
     AgentRunStatus,
+    CreateAgentRunInputParam,
     AgentThread,
     AgentThreadDetail,
     AgentThreadListResponse,
     AgentListRunEventsResponse,
     AgentRetrieveRunResultResponse,
-    AgentRunResponse,
-    AgentStreamEvent,
+    AgentStreamRunEventsResponse,
 )
 ```
 
@@ -73,8 +73,7 @@ Methods:
 - <code title="get /agent/runs/{run_id}">client.agent.<a href="./src/qaip/resources/agent.py">retrieve_run</a>(run_id, \*\*<a href="src/qaip/types/agent_retrieve_run_params.py">params</a>) -> <a href="./src/qaip/types/agent_run.py">AgentRun</a></code>
 - <code title="get /agent/runs/{run_id}/result">client.agent.<a href="./src/qaip/resources/agent.py">retrieve_run_result</a>(run_id, \*\*<a href="src/qaip/types/agent_retrieve_run_result_params.py">params</a>) -> <a href="./src/qaip/types/agent_retrieve_run_result_response.py">AgentRetrieveRunResultResponse</a></code>
 - <code title="get /agent/threads/{thread_id}">client.agent.<a href="./src/qaip/resources/agent.py">retrieve_thread</a>(thread_id, \*\*<a href="src/qaip/types/agent_retrieve_thread_params.py">params</a>) -> <a href="./src/qaip/types/agent_thread_detail.py">AgentThreadDetail</a></code>
-- <code title="post /agent/run">client.agent.<a href="./src/qaip/resources/agent.py">run</a>(\*\*<a href="src/qaip/types/agent_run_params.py">params</a>) -> str</code>
-- <code title="get /agent/runs/{run_id}/events/stream">client.agent.<a href="./src/qaip/resources/agent.py">stream_run_events</a>(run_id, \*\*<a href="src/qaip/types/agent_stream_run_events_params.py">params</a>) -> <a href="./src/qaip/types/agent_stream_event.py">AgentStreamEvent</a></code>
+- <code title="get /agent/runs/{run_id}/events/stream">client.agent.<a href="./src/qaip/resources/agent.py">stream_run_events</a>(run_id, \*\*<a href="src/qaip/types/agent_stream_run_events_params.py">params</a>) -> str</code>
 
 # Conversations
 

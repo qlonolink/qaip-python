@@ -241,6 +241,29 @@ async def test_json_stream_ignores_comment_frames_after_event_id(
     assert [event async for event in stream] == expected
 
 
+@pytest.mark.parametrize("sync", [True, False], ids=["sync", "async"])
+async def test_string_stream_preserves_raw_sse_data(
+    sync: bool,
+    client: Qaip,
+    async_client: AsyncQaip,
+) -> None:
+    def body() -> Iterator[bytes]:
+        yield b'data: {"type":"RUN_STARTED","runId":"run-1"}\n\n'
+
+    expected = ['{"type":"RUN_STARTED","runId":"run-1"}']
+    if sync:
+        stream = Stream(cast_to=str, client=client, response=httpx.Response(200, content=body()))
+        assert list(stream) == expected
+        return
+
+    stream = AsyncStream(
+        cast_to=str,
+        client=async_client,
+        response=httpx.Response(200, content=to_aiter(body())),
+    )
+    assert [event async for event in stream] == expected
+
+
 async def to_aiter(iter: Iterator[bytes]) -> AsyncIterator[bytes]:
     for chunk in iter:
         yield chunk

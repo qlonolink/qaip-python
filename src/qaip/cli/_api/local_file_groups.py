@@ -83,8 +83,7 @@ def _create(args: Namespace) -> None:
         explicit_last_modified = [int(ts.strip()) for ts in last_modified_raw.split(",")]
         if len(explicit_last_modified) != len(file_paths):
             raise CLIError(
-                f"--last-modified has {len(explicit_last_modified)} entries "
-                f"but {len(file_paths)} files were specified"
+                f"--last-modified has {len(explicit_last_modified)} entries but {len(file_paths)} files were specified"
             )
 
     # 複数ファイルの open を途中失敗しても既に開いたハンドルをリークさせないため

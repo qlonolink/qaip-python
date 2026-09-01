@@ -547,13 +547,18 @@ RESOURCES: dict[str, dict[str, Any]] = {
         "methods": {
             "run": {
                 "http_method": "POST",
-                "path": "/agent/run",
+                "path": "/agent/runs",
                 "required_params": [],
                 "optional_params": [
+                    "context",
                     "forwarded_props",
                     "messages",
-                    "run_id",
+                    "parent_run_id",
+                    "redaction_policy_id",
+                    "resume",
+                    "state",
                     "thread_id",
+                    "tools",
                 ],
             },
             "create_run": {

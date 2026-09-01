@@ -85,91 +85,17 @@ class TestAgent:
     def test_method_create_run_with_all_params(self, client: Qaip) -> None:
         agent = client.agent.create_run(
             input={
-                "forwarded_props": {
-                    "authz_policy": "authz_policy",
-                    "filters": {
-                        "chunk_metadata": {
-                            "filters": [
-                                {
-                                    "key": "key",
-                                    "operator": "eq",
-                                    "type": "string",
-                                    "max": {},
-                                    "min": {},
-                                    "val": {},
-                                }
-                            ],
-                            "groups": [],
-                            "logic": "AND",
-                        },
-                        "citation": True,
-                        "date_from": 1735639200,
-                        "date_to": 1735639200,
-                        "domains": ["string"],
-                        "file_types": ["html"],
-                        "limit": 1,
-                        "metadata": {
-                            "filters": [
-                                {
-                                    "key": "key",
-                                    "operator": "eq",
-                                    "type": "string",
-                                    "max": {},
-                                    "min": {},
-                                    "val": {},
-                                }
-                            ],
-                            "groups": [],
-                            "logic": "AND",
-                        },
-                        "metadata_filter": {
-                            "filters": [
-                                {
-                                    "key": "key",
-                                    "operator": "eq",
-                                    "type": "string",
-                                    "max": {},
-                                    "min": {},
-                                    "val": {},
-                                }
-                            ],
-                            "groups": [],
-                            "logic": "AND",
-                        },
-                        "source_metadata": {
-                            "filters": [
-                                {
-                                    "key": "key",
-                                    "operator": "eq",
-                                    "type": "string",
-                                    "max": {},
-                                    "min": {},
-                                    "val": {},
-                                }
-                            ],
-                            "groups": [],
-                            "logic": "AND",
-                        },
-                        "source_types": ["crawl"],
-                        "tag_filter_logic": "AND",
-                        "tag_ids": ["string"],
-                        "tags": ["string"],
-                        "use_postfilter": True,
-                    },
-                    "grounding": True,
-                    "principal_id": "user-123",
-                },
-                "messages": [
-                    {
-                        "content": "string",
-                        "role": "system",
-                    }
-                ],
+                "context": [{"foo": "bar"}],
+                "forwarded_props": {"foo": "bar"},
+                "messages": [{"foo": "bar"}],
+                "parent_run_id": "x",
                 "redaction_policy_id": "pii-standard",
-                "run_id": "run_id",
-                "thread_id": "thread_id",
+                "resume": [{"foo": "bar"}],
+                "state": {"foo": "bar"},
+                "thread_id": "x",
+                "tools": [{"foo": "bar"}],
             },
-            idempotency_key="idempotency_key",
+            idempotency_key="x",
         )
         assert_matches_type(AgentRun, agent, path=["response"])
 
@@ -212,7 +138,7 @@ class TestAgent:
     def test_method_list_run_events_with_all_params(self, client: Qaip) -> None:
         agent = client.agent.list_run_events(
             run_id="run_id",
-            after=0,
+            after=-1,
             limit=1,
             principal_id="principal_id",
         )
@@ -356,104 +282,29 @@ class TestAgent:
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    def test_method_run(self, client: Qaip) -> None:
-        agent_stream = client.agent.run()
-        agent_stream.response.close()
-
-    @pytest.mark.skip(reason="Mock server tests are disabled")
-    @parametrize
-    def test_method_run_with_all_params(self, client: Qaip) -> None:
-        agent_stream = client.agent.run(
-            forwarded_props={
-                "authz_policy": "authz_policy",
-                "filters": {
-                    "chunk_metadata": {
-                        "filters": [
-                            {
-                                "key": "key",
-                                "operator": "eq",
-                                "type": "string",
-                                "max": {},
-                                "min": {},
-                                "val": {},
-                            }
-                        ],
-                        "groups": [],
-                        "logic": "AND",
-                    },
-                    "citation": True,
-                    "date_from": 1735639200,
-                    "date_to": 1735639200,
-                    "domains": ["string"],
-                    "file_types": ["html"],
-                    "limit": 1,
-                    "metadata": {
-                        "filters": [
-                            {
-                                "key": "key",
-                                "operator": "eq",
-                                "type": "string",
-                                "max": {},
-                                "min": {},
-                                "val": {},
-                            }
-                        ],
-                        "groups": [],
-                        "logic": "AND",
-                    },
-                    "metadata_filter": {
-                        "filters": [
-                            {
-                                "key": "key",
-                                "operator": "eq",
-                                "type": "string",
-                                "max": {},
-                                "min": {},
-                                "val": {},
-                            }
-                        ],
-                        "groups": [],
-                        "logic": "AND",
-                    },
-                    "source_metadata": {
-                        "filters": [
-                            {
-                                "key": "key",
-                                "operator": "eq",
-                                "type": "string",
-                                "max": {},
-                                "min": {},
-                                "val": {},
-                            }
-                        ],
-                        "groups": [],
-                        "logic": "AND",
-                    },
-                    "source_types": ["crawl"],
-                    "tag_filter_logic": "AND",
-                    "tag_ids": ["string"],
-                    "tags": ["string"],
-                    "use_postfilter": True,
-                },
-                "grounding": True,
-                "principal_id": "user-123",
-            },
-            messages=[
-                {
-                    "content": "string",
-                    "role": "system",
-                }
-            ],
-            redaction_policy_id="pii-standard",
+    def test_method_stream_run_events(self, client: Qaip) -> None:
+        agent_stream = client.agent.stream_run_events(
             run_id="run_id",
-            thread_id="thread_id",
         )
         agent_stream.response.close()
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    def test_raw_response_run(self, client: Qaip) -> None:
-        response = client.agent.with_raw_response.run()
+    def test_method_stream_run_events_with_all_params(self, client: Qaip) -> None:
+        agent_stream = client.agent.stream_run_events(
+            run_id="run_id",
+            after=-1,
+            principal_id="principal_id",
+            last_event_id="1690260571",
+        )
+        agent_stream.response.close()
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_stream_run_events(self, client: Qaip) -> None:
+        response = client.agent.with_raw_response.stream_run_events(
+            run_id="run_id",
+        )
 
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         stream = response.parse()
@@ -461,8 +312,10 @@ class TestAgent:
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    def test_streaming_response_run(self, client: Qaip) -> None:
-        with client.agent.with_streaming_response.run() as response:
+    def test_streaming_response_stream_run_events(self, client: Qaip) -> None:
+        with client.agent.with_streaming_response.stream_run_events(
+            run_id="run_id",
+        ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
@@ -470,6 +323,14 @@ class TestAgent:
             stream.close()
 
         assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_stream_run_events(self, client: Qaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `run_id` but received ''"):
+            client.agent.with_raw_response.stream_run_events(
+                run_id="",
+            )
 
 
 class TestAsyncAgent:
@@ -541,91 +402,17 @@ class TestAsyncAgent:
     async def test_method_create_run_with_all_params(self, async_client: AsyncQaip) -> None:
         agent = await async_client.agent.create_run(
             input={
-                "forwarded_props": {
-                    "authz_policy": "authz_policy",
-                    "filters": {
-                        "chunk_metadata": {
-                            "filters": [
-                                {
-                                    "key": "key",
-                                    "operator": "eq",
-                                    "type": "string",
-                                    "max": {},
-                                    "min": {},
-                                    "val": {},
-                                }
-                            ],
-                            "groups": [],
-                            "logic": "AND",
-                        },
-                        "citation": True,
-                        "date_from": 1735639200,
-                        "date_to": 1735639200,
-                        "domains": ["string"],
-                        "file_types": ["html"],
-                        "limit": 1,
-                        "metadata": {
-                            "filters": [
-                                {
-                                    "key": "key",
-                                    "operator": "eq",
-                                    "type": "string",
-                                    "max": {},
-                                    "min": {},
-                                    "val": {},
-                                }
-                            ],
-                            "groups": [],
-                            "logic": "AND",
-                        },
-                        "metadata_filter": {
-                            "filters": [
-                                {
-                                    "key": "key",
-                                    "operator": "eq",
-                                    "type": "string",
-                                    "max": {},
-                                    "min": {},
-                                    "val": {},
-                                }
-                            ],
-                            "groups": [],
-                            "logic": "AND",
-                        },
-                        "source_metadata": {
-                            "filters": [
-                                {
-                                    "key": "key",
-                                    "operator": "eq",
-                                    "type": "string",
-                                    "max": {},
-                                    "min": {},
-                                    "val": {},
-                                }
-                            ],
-                            "groups": [],
-                            "logic": "AND",
-                        },
-                        "source_types": ["crawl"],
-                        "tag_filter_logic": "AND",
-                        "tag_ids": ["string"],
-                        "tags": ["string"],
-                        "use_postfilter": True,
-                    },
-                    "grounding": True,
-                    "principal_id": "user-123",
-                },
-                "messages": [
-                    {
-                        "content": "string",
-                        "role": "system",
-                    }
-                ],
+                "context": [{"foo": "bar"}],
+                "forwarded_props": {"foo": "bar"},
+                "messages": [{"foo": "bar"}],
+                "parent_run_id": "x",
                 "redaction_policy_id": "pii-standard",
-                "run_id": "run_id",
-                "thread_id": "thread_id",
+                "resume": [{"foo": "bar"}],
+                "state": {"foo": "bar"},
+                "thread_id": "x",
+                "tools": [{"foo": "bar"}],
             },
-            idempotency_key="idempotency_key",
+            idempotency_key="x",
         )
         assert_matches_type(AgentRun, agent, path=["response"])
 
@@ -668,7 +455,7 @@ class TestAsyncAgent:
     async def test_method_list_run_events_with_all_params(self, async_client: AsyncQaip) -> None:
         agent = await async_client.agent.list_run_events(
             run_id="run_id",
-            after=0,
+            after=-1,
             limit=1,
             principal_id="principal_id",
         )
@@ -812,104 +599,29 @@ class TestAsyncAgent:
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    async def test_method_run(self, async_client: AsyncQaip) -> None:
-        agent_stream = await async_client.agent.run()
-        await agent_stream.response.aclose()
-
-    @pytest.mark.skip(reason="Mock server tests are disabled")
-    @parametrize
-    async def test_method_run_with_all_params(self, async_client: AsyncQaip) -> None:
-        agent_stream = await async_client.agent.run(
-            forwarded_props={
-                "authz_policy": "authz_policy",
-                "filters": {
-                    "chunk_metadata": {
-                        "filters": [
-                            {
-                                "key": "key",
-                                "operator": "eq",
-                                "type": "string",
-                                "max": {},
-                                "min": {},
-                                "val": {},
-                            }
-                        ],
-                        "groups": [],
-                        "logic": "AND",
-                    },
-                    "citation": True,
-                    "date_from": 1735639200,
-                    "date_to": 1735639200,
-                    "domains": ["string"],
-                    "file_types": ["html"],
-                    "limit": 1,
-                    "metadata": {
-                        "filters": [
-                            {
-                                "key": "key",
-                                "operator": "eq",
-                                "type": "string",
-                                "max": {},
-                                "min": {},
-                                "val": {},
-                            }
-                        ],
-                        "groups": [],
-                        "logic": "AND",
-                    },
-                    "metadata_filter": {
-                        "filters": [
-                            {
-                                "key": "key",
-                                "operator": "eq",
-                                "type": "string",
-                                "max": {},
-                                "min": {},
-                                "val": {},
-                            }
-                        ],
-                        "groups": [],
-                        "logic": "AND",
-                    },
-                    "source_metadata": {
-                        "filters": [
-                            {
-                                "key": "key",
-                                "operator": "eq",
-                                "type": "string",
-                                "max": {},
-                                "min": {},
-                                "val": {},
-                            }
-                        ],
-                        "groups": [],
-                        "logic": "AND",
-                    },
-                    "source_types": ["crawl"],
-                    "tag_filter_logic": "AND",
-                    "tag_ids": ["string"],
-                    "tags": ["string"],
-                    "use_postfilter": True,
-                },
-                "grounding": True,
-                "principal_id": "user-123",
-            },
-            messages=[
-                {
-                    "content": "string",
-                    "role": "system",
-                }
-            ],
-            redaction_policy_id="pii-standard",
+    async def test_method_stream_run_events(self, async_client: AsyncQaip) -> None:
+        agent_stream = await async_client.agent.stream_run_events(
             run_id="run_id",
-            thread_id="thread_id",
         )
         await agent_stream.response.aclose()
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    async def test_raw_response_run(self, async_client: AsyncQaip) -> None:
-        response = await async_client.agent.with_raw_response.run()
+    async def test_method_stream_run_events_with_all_params(self, async_client: AsyncQaip) -> None:
+        agent_stream = await async_client.agent.stream_run_events(
+            run_id="run_id",
+            after=-1,
+            principal_id="principal_id",
+            last_event_id="1690260571",
+        )
+        await agent_stream.response.aclose()
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_stream_run_events(self, async_client: AsyncQaip) -> None:
+        response = await async_client.agent.with_raw_response.stream_run_events(
+            run_id="run_id",
+        )
 
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         stream = await response.parse()
@@ -917,8 +629,10 @@ class TestAsyncAgent:
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    async def test_streaming_response_run(self, async_client: AsyncQaip) -> None:
-        async with async_client.agent.with_streaming_response.run() as response:
+    async def test_streaming_response_stream_run_events(self, async_client: AsyncQaip) -> None:
+        async with async_client.agent.with_streaming_response.stream_run_events(
+            run_id="run_id",
+        ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
@@ -926,3 +640,11 @@ class TestAsyncAgent:
             await stream.close()
 
         assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_stream_run_events(self, async_client: AsyncQaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `run_id` but received ''"):
+            await async_client.agent.with_raw_response.stream_run_events(
+                run_id="",
+            )

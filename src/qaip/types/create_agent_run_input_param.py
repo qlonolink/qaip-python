@@ -2,20 +2,39 @@
 
 from __future__ import annotations
 
-from typing import Iterable, Optional
+from typing import Dict, Iterable, Optional
 from typing_extensions import Annotated, TypedDict
 
 from .._utils import PropertyInfo
-from .agent_message_param import AgentMessageParam
 
-__all__ = ["AgentRunParams", "ForwardedProps"]
+__all__ = ["CreateAgentRunInputParam"]
 
 
-class AgentRunParams(TypedDict, total=False):
-    forwarded_props: Annotated[ForwardedProps, PropertyInfo(alias="forwardedProps")]
-    """Forwarded properties for the run (AG-UI standard)"""
+class CreateAgentRunInputParam(TypedDict, total=False):
+    context: Iterable[Dict[str, object]]
 
-    messages: Iterable[AgentMessageParam]
+    forwarded_props: Annotated[Dict[str, object], PropertyInfo(alias="forwardedProps")]
+    """AG-UI extension properties forwarded to the run.
+
+    This remains a free-form object because AG-UI clients and server-side
+    integrations may add extension keys. Known QAIP keys include `filters`,
+    `authz_policy`, `principal_id`, `grounding`, and `retrieval_mode`; their values
+    are validated by the run service before use.
+
+    `retrieval_mode` controls only the built-in QAIP knowledge-base `search` tool.
+    Its accepted values are `required` (the default when omitted) and `disabled`. In
+    `disabled` mode the tool and its retrieval/citation system instructions are both
+    omitted. It does not disable explicitly configured external-table tools or
+    Google grounding.
+    """
+
+    messages: Iterable[Dict[str, object]]
+
+    parent_run_id: Annotated[str, PropertyInfo(alias="parentRunId")]
+    """Server-issued run ID to branch from.
+
+    Its thread must match threadId when both are supplied.
+    """
 
     redaction_policy_id: Annotated[Optional[str], PropertyInfo(alias="redactionPolicyId")]
     """
@@ -54,45 +73,12 @@ class AgentRunParams(TypedDict, total=False):
     specifies `redactionPolicyId` itself.
     """
 
-    run_id: str
-    """Optional ID for the run"""
+    resume: Optional[Iterable[Dict[str, object]]]
 
-    thread_id: str
-    """Optional ID for the thread"""
+    state: Optional[Dict[str, object]]
+    """AG-UI state supplied to the run."""
 
+    thread_id: Annotated[str, PropertyInfo(alias="threadId")]
+    """Server-issued thread ID to continue. Omit to create a new thread."""
 
-class ForwardedProps(  # type: ignore[call-arg]
-    TypedDict,
-    total=False,
-    extra_items=object,  # pyright: ignore[reportGeneralTypeIssues]
-):
-    """Forwarded properties for the run (AG-UI standard)"""
-
-    authz_policy: str
-    """
-    (reserved for future use) Name of the registered authz policy to evaluate when
-    the agent retrieves context. Defaults to the reserved "default" policy when
-    omitted. Ignored when authz is disabled.
-    """
-
-    filters: "AgentFiltersParam"
-    """Filters for agent search and completion"""
-
-    grounding: bool
-    """Whether to enable Gemini's Google Search grounding during the agent run.
-
-    Only effective when the agent model is a Gemini model and the `gemini_grounding`
-    feature is enabled on the server; otherwise this flag is ignored. Mirrors the
-    `/completions` `grounding` parameter.
-    """
-
-    principal_id: str
-    """Identifier of the end-user (principal) on whose behalf this request is made.
-
-    Used to look up the principal's authz subject attributes for policy evaluation.
-    When omitted, subject attributes are empty (most restrictive). Ignored when
-    authz is disabled.
-    """
-
-
-from .agent_filters_param import AgentFiltersParam
+    tools: Iterable[Dict[str, object]]
