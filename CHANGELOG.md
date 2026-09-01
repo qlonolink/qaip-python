@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.14.0 (2026-09-01)
+
+Full Changelog: [v0.13.1...v0.14.0](https://github.com/qlonolink/qaip-python/compare/v0.13.1...v0.14.0)
+
+### Features
+
+* agent runにOpenAI providerとBedrockのmodel族分岐を追加 ([53eeb27](https://github.com/qlonolink/qaip-python/commit/53eeb27a9d3370a1de9f5c30915ee0e796b065b1))
+* Agent runのOpenTelemetry可観測性を実装 ([20ab013](https://github.com/qlonolink/qaip-python/commit/20ab013c37c10687615a1a4dd7152f46d07967ed))
+* agent/runs へ X API の読み取りツールを追加する ([56b19f3](https://github.com/qlonolink/qaip-python/commit/56b19f32bf4755ba1f049208e093b1a84042118b))
+* AGENTCORE の redaction 同時実行に dev-api 側の入場ゲートを入れる ([602aa0c](https://github.com/qlonolink/qaip-python/commit/602aa0c11d35cb32f01d3719e89971d7379788b7))
+* AgentCore 実行モードで redaction を実行できるようにする ([ccbeb1c](https://github.com/qlonolink/qaip-python/commit/ccbeb1c44c926c332fe68c1166c12073d80fb475))
+* Agent会話履歴の一覧・再開機能を実装 ([7727744](https://github.com/qlonolink/qaip-python/commit/7727744d754061e92e9e1616963349a59b8ce895))
+* Agent実行を永続ストリーミング化し性能を改善 ([67dbe19](https://github.com/qlonolink/qaip-python/commit/67dbe19983043b74470a551e954d847b1da13e46))
+* APIキー認可を細粒度scopeへ移行 ([c194880](https://github.com/qlonolink/qaip-python/commit/c1948804a397fe386232e25b8e6f414e8841e6c5))
+* Chartmetric Agent toolsを実装 ([567cced](https://github.com/qlonolink/qaip-python/commit/567ccedbb92f5b0016b7bfb76fd70d080832f09d))
+* completion のストリーミング応答に SSE (ag-ui イベント) を追加 ([4bedf00](https://github.com/qlonolink/qaip-python/commit/4bedf00cedd41127c1f831da3ef5edf8bcf2a13d))
+* Grok X調査とAgent初回表示高速化基盤を実装 ([557ade1](https://github.com/qlonolink/qaip-python/commit/557ade1b1452bc8b932510afa901a98d8658407d))
+* クロール raw API の高速取得と source 一覧取得を実装 ([180512b](https://github.com/qlonolink/qaip-python/commit/180512b0a12a8324b44475da0203f1d30f5fb738))
+* クロール時のcanonical重複チェック無効化に対応 ([c619e0b](https://github.com/qlonolink/qaip-python/commit/c619e0b4544a2cb67fb62b91e6c0e1100f06acb7))
+* テナント別Redactionポリシー管理を実装 ([fca1c12](https://github.com/qlonolink/qaip-python/commit/fca1c1227ee121d485b56f807c155b999fab002d))
+* 外部provider境界のredactionを強化 ([b7a0c0d](https://github.com/qlonolink/qaip-python/commit/b7a0c0d5e5f2d3af3346e100c42debb9294675c6))
+* 検索APIにsource_group_idフィルタを追加 ([a8bd963](https://github.com/qlonolink/qaip-python/commit/a8bd9639dc5332addd7dd2728d11eb93fbd3d11a))
+
+
+### Chores
+
+* **internal:** version bump ([804e99f](https://github.com/qlonolink/qaip-python/commit/804e99f35d4c5006b4e11cbe917cef2043bf8c87))
+
 ## 0.13.1 (2026-08-28)
 
 Full Changelog: [v0.13.0...v0.13.1](https://github.com/qlonolink/qaip-python/compare/v0.13.0...v0.13.1)
