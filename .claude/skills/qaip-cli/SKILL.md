@@ -53,7 +53,7 @@ PyPI からインストールされた環境では **`qaip` コマンドが PATH
   - `4` バリデーション（`invalid_id` / `invalid_argument` / `validation_error` / `confirmation_required` / API 400, 422）
   - `5` API エラー（上記以外の 4xx / 5xx）
 - 主な error code: `missing_credentials`, `invalid_id`, `invalid_argument`, `validation_error`, `confirmation_required`, `api_error`, `cli_error`, `internal_error`。
-- `agent.run` だけは特殊で、AG-UI の event-stream を「1 イベント＝1 行」で stdout に流す（JSON のブロックではない）。
+- `agent.run` だけは特殊で、durable run を作成して persisted event stream を追跡し、AG-UI event を「1 イベント＝1 行」で stdout に流す（JSON のブロックではない）。
 
 ---
 
@@ -171,7 +171,7 @@ done
 
 **CLI 側でも本実行時に UUID 形式を強制している**ので、URL や path traversal を ID に渡すと `invalid_id`（exit code 4）で即拒否される。`--dry-run` 経由では緩和されるので、テンプレ確認時はダミー ID で OK。
 
-**例外:** `agent.retrieve_run` / `agent.cancel_run` / `agent.retrieve_run_result` / `agent.list_run_events` の `--id`（= run_id）は **caller が `agent.create_run` / `agent.run` 呼び出し時に任意の文字列で発行できる**仕様のため、CLI 側では UUID 強制をかけていない。サーバ側の検証に委ねる。
+**例外:** agent の run/thread ID は durable API が発行する文字列で、UUID 固定ではない。`agent.retrieve_run` / `agent.cancel_run` / `agent.retrieve_run_result` / `agent.list_run_events` / `agent.stream_run_events` などでは path-safe な文字列かだけを CLI で確認し、形式の検証はサーバ側に委ねる。
 
 ### 8. ファイルアップロードは順序一致で
 
@@ -183,11 +183,11 @@ qaip api local-file-groups.create --name demo \
 # => last_modified は自動で [mtime_ms_a, mtime_ms_b] になる
 ```
 
-### 9. agent.run は「ストリーム」、agent.create_run は「非同期ハンドル」
+### 9. agent.run は durable API の簡易フロー、agent.create_run は非同期ハンドル
 
-- `agent.run` — AG-UI の event-stream を、**1 行 1 イベント**で標準出力に流す。これは他の JSON 出力と違って逐次表示なので、`--fields` は効かず、パース時は各行を個別に扱う。
+- `agent.run` — `POST /agent/runs` で run を作成し、続けて `GET /agent/runs/{run_id}/events/stream` を追跡する CLI convenience。AG-UI event を **1 行 1 イベント**で標準出力に流すため、`--fields` は効かず、パース時は各行を個別に扱う。旧 `/agent/run` endpoint は使わない。
 - `agent.create_run` → `agent.retrieve_run` / `agent.retrieve_run_result` / `agent.list_run_events` / `agent.cancel_run` — 非同期フロー。実行 ID を取得し、ポーリング or events でフォローアップする。
-- どちらに使うか迷ったら **短いワンショットは `run`、長めの非同期タスクは `create_run`** を既定にする。
+- どちらに使うか迷ったら **接続を維持できる短いワンショットは `run`、再接続・取消・別プロセスでの追跡が必要なら `create_run`** を既定にする。
 
 ### 10. エラーは 2 種類ある
 

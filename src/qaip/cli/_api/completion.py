@@ -23,7 +23,7 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
     sub = subparser.add_parser("completion.create", help="Generate AI completions")
 
     add_json_param(sub)
-    sub.add_argument("-m", "--messages", help="Messages as JSON array (e.g. '[{\"role\":\"user\",\"content\":\"hello\"}]')")
+    sub.add_argument("-m", "--messages", help='Messages as JSON array (e.g. \'[{"role":"user","content":"hello"}]\')')
     sub.add_argument("--tags", help="Comma-separated tag names")
     sub.add_argument("--citation", action="store_true", default=None, help="Include citations")
     add_dry_run(sub)

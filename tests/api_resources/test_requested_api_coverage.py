@@ -108,7 +108,7 @@ class TestRequestedAPICoverage:
             )
         )
         with client.agent.stream_run_events("run-1", after=2, last_event_id="1", principal_id="principal-1") as stream:
-            assert list(stream) == [{"type": "RUN_STARTED", "runId": "run-1"}]
+            assert list(stream) == ['{"type":"RUN_STARTED","runId":"run-1"}']
         request = stream_route.calls.last.request
         assert request.headers["Last-Event-ID"] == "1"
         assert request.headers["Accept"] == "text/event-stream"
@@ -292,7 +292,7 @@ class TestRequestedAsyncAPICoverage:
             )
         )
         async with await async_client.agent.stream_run_events("run-1") as stream:
-            assert [event async for event in stream] == [{"type": "RUN_FINISHED", "runId": "run-1"}]
+            assert [event async for event in stream] == ['{"type":"RUN_FINISHED","runId":"run-1"}']
 
         respx_mock.get("/conversations").mock(return_value=httpx.Response(200, json={"conversations": []}))
         assert (await async_client.conversations.list()).conversations == []
