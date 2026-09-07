@@ -69,6 +69,28 @@ Methods:
 - <code title="get /agent/runs/{run_id}/result">client.agent.<a href="./src/qaip/resources/agent.py">retrieve_run_result</a>(run_id, \*\*<a href="src/qaip/types/agent_retrieve_run_result_params.py">params</a>) -> <a href="./src/qaip/types/agent_retrieve_run_result_response.py">AgentRetrieveRunResultResponse</a></code>
 - <code title="get /agent/runs/{run_id}/events/stream">client.agent.<a href="./src/qaip/resources/agent.py">stream_run_events</a>(run_id, \*\*<a href="src/qaip/types/agent_stream_run_events_params.py">params</a>) -> str</code>
 
+# APIKeys
+
+Types:
+
+```python
+from qaip.types import (
+    APIKeyKind,
+    CreateAPIKeyRequest,
+    CreateExpiringAPIKeyRequest,
+    CreatedAPIKey,
+    CreatedExpiringAPIKey,
+    IssuableAPIKeyScope,
+    PublicAPIError,
+)
+```
+
+Methods:
+
+- <code title="post /api-keys">client.api_keys.<a href="./src/qaip/resources/api_keys.py">create</a>(\*\*<a href="src/qaip/types/api_key_create_params.py">params</a>) -> <a href="./src/qaip/types/created_api_key.py">CreatedAPIKey</a></code>
+- <code title="post /api-keys/expiring">client.api_keys.<a href="./src/qaip/resources/api_keys.py">create_expiring</a>(\*\*<a href="src/qaip/types/api_key_create_expiring_params.py">params</a>) -> <a href="./src/qaip/types/created_expiring_api_key.py">CreatedExpiringAPIKey</a></code>
+- <code title="delete /api-keys/{api_key_id}">client.api_keys.<a href="./src/qaip/resources/api_keys.py">revoke</a>(api_key_id) -> None</code>
+
 # TagSourceGroups
 
 Methods:

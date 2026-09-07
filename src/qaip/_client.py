@@ -67,6 +67,7 @@ if TYPE_CHECKING:
         notions,
         secrets,
         sources,
+        api_keys,
         google_drives,
         source_groups,
         local_file_groups,
@@ -79,6 +80,7 @@ if TYPE_CHECKING:
     from .resources.notions import NotionsResource, AsyncNotionsResource
     from .resources.secrets import SecretsResource, AsyncSecretsResource
     from .resources.sources import SourcesResource, AsyncSourcesResource
+    from .resources.api_keys import APIKeysResource, AsyncAPIKeysResource
     from .resources.google_drives import GoogleDrivesResource, AsyncGoogleDrivesResource
     from .resources.source_groups import SourceGroupsResource, AsyncSourceGroupsResource
     from .resources.local_file_groups import LocalFileGroupsResource, AsyncLocalFileGroupsResource
@@ -158,6 +160,13 @@ class Qaip(SyncAPIClient):
         from .resources.agent import AgentResource
 
         return AgentResource(self)
+
+    @cached_property
+    def api_keys(self) -> APIKeysResource:
+        """API key issuance (requires the `apikeys:issue` scope)"""
+        from .resources.api_keys import APIKeysResource
+
+        return APIKeysResource(self)
 
     @cached_property
     def tag_source_groups(self) -> TagSourceGroupsResource:
@@ -879,6 +888,13 @@ class AsyncQaip(AsyncAPIClient):
         return AsyncAgentResource(self)
 
     @cached_property
+    def api_keys(self) -> AsyncAPIKeysResource:
+        """API key issuance (requires the `apikeys:issue` scope)"""
+        from .resources.api_keys import AsyncAPIKeysResource
+
+        return AsyncAPIKeysResource(self)
+
+    @cached_property
     def tag_source_groups(self) -> AsyncTagSourceGroupsResource:
         """Tag and source group associations"""
         from .resources.tag_source_groups import AsyncTagSourceGroupsResource
@@ -1556,6 +1572,13 @@ class QaipWithRawResponse:
         return AgentResourceWithRawResponse(self._client.agent)
 
     @cached_property
+    def api_keys(self) -> api_keys.APIKeysResourceWithRawResponse:
+        """API key issuance (requires the `apikeys:issue` scope)"""
+        from .resources.api_keys import APIKeysResourceWithRawResponse
+
+        return APIKeysResourceWithRawResponse(self._client.api_keys)
+
+    @cached_property
     def tag_source_groups(self) -> tag_source_groups.TagSourceGroupsResourceWithRawResponse:
         """Tag and source group associations"""
         from .resources.tag_source_groups import TagSourceGroupsResourceWithRawResponse
@@ -1652,6 +1675,13 @@ class AsyncQaipWithRawResponse:
         from .resources.agent import AsyncAgentResourceWithRawResponse
 
         return AsyncAgentResourceWithRawResponse(self._client.agent)
+
+    @cached_property
+    def api_keys(self) -> api_keys.AsyncAPIKeysResourceWithRawResponse:
+        """API key issuance (requires the `apikeys:issue` scope)"""
+        from .resources.api_keys import AsyncAPIKeysResourceWithRawResponse
+
+        return AsyncAPIKeysResourceWithRawResponse(self._client.api_keys)
 
     @cached_property
     def tag_source_groups(self) -> tag_source_groups.AsyncTagSourceGroupsResourceWithRawResponse:
@@ -1752,6 +1782,13 @@ class QaipWithStreamedResponse:
         return AgentResourceWithStreamingResponse(self._client.agent)
 
     @cached_property
+    def api_keys(self) -> api_keys.APIKeysResourceWithStreamingResponse:
+        """API key issuance (requires the `apikeys:issue` scope)"""
+        from .resources.api_keys import APIKeysResourceWithStreamingResponse
+
+        return APIKeysResourceWithStreamingResponse(self._client.api_keys)
+
+    @cached_property
     def tag_source_groups(self) -> tag_source_groups.TagSourceGroupsResourceWithStreamingResponse:
         """Tag and source group associations"""
         from .resources.tag_source_groups import TagSourceGroupsResourceWithStreamingResponse
@@ -1848,6 +1885,13 @@ class AsyncQaipWithStreamedResponse:
         from .resources.agent import AsyncAgentResourceWithStreamingResponse
 
         return AsyncAgentResourceWithStreamingResponse(self._client.agent)
+
+    @cached_property
+    def api_keys(self) -> api_keys.AsyncAPIKeysResourceWithStreamingResponse:
+        """API key issuance (requires the `apikeys:issue` scope)"""
+        from .resources.api_keys import AsyncAPIKeysResourceWithStreamingResponse
+
+        return AsyncAPIKeysResourceWithStreamingResponse(self._client.api_keys)
 
     @cached_property
     def tag_source_groups(self) -> tag_source_groups.AsyncTagSourceGroupsResourceWithStreamingResponse:
