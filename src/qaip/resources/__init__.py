@@ -49,11 +49,17 @@ from .sources import (
     AsyncSourcesResourceWithStreamingResponse,
 )
 from .api_keys import (
+    APIKeysResource,
     ApiKeysResource,
+    AsyncAPIKeysResource,
     AsyncApiKeysResource,
+    APIKeysResourceWithRawResponse,
     ApiKeysResourceWithRawResponse,
+    AsyncAPIKeysResourceWithRawResponse,
     AsyncApiKeysResourceWithRawResponse,
+    APIKeysResourceWithStreamingResponse,
     ApiKeysResourceWithStreamingResponse,
+    AsyncAPIKeysResourceWithStreamingResponse,
     AsyncApiKeysResourceWithStreamingResponse,
 )
 from .keywords import (
@@ -138,6 +144,12 @@ from .user_keyword_snapshots import (
 )
 
 __all__ = [
+    "APIKeysResource",
+    "AsyncAPIKeysResource",
+    "APIKeysResourceWithRawResponse",
+    "AsyncAPIKeysResourceWithRawResponse",
+    "APIKeysResourceWithStreamingResponse",
+    "AsyncAPIKeysResourceWithStreamingResponse",
     "AgentResource",
     "AsyncAgentResource",
     "AgentResourceWithRawResponse",

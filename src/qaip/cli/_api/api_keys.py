@@ -95,7 +95,8 @@ def _create(args: Namespace) -> None:
     # 制御引数 (extra_body 等) として解釈され、dry-run と実送信がずれる。
     client = get_client(args)
     try:
-        result = client.api_keys.create(
+        # 旧CLIコマンドは期限省略時の公開済み契約を維持する。
+        result = client.api_keys.create(  # pyright: ignore[reportDeprecated]
             name=body["name"],
             scopes=body["scopes"],
             description=body.get("description", omit),

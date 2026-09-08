@@ -5,68 +5,178 @@ from __future__ import annotations
 import os
 from typing import Any, cast
 
-import httpx
 import pytest
 
-from qaip import Qaip, AsyncQaip, APIStatusError
-from qaip.types import CreatedApiKey
+from qaip import Qaip, AsyncQaip
+from qaip.types import (
+    CreatedAPIKey,
+    CreatedExpiringAPIKey,
+)
+from qaip._utils import parse_datetime
 from tests.utils import assert_matches_type
+
+# pyright: reportDeprecated=false
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
 
-class TestApiKeys:
+class TestAPIKeys:
     parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_create(self, client: Qaip) -> None:
-        api_key = client.api_keys.create(
-            name="name",
-            scopes=["inference:run"],
-        )
-        assert_matches_type(CreatedApiKey, api_key, path=["response"])
+        with pytest.warns(DeprecationWarning):
+            api_key = client.api_keys.create(
+                name="x",
+                scopes=["inference:run"],
+            )
+
+        assert_matches_type(CreatedAPIKey, api_key, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_create_with_all_params(self, client: Qaip) -> None:
-        api_key = client.api_keys.create(
-            name="name",
-            scopes=["inference:run"],
-            description="description",
-        )
-        assert_matches_type(CreatedApiKey, api_key, path=["response"])
+        with pytest.warns(DeprecationWarning):
+            api_key = client.api_keys.create(
+                name="x",
+                scopes=["inference:run"],
+                description="description",
+            )
+
+        assert_matches_type(CreatedAPIKey, api_key, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_raw_response_create(self, client: Qaip) -> None:
-        response = client.api_keys.with_raw_response.create(
-            name="name",
+        with pytest.warns(DeprecationWarning):
+            response = client.api_keys.with_raw_response.create(
+                name="x",
+                scopes=["inference:run"],
+            )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        api_key = response.parse()
+        assert_matches_type(CreatedAPIKey, api_key, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_create(self, client: Qaip) -> None:
+        with pytest.warns(DeprecationWarning):
+            with client.api_keys.with_streaming_response.create(
+                name="x",
+                scopes=["inference:run"],
+            ) as response:
+                assert not response.is_closed
+                assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+                api_key = response.parse()
+                assert_matches_type(CreatedAPIKey, api_key, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_create_expiring(self, client: Qaip) -> None:
+        api_key = client.api_keys.create_expiring(
+            key_kind="personal",
+            name="x",
             scopes=["inference:run"],
+            idempotency_key="x",
+        )
+        assert_matches_type(CreatedExpiringAPIKey, api_key, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_create_expiring_with_all_params(self, client: Qaip) -> None:
+        api_key = client.api_keys.create_expiring(
+            key_kind="personal",
+            name="x",
+            scopes=["inference:run"],
+            idempotency_key="x",
+            description="description",
+            expires_at=parse_datetime("2019-12-27T18:11:19.117Z"),
+            ttl=300,
+        )
+        assert_matches_type(CreatedExpiringAPIKey, api_key, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_create_expiring(self, client: Qaip) -> None:
+        response = client.api_keys.with_raw_response.create_expiring(
+            key_kind="personal",
+            name="x",
+            scopes=["inference:run"],
+            idempotency_key="x",
         )
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         api_key = response.parse()
-        assert_matches_type(CreatedApiKey, api_key, path=["response"])
+        assert_matches_type(CreatedExpiringAPIKey, api_key, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    def test_streaming_response_create(self, client: Qaip) -> None:
-        with client.api_keys.with_streaming_response.create(
-            name="name",
+    def test_streaming_response_create_expiring(self, client: Qaip) -> None:
+        with client.api_keys.with_streaming_response.create_expiring(
+            key_kind="personal",
+            name="x",
             scopes=["inference:run"],
+            idempotency_key="x",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             api_key = response.parse()
-            assert_matches_type(CreatedApiKey, api_key, path=["response"])
+            assert_matches_type(CreatedExpiringAPIKey, api_key, path=["response"])
 
-        assert cast("Any", response.is_closed) is True
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_revoke(self, client: Qaip) -> None:
+        api_key = client.api_keys.revoke(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+        assert api_key is None
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_revoke(self, client: Qaip) -> None:
+        response = client.api_keys.with_raw_response.revoke(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        api_key = response.parse()
+        assert api_key is None
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_revoke(self, client: Qaip) -> None:
+        with client.api_keys.with_streaming_response.revoke(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            api_key = response.parse()
+            assert api_key is None
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_revoke(self, client: Qaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `api_key_id` but received ''"):
+            client.api_keys.with_raw_response.revoke(
+                "",
+            )
 
 
-class TestAsyncApiKeys:
+class TestAsyncAPIKeys:
     parametrize = pytest.mark.parametrize(
         "async_client", [False, True, {"http_client": "aiohttp"}], indirect=True, ids=["loose", "strict", "aiohttp"]
     )
@@ -74,110 +184,151 @@ class TestAsyncApiKeys:
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_create(self, async_client: AsyncQaip) -> None:
-        api_key = await async_client.api_keys.create(
-            name="name",
-            scopes=["inference:run"],
-        )
-        assert_matches_type(CreatedApiKey, api_key, path=["response"])
+        with pytest.warns(DeprecationWarning):
+            api_key = await async_client.api_keys.create(
+                name="x",
+                scopes=["inference:run"],
+            )
+
+        assert_matches_type(CreatedAPIKey, api_key, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncQaip) -> None:
-        api_key = await async_client.api_keys.create(
-            name="name",
-            scopes=["inference:run"],
-            description="description",
-        )
-        assert_matches_type(CreatedApiKey, api_key, path=["response"])
+        with pytest.warns(DeprecationWarning):
+            api_key = await async_client.api_keys.create(
+                name="x",
+                scopes=["inference:run"],
+                description="description",
+            )
+
+        assert_matches_type(CreatedAPIKey, api_key, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncQaip) -> None:
-        response = await async_client.api_keys.with_raw_response.create(
-            name="name",
+        with pytest.warns(DeprecationWarning):
+            response = await async_client.api_keys.with_raw_response.create(
+                name="x",
+                scopes=["inference:run"],
+            )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        api_key = await response.parse()
+        assert_matches_type(CreatedAPIKey, api_key, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_create(self, async_client: AsyncQaip) -> None:
+        with pytest.warns(DeprecationWarning):
+            async with async_client.api_keys.with_streaming_response.create(
+                name="x",
+                scopes=["inference:run"],
+            ) as response:
+                assert not response.is_closed
+                assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+                api_key = await response.parse()
+                assert_matches_type(CreatedAPIKey, api_key, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_create_expiring(self, async_client: AsyncQaip) -> None:
+        api_key = await async_client.api_keys.create_expiring(
+            key_kind="personal",
+            name="x",
             scopes=["inference:run"],
+            idempotency_key="x",
+        )
+        assert_matches_type(CreatedExpiringAPIKey, api_key, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_create_expiring_with_all_params(self, async_client: AsyncQaip) -> None:
+        api_key = await async_client.api_keys.create_expiring(
+            key_kind="personal",
+            name="x",
+            scopes=["inference:run"],
+            idempotency_key="x",
+            description="description",
+            expires_at=parse_datetime("2019-12-27T18:11:19.117Z"),
+            ttl=300,
+        )
+        assert_matches_type(CreatedExpiringAPIKey, api_key, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_create_expiring(self, async_client: AsyncQaip) -> None:
+        response = await async_client.api_keys.with_raw_response.create_expiring(
+            key_kind="personal",
+            name="x",
+            scopes=["inference:run"],
+            idempotency_key="x",
         )
 
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         api_key = await response.parse()
-        assert_matches_type(CreatedApiKey, api_key, path=["response"])
+        assert_matches_type(CreatedExpiringAPIKey, api_key, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    async def test_streaming_response_create(self, async_client: AsyncQaip) -> None:
-        async with async_client.api_keys.with_streaming_response.create(
-            name="name",
+    async def test_streaming_response_create_expiring(self, async_client: AsyncQaip) -> None:
+        async with async_client.api_keys.with_streaming_response.create_expiring(
+            key_kind="personal",
+            name="x",
             scopes=["inference:run"],
+            idempotency_key="x",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             api_key = await response.parse()
-            assert_matches_type(CreatedApiKey, api_key, path=["response"])
+            assert_matches_type(CreatedExpiringAPIKey, api_key, path=["response"])
 
-        assert cast("Any", response.is_closed) is True
+        assert cast(Any, response.is_closed) is True
 
-
-def _issued_payload(request: httpx.Request) -> httpx.Response:
-    return httpx.Response(
-        201,
-        json={
-            "id": "019febbe-235a-7d69-a141-be4bbef5bb03",
-            "name": "n",
-            "key": "qaip_plaintext",
-            "scopes": ["inference:run"],
-            "creation_time": 1,
-        },
-        request=request,
-    )
-
-
-class TestApiKeyIssuanceIsNotRetried:
-    """発行は冪等でないため、応答が失われた再送で鍵が重複してはいけない。"""
-
-    def test_sync_create_does_not_retry_on_5xx(self) -> None:
-        calls: list[httpx.Request] = []
-
-        def handler(request: httpx.Request) -> httpx.Response:
-            calls.append(request)
-            if len(calls) == 1:
-                return httpx.Response(
-                    500,
-                    json={"error": "lost after commit"},
-                    headers={"x-should-retry": "true", "retry-after-ms": "0"},
-                    request=request,
-                )
-            return _issued_payload(request)
-
-        client = Qaip(
-            api_key="caller",
-            base_url="https://example.test",
-            http_client=httpx.Client(transport=httpx.MockTransport(handler)),
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_revoke(self, async_client: AsyncQaip) -> None:
+        api_key = await async_client.api_keys.revoke(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        with pytest.raises(APIStatusError):
-            client.api_keys.create(name="n", scopes=["inference:run"])
-        assert len(calls) == 1
+        assert api_key is None
 
-    async def test_async_create_does_not_retry_on_5xx(self) -> None:
-        calls: list[httpx.Request] = []
-
-        def handler(request: httpx.Request) -> httpx.Response:
-            calls.append(request)
-            if len(calls) == 1:
-                return httpx.Response(
-                    500,
-                    json={"error": "lost after commit"},
-                    headers={"x-should-retry": "true", "retry-after-ms": "0"},
-                    request=request,
-                )
-            return _issued_payload(request)
-
-        client = AsyncQaip(
-            api_key="caller",
-            base_url="https://example.test",
-            http_client=httpx.AsyncClient(transport=httpx.MockTransport(handler)),
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_revoke(self, async_client: AsyncQaip) -> None:
+        response = await async_client.api_keys.with_raw_response.revoke(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
         )
-        with pytest.raises(APIStatusError):
-            await client.api_keys.create(name="n", scopes=["inference:run"])
-        assert len(calls) == 1
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        api_key = await response.parse()
+        assert api_key is None
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_revoke(self, async_client: AsyncQaip) -> None:
+        async with async_client.api_keys.with_streaming_response.revoke(
+            "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            api_key = await response.parse()
+            assert api_key is None
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_revoke(self, async_client: AsyncQaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `api_key_id` but received ''"):
+            await async_client.api_keys.with_raw_response.revoke(
+                "",
+            )

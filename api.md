@@ -215,17 +215,24 @@ Methods:
 - <code title="get /secrets">client.secrets.<a href="./src/qaip/resources/secrets.py">list</a>(\*\*<a href="src/qaip/types/secret_list_params.py">params</a>) -> <a href="./src/qaip/types/secret_list_response.py">SecretListResponse</a></code>
 - <code title="delete /secrets/{secret_id}">client.secrets.<a href="./src/qaip/resources/secrets.py">delete</a>(secret_id) -> <a href="./src/qaip/types/secret.py">Secret</a></code>
 
-# ApiKeys
+# APIKeys
 
 Types:
 
 ```python
-from qaip.types import CreatedApiKey, IssuableApiKeyScope
+from qaip.types import (
+    APIKeyKind,
+    CreatedAPIKey,
+    CreatedExpiringAPIKey,
+    IssuableAPIKeyScope,
+)
 ```
 
 Methods:
 
-- <code title="post /api-keys">client.api_keys.<a href="./src/qaip/resources/api_keys.py">create</a>(\*\*<a href="src/qaip/types/api_key_create_params.py">params</a>) -> <a href="./src/qaip/types/created_api_key.py">CreatedApiKey</a></code>
+- <code title="post /api-keys">client.api_keys.<a href="./src/qaip/resources/api_keys.py">create</a>(\*\*<a href="src/qaip/types/api_key_create_params.py">params</a>) -> <a href="./src/qaip/types/created_api_key.py">CreatedAPIKey</a></code>
+- <code title="post /api-keys/expiring">client.api_keys.<a href="./src/qaip/resources/api_keys.py">create_expiring</a>(\*\*<a href="src/qaip/types/api_key_create_expiring_params.py">params</a>) -> <a href="./src/qaip/types/created_expiring_api_key.py">CreatedExpiringAPIKey</a></code>
+- <code title="delete /api-keys/{api_key_id}">client.api_keys.<a href="./src/qaip/resources/api_keys.py">revoke</a>(api_key_id) -> None</code>
 
 # Keywords
 

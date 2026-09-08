@@ -781,7 +781,28 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
         timeout = sleep_seconds * jitter
         return timeout if timeout >= 0 else 0
 
+    def _is_api_key_issuance_conflict(self, response: httpx.Response) -> bool:
+        return (
+            response.status_code == 409
+            and response.request.method == "POST"
+            and response.request.url.path.endswith("/api-keys/expiring")
+        )
+
     def _should_retry(self, response: httpx.Response) -> bool:
+        if self._is_api_key_issuance_conflict(response):
+            try:
+                body = response.json()
+            except (ValueError, httpx.ResponseNotRead):
+                body = None
+            error = body.get("error") if is_dict(body) else None
+            # 復旧IDを持つ確定応答を、後続の通信失敗で失わないようにする。
+            if (
+                is_dict(error)
+                and error.get("code") in ("credential_already_created", "idempotency_conflict")
+                and error.get("retryable") is False
+            ):
+                return False
+
         # Note: this is not a standard header
         should_retry_header = response.headers.get("x-should-retry")
 
@@ -1060,6 +1081,18 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
                 response.raise_for_status()
             except httpx.HTTPStatusError as err:  # thrown on 4xx and 5xx status code
                 log.debug("Encountered httpx.HTTPStatusError", exc_info=True)
+
+                # ストリーミング応答でも、発行の確定エラーは再試行前に判定する。
+                if (
+                    remaining_retries > 0
+                    and self._is_api_key_issuance_conflict(err.response)
+                    and not err.response.is_closed
+                ):
+                    try:
+                        err.response.read()
+                    except httpx.HTTPError:
+                        if not self._should_retry(err.response):
+                            raise
 
                 if remaining_retries > 0 and self._should_retry(err.response):
                     err.response.close()
@@ -1644,6 +1677,18 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
                 response.raise_for_status()
             except httpx.HTTPStatusError as err:  # thrown on 4xx and 5xx status code
                 log.debug("Encountered httpx.HTTPStatusError", exc_info=True)
+
+                # ストリーミング応答でも、発行の確定エラーは再試行前に判定する。
+                if (
+                    remaining_retries > 0
+                    and self._is_api_key_issuance_conflict(err.response)
+                    and not err.response.is_closed
+                ):
+                    try:
+                        await err.response.aread()
+                    except httpx.HTTPError:
+                        if not self._should_retry(err.response):
+                            raise
 
                 if remaining_retries > 0 and self._should_retry(err.response):
                     await err.response.aclose()
