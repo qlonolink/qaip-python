@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.14.1 (2026-09-08)
+
+Full Changelog: [v0.14.0...v0.14.1](https://github.com/qlonolink/qaip-python/compare/v0.14.0...v0.14.1)
+
 ## 0.14.0 (2026-09-01)
 
 Full Changelog: [v0.13.1...v0.14.0](https://github.com/qlonolink/qaip-python/compare/v0.13.1...v0.14.0)
