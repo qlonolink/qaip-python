@@ -68,7 +68,6 @@ if TYPE_CHECKING:
         secrets,
         sources,
         api_keys,
-        keywords,
         conversations,
         google_drives,
         source_groups,
@@ -77,7 +76,6 @@ if TYPE_CHECKING:
         local_file_groups,
         tag_source_groups,
         redaction_policies,
-        user_keyword_snapshots,
     )
     from .resources.agent import AgentResource, AsyncAgentResource
     from .resources.crawls import CrawlsResource, AsyncCrawlsResource
@@ -85,8 +83,7 @@ if TYPE_CHECKING:
     from .resources.notions import NotionsResource, AsyncNotionsResource
     from .resources.secrets import SecretsResource, AsyncSecretsResource
     from .resources.sources import SourcesResource, AsyncSourcesResource
-    from .resources.api_keys import ApiKeysResource, AsyncApiKeysResource
-    from .resources.keywords import KeywordsResource, AsyncKeywordsResource
+    from .resources.api_keys import APIKeysResource, AsyncAPIKeysResource
     from .resources.conversations import ConversationsResource, AsyncConversationsResource
     from .resources.google_drives import GoogleDrivesResource, AsyncGoogleDrivesResource
     from .resources.source_groups import SourceGroupsResource, AsyncSourceGroupsResource
@@ -95,10 +92,6 @@ if TYPE_CHECKING:
     from .resources.local_file_groups import LocalFileGroupsResource, AsyncLocalFileGroupsResource
     from .resources.tag_source_groups import TagSourceGroupsResource, AsyncTagSourceGroupsResource
     from .resources.redaction_policies import RedactionPoliciesResource, AsyncRedactionPoliciesResource
-    from .resources.user_keyword_snapshots import (
-        UserKeywordSnapshotsResource,
-        AsyncUserKeywordSnapshotsResource,
-    )
 
 __all__ = ["Timeout", "Transport", "ProxiesTypes", "RequestOptions", "Qaip", "AsyncQaip", "Client", "AsyncClient"]
 
@@ -231,25 +224,11 @@ class Qaip(SyncAPIClient):
         return SecretsResource(self)
 
     @cached_property
-    def api_keys(self) -> ApiKeysResource:
+    def api_keys(self) -> APIKeysResource:
         """API key issuance"""
-        from .resources.api_keys import ApiKeysResource
+        from .resources.api_keys import APIKeysResource
 
-        return ApiKeysResource(self)
-
-    @cached_property
-    def keywords(self) -> KeywordsResource:
-        """Keyword management"""
-        from .resources.keywords import KeywordsResource
-
-        return KeywordsResource(self)
-
-    @cached_property
-    def user_keyword_snapshots(self) -> UserKeywordSnapshotsResource:
-        """User keyword snapshot management"""
-        from .resources.user_keyword_snapshots import UserKeywordSnapshotsResource
-
-        return UserKeywordSnapshotsResource(self)
+        return APIKeysResource(self)
 
     @cached_property
     def google_drives(self) -> GoogleDrivesResource:
@@ -992,25 +971,11 @@ class AsyncQaip(AsyncAPIClient):
         return AsyncSecretsResource(self)
 
     @cached_property
-    def api_keys(self) -> AsyncApiKeysResource:
+    def api_keys(self) -> AsyncAPIKeysResource:
         """API key issuance"""
-        from .resources.api_keys import AsyncApiKeysResource
+        from .resources.api_keys import AsyncAPIKeysResource
 
-        return AsyncApiKeysResource(self)
-
-    @cached_property
-    def keywords(self) -> AsyncKeywordsResource:
-        """Keyword management"""
-        from .resources.keywords import AsyncKeywordsResource
-
-        return AsyncKeywordsResource(self)
-
-    @cached_property
-    def user_keyword_snapshots(self) -> AsyncUserKeywordSnapshotsResource:
-        """User keyword snapshot management"""
-        from .resources.user_keyword_snapshots import AsyncUserKeywordSnapshotsResource
-
-        return AsyncUserKeywordSnapshotsResource(self)
+        return AsyncAPIKeysResource(self)
 
     @cached_property
     def google_drives(self) -> AsyncGoogleDrivesResource:
@@ -1708,25 +1673,11 @@ class QaipWithRawResponse:
         return SecretsResourceWithRawResponse(self._client.secrets)
 
     @cached_property
-    def api_keys(self) -> api_keys.ApiKeysResourceWithRawResponse:
+    def api_keys(self) -> api_keys.APIKeysResourceWithRawResponse:
         """API key issuance"""
-        from .resources.api_keys import ApiKeysResourceWithRawResponse
+        from .resources.api_keys import APIKeysResourceWithRawResponse
 
-        return ApiKeysResourceWithRawResponse(self._client.api_keys)
-
-    @cached_property
-    def keywords(self) -> keywords.KeywordsResourceWithRawResponse:
-        """Keyword management"""
-        from .resources.keywords import KeywordsResourceWithRawResponse
-
-        return KeywordsResourceWithRawResponse(self._client.keywords)
-
-    @cached_property
-    def user_keyword_snapshots(self) -> user_keyword_snapshots.UserKeywordSnapshotsResourceWithRawResponse:
-        """User keyword snapshot management"""
-        from .resources.user_keyword_snapshots import UserKeywordSnapshotsResourceWithRawResponse
-
-        return UserKeywordSnapshotsResourceWithRawResponse(self._client.user_keyword_snapshots)
+        return APIKeysResourceWithRawResponse(self._client.api_keys)
 
     @cached_property
     def google_drives(self) -> google_drives.GoogleDrivesResourceWithRawResponse:
@@ -1845,25 +1796,11 @@ class AsyncQaipWithRawResponse:
         return AsyncSecretsResourceWithRawResponse(self._client.secrets)
 
     @cached_property
-    def api_keys(self) -> api_keys.AsyncApiKeysResourceWithRawResponse:
+    def api_keys(self) -> api_keys.AsyncAPIKeysResourceWithRawResponse:
         """API key issuance"""
-        from .resources.api_keys import AsyncApiKeysResourceWithRawResponse
+        from .resources.api_keys import AsyncAPIKeysResourceWithRawResponse
 
-        return AsyncApiKeysResourceWithRawResponse(self._client.api_keys)
-
-    @cached_property
-    def keywords(self) -> keywords.AsyncKeywordsResourceWithRawResponse:
-        """Keyword management"""
-        from .resources.keywords import AsyncKeywordsResourceWithRawResponse
-
-        return AsyncKeywordsResourceWithRawResponse(self._client.keywords)
-
-    @cached_property
-    def user_keyword_snapshots(self) -> user_keyword_snapshots.AsyncUserKeywordSnapshotsResourceWithRawResponse:
-        """User keyword snapshot management"""
-        from .resources.user_keyword_snapshots import AsyncUserKeywordSnapshotsResourceWithRawResponse
-
-        return AsyncUserKeywordSnapshotsResourceWithRawResponse(self._client.user_keyword_snapshots)
+        return AsyncAPIKeysResourceWithRawResponse(self._client.api_keys)
 
     @cached_property
     def google_drives(self) -> google_drives.AsyncGoogleDrivesResourceWithRawResponse:
@@ -1982,25 +1919,11 @@ class QaipWithStreamedResponse:
         return SecretsResourceWithStreamingResponse(self._client.secrets)
 
     @cached_property
-    def api_keys(self) -> api_keys.ApiKeysResourceWithStreamingResponse:
+    def api_keys(self) -> api_keys.APIKeysResourceWithStreamingResponse:
         """API key issuance"""
-        from .resources.api_keys import ApiKeysResourceWithStreamingResponse
+        from .resources.api_keys import APIKeysResourceWithStreamingResponse
 
-        return ApiKeysResourceWithStreamingResponse(self._client.api_keys)
-
-    @cached_property
-    def keywords(self) -> keywords.KeywordsResourceWithStreamingResponse:
-        """Keyword management"""
-        from .resources.keywords import KeywordsResourceWithStreamingResponse
-
-        return KeywordsResourceWithStreamingResponse(self._client.keywords)
-
-    @cached_property
-    def user_keyword_snapshots(self) -> user_keyword_snapshots.UserKeywordSnapshotsResourceWithStreamingResponse:
-        """User keyword snapshot management"""
-        from .resources.user_keyword_snapshots import UserKeywordSnapshotsResourceWithStreamingResponse
-
-        return UserKeywordSnapshotsResourceWithStreamingResponse(self._client.user_keyword_snapshots)
+        return APIKeysResourceWithStreamingResponse(self._client.api_keys)
 
     @cached_property
     def google_drives(self) -> google_drives.GoogleDrivesResourceWithStreamingResponse:
@@ -2119,25 +2042,11 @@ class AsyncQaipWithStreamedResponse:
         return AsyncSecretsResourceWithStreamingResponse(self._client.secrets)
 
     @cached_property
-    def api_keys(self) -> api_keys.AsyncApiKeysResourceWithStreamingResponse:
+    def api_keys(self) -> api_keys.AsyncAPIKeysResourceWithStreamingResponse:
         """API key issuance"""
-        from .resources.api_keys import AsyncApiKeysResourceWithStreamingResponse
+        from .resources.api_keys import AsyncAPIKeysResourceWithStreamingResponse
 
-        return AsyncApiKeysResourceWithStreamingResponse(self._client.api_keys)
-
-    @cached_property
-    def keywords(self) -> keywords.AsyncKeywordsResourceWithStreamingResponse:
-        """Keyword management"""
-        from .resources.keywords import AsyncKeywordsResourceWithStreamingResponse
-
-        return AsyncKeywordsResourceWithStreamingResponse(self._client.keywords)
-
-    @cached_property
-    def user_keyword_snapshots(self) -> user_keyword_snapshots.AsyncUserKeywordSnapshotsResourceWithStreamingResponse:
-        """User keyword snapshot management"""
-        from .resources.user_keyword_snapshots import AsyncUserKeywordSnapshotsResourceWithStreamingResponse
-
-        return AsyncUserKeywordSnapshotsResourceWithStreamingResponse(self._client.user_keyword_snapshots)
+        return AsyncAPIKeysResourceWithStreamingResponse(self._client.api_keys)
 
     @cached_property
     def google_drives(self) -> google_drives.AsyncGoogleDrivesResourceWithStreamingResponse:

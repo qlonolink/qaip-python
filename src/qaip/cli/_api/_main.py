@@ -15,14 +15,12 @@ from . import (
     secrets,
     sources,
     api_keys,
-    keywords,
     completion,
     conversations,
     google_drives,
     source_groups,
     local_file_groups,
     tag_source_groups,
-    user_keyword_snapshots,
 )
 
 
@@ -38,8 +36,6 @@ def register_commands(parser: ArgumentParser) -> None:
     sources.register(subparsers)
     source_groups.register(subparsers)
     secrets.register(subparsers)
-    keywords.register(subparsers)
-    user_keyword_snapshots.register(subparsers)
     crawls.register(subparsers)
     google_drives.register(subparsers)
     githubs.register(subparsers)

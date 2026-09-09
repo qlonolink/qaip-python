@@ -14,12 +14,12 @@ from ._common import (
 from ..._types import omit
 from .._errors import CLIError, mark_non_retryable
 from ..._exceptions import APIStatusError
-from ...types.issuable_api_key_scope import IssuableApiKeyScope
+from ...types.issuable_api_key_scope import IssuableAPIKeyScope
 
 if TYPE_CHECKING:
     from argparse import Namespace, _SubParsersAction
 
-_ISSUABLE_SCOPES: tuple[str, ...] = get_args(IssuableApiKeyScope)
+_ISSUABLE_SCOPES: tuple[str, ...] = get_args(IssuableAPIKeyScope)
 
 
 def register(subparser: _SubParsersAction[ArgumentParser]) -> None:

@@ -5,7 +5,7 @@ from typing import List, Optional
 from .._models import BaseModel
 from .issuable_api_key_scope import IssuableAPIKeyScope
 
-__all__ = ["CreatedAPIKey", "CreatedApiKey"]
+__all__ = ["CreatedAPIKey"]
 
 
 class CreatedAPIKey(BaseModel):
@@ -26,7 +26,3 @@ class CreatedAPIKey(BaseModel):
 
     description: Optional[str] = None
     """Description of the API key"""
-
-
-# 公開済みの型名を維持する。
-CreatedApiKey = CreatedAPIKey

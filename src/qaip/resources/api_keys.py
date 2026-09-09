@@ -25,7 +25,7 @@ from ..types.created_api_key import CreatedAPIKey
 from ..types.issuable_api_key_scope import IssuableAPIKeyScope
 from ..types.created_expiring_api_key import CreatedExpiringAPIKey
 
-__all__ = ["APIKeysResource", "AsyncAPIKeysResource", "ApiKeysResource", "AsyncApiKeysResource"]
+__all__ = ["APIKeysResource", "AsyncAPIKeysResource"]
 
 
 class APIKeysResource(SyncAPIResource):
@@ -448,12 +448,3 @@ class AsyncAPIKeysResourceWithStreamingResponse:
         self.revoke = async_to_streamed_response_wrapper(
             api_keys.revoke,
         )
-
-
-# 公開済みのimport名も同じresourceを参照できるようにする。
-ApiKeysResource = APIKeysResource
-AsyncApiKeysResource = AsyncAPIKeysResource
-ApiKeysResourceWithRawResponse = APIKeysResourceWithRawResponse
-AsyncApiKeysResourceWithRawResponse = AsyncAPIKeysResourceWithRawResponse
-ApiKeysResourceWithStreamingResponse = APIKeysResourceWithStreamingResponse
-AsyncApiKeysResourceWithStreamingResponse = AsyncAPIKeysResourceWithStreamingResponse

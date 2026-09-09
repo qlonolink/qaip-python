@@ -9,10 +9,7 @@ import httpx
 import pytest
 
 from qaip import Qaip, AsyncQaip, ConflictError
-from qaip.types import CreatedAPIKey, CreatedApiKey, IssuableAPIKeyScope, IssuableApiKeyScope, CreatedExpiringAPIKey
-from qaip.resources import APIKeysResource, ApiKeysResource, AsyncAPIKeysResource, AsyncApiKeysResource
-from qaip.resources.api_keys import __all__ as api_key_exports
-from qaip.types.api_key_create_params import APIKeyCreateParams, ApiKeyCreateParams
+from qaip.types import CreatedExpiringAPIKey
 
 KEY_ID = "019febbe-235a-7d69-a141-be4bbef5bb03"
 EXPIRY = "2030-01-01T00:00:00Z"
@@ -28,15 +25,6 @@ def _payload() -> dict[str, Any]:
         "name": "contract-test",
         "scopes": ["knowledge:read"],
     }
-
-
-def test_published_api_key_imports_remain_compatible() -> None:
-    assert CreatedApiKey is CreatedAPIKey
-    assert IssuableApiKeyScope is IssuableAPIKeyScope
-    assert ApiKeyCreateParams is APIKeyCreateParams
-    assert ApiKeysResource is APIKeysResource
-    assert AsyncApiKeysResource is AsyncAPIKeysResource
-    assert {"ApiKeysResource", "AsyncApiKeysResource"} <= set(api_key_exports)
 
 
 @pytest.mark.parametrize("asynchronous", [False, True])

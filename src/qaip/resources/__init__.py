@@ -50,25 +50,11 @@ from .sources import (
 )
 from .api_keys import (
     APIKeysResource,
-    ApiKeysResource,
     AsyncAPIKeysResource,
-    AsyncApiKeysResource,
     APIKeysResourceWithRawResponse,
-    ApiKeysResourceWithRawResponse,
     AsyncAPIKeysResourceWithRawResponse,
-    AsyncApiKeysResourceWithRawResponse,
     APIKeysResourceWithStreamingResponse,
-    ApiKeysResourceWithStreamingResponse,
     AsyncAPIKeysResourceWithStreamingResponse,
-    AsyncApiKeysResourceWithStreamingResponse,
-)
-from .keywords import (
-    KeywordsResource,
-    AsyncKeywordsResource,
-    KeywordsResourceWithRawResponse,
-    AsyncKeywordsResourceWithRawResponse,
-    KeywordsResourceWithStreamingResponse,
-    AsyncKeywordsResourceWithStreamingResponse,
 )
 from .conversations import (
     ConversationsResource,
@@ -134,14 +120,6 @@ from .redaction_policies import (
     RedactionPoliciesResourceWithStreamingResponse,
     AsyncRedactionPoliciesResourceWithStreamingResponse,
 )
-from .user_keyword_snapshots import (
-    UserKeywordSnapshotsResource,
-    AsyncUserKeywordSnapshotsResource,
-    UserKeywordSnapshotsResourceWithRawResponse,
-    AsyncUserKeywordSnapshotsResourceWithRawResponse,
-    UserKeywordSnapshotsResourceWithStreamingResponse,
-    AsyncUserKeywordSnapshotsResourceWithStreamingResponse,
-)
 
 __all__ = [
     "APIKeysResource",
@@ -174,12 +152,6 @@ __all__ = [
     "AsyncTagManagementResourceWithRawResponse",
     "TagManagementResourceWithStreamingResponse",
     "AsyncTagManagementResourceWithStreamingResponse",
-    "ApiKeysResource",
-    "AsyncApiKeysResource",
-    "ApiKeysResourceWithRawResponse",
-    "AsyncApiKeysResourceWithRawResponse",
-    "ApiKeysResourceWithStreamingResponse",
-    "AsyncApiKeysResourceWithStreamingResponse",
     "TagSourceGroupsResource",
     "AsyncTagSourceGroupsResource",
     "TagSourceGroupsResourceWithRawResponse",
@@ -222,18 +194,6 @@ __all__ = [
     "AsyncCrawlsResourceWithRawResponse",
     "CrawlsResourceWithStreamingResponse",
     "AsyncCrawlsResourceWithStreamingResponse",
-    "KeywordsResource",
-    "AsyncKeywordsResource",
-    "KeywordsResourceWithRawResponse",
-    "AsyncKeywordsResourceWithRawResponse",
-    "KeywordsResourceWithStreamingResponse",
-    "AsyncKeywordsResourceWithStreamingResponse",
-    "UserKeywordSnapshotsResource",
-    "AsyncUserKeywordSnapshotsResource",
-    "UserKeywordSnapshotsResourceWithRawResponse",
-    "AsyncUserKeywordSnapshotsResourceWithRawResponse",
-    "UserKeywordSnapshotsResourceWithStreamingResponse",
-    "AsyncUserKeywordSnapshotsResourceWithStreamingResponse",
     "GithubsResource",
     "AsyncGithubsResource",
     "GithubsResourceWithRawResponse",

@@ -7,7 +7,7 @@ from typing_extensions import Required, TypedDict
 
 from .issuable_api_key_scope import IssuableAPIKeyScope
 
-__all__ = ["APIKeyCreateParams", "ApiKeyCreateParams"]
+__all__ = ["APIKeyCreateParams"]
 
 
 class APIKeyCreateParams(TypedDict, total=False):
@@ -19,7 +19,3 @@ class APIKeyCreateParams(TypedDict, total=False):
 
     description: str
     """Description of the API key"""
-
-
-# 公開済みの型名を維持する。
-ApiKeyCreateParams = APIKeyCreateParams
