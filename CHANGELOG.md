@@ -1,8 +1,23 @@
 # Changelog
 
-## 0.14.1 (2026-09-08)
+## 0.15.0 (2026-09-11)
 
-Full Changelog: [v0.14.0...v0.14.1](https://github.com/qlonolink/qaip-python/compare/v0.14.0...v0.14.1)
+Full Changelog: [v0.14.0...v0.15.0](https://github.com/qlonolink/qaip-python/compare/v0.14.0...v0.15.0)
+
+### Features and fixes
+
+- Generate conversations, external queries, tag management, and agent thread methods from the public OpenAPI specification.
+- Add expiring API key creation and revocation support.
+- Parse both HTTP 200 and HTTP 202 query responses, including empty results under Pydantic v1.
+- Send multipart arrays as repeated field names, including file uploads and their modification timestamps.
+
+### Breaking changes
+
+- Remove the `qaip` CLI and its package entry point.
+- Remove `keywords`, `user_keyword_snapshots`, and their types; these resources are absent from the public API specification.
+- Use generated names: `APIKeysResource`, `CreatedAPIKey`, `APIKeyCreateParams`, and `IssuableAPIKeyScope`. The corresponding snake_case module paths stay the same.
+- Replace `ConversationScopeParams` with the generated method parameters.
+- Remove custom retry suppression, HTTP 409 handling, and SSE parsing overrides. Client behavior now follows the generated SDK.
 
 ## 0.14.0 (2026-09-01)
 

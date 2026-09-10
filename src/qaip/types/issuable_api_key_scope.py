@@ -2,7 +2,7 @@
 
 from typing_extensions import Literal, TypeAlias
 
-__all__ = ["IssuableAPIKeyScope", "IssuableApiKeyScope"]
+__all__ = ["IssuableAPIKeyScope"]
 
 IssuableAPIKeyScope: TypeAlias = Literal[
     "inference:run",
@@ -15,7 +15,3 @@ IssuableAPIKeyScope: TypeAlias = Literal[
     "policy:authz:manage",
     "authz:grant",
 ]
-
-
-# 公開済みの型名を維持する。
-IssuableApiKeyScope = IssuableAPIKeyScope

@@ -9,3 +9,8 @@ __all__ = ["AgentRetrieveThreadParams"]
 
 class AgentRetrieveThreadParams(TypedDict, total=False):
     principal_id: str
+    """Scope by principal.
+
+    If omitted, only a thread with no principal (principal_id is null) is returned;
+    a thread whose principal differs yields 404.
+    """

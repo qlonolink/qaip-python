@@ -16,6 +16,7 @@ class Conversation(BaseModel):
     current_leaf_id: Optional[str] = None
 
     principal_id: Optional[str] = None
+    """Authorization principal this conversation belongs to (null if not set)."""
 
     title: Optional[str] = None
 

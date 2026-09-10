@@ -9,5 +9,7 @@ __all__ = ["TagManagementUpdateParams"]
 
 class TagManagementUpdateParams(TypedDict, total=False):
     description: str
+    """New tag description. Omit or send an empty string to leave unchanged."""
 
     name: str
+    """New tag name. Omit or send an empty string to leave unchanged."""

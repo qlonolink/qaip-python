@@ -97,11 +97,7 @@ class LocalFileGroupsResource(SyncAPIResource):
             },
             [["files", "<array>"]],
         )
-        extracted_files = extract_files(
-            cast(Mapping[str, object], body),
-            paths=[["files", "<array>"]],
-            array_format="repeat",
-        )
+        extracted_files = extract_files(cast(Mapping[str, object], body), paths=[["files", "<array>"]])
         # It should be noted that the actual Content-Type header that will be
         # sent to the server will contain a `boundary` parameter, e.g.
         # multipart/form-data; boundary=---abc--
@@ -111,11 +107,7 @@ class LocalFileGroupsResource(SyncAPIResource):
             body=maybe_transform(body, local_file_group_create_params.LocalFileGroupCreateParams),
             files=extracted_files,
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                multipart_form_array_format="repeat",
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=LocalFileGroupCreateResponse,
         )
@@ -306,11 +298,7 @@ class AsyncLocalFileGroupsResource(AsyncAPIResource):
             },
             [["files", "<array>"]],
         )
-        extracted_files = extract_files(
-            cast(Mapping[str, object], body),
-            paths=[["files", "<array>"]],
-            array_format="repeat",
-        )
+        extracted_files = extract_files(cast(Mapping[str, object], body), paths=[["files", "<array>"]])
         # It should be noted that the actual Content-Type header that will be
         # sent to the server will contain a `boundary` parameter, e.g.
         # multipart/form-data; boundary=---abc--
@@ -320,11 +308,7 @@ class AsyncLocalFileGroupsResource(AsyncAPIResource):
             body=await async_maybe_transform(body, local_file_group_create_params.LocalFileGroupCreateParams),
             files=extracted_files,
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                multipart_form_array_format="repeat",
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=LocalFileGroupCreateResponse,
         )

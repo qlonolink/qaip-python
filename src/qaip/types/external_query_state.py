@@ -5,13 +5,5 @@ from typing_extensions import Literal, TypeAlias
 __all__ = ["ExternalQueryState"]
 
 ExternalQueryState: TypeAlias = Literal[
-    "RECEIVED",
-    "PREPARING",
-    "CACHE_READY",
-    "RUNNING",
-    "CANCELLING",
-    "CANCELLED",
-    "SUCCEEDED",
-    "FAILED",
-    "UNKNOWN",
+    "RECEIVED", "PREPARING", "CACHE_READY", "RUNNING", "CANCELLING", "CANCELLED", "SUCCEEDED", "FAILED", "UNKNOWN"
 ]
