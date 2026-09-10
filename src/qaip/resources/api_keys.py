@@ -83,11 +83,6 @@ class APIKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        options = make_request_options(
-            extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-        )
-        # 旧発行APIは冪等でないため、応答喪失後の再送で回収不能な鍵を増やさない。
-        options["max_retries"] = 0
         return self._post(
             "/api-keys",
             body=maybe_transform(
@@ -98,7 +93,9 @@ class APIKeysResource(SyncAPIResource):
                 },
                 api_key_create_params.APIKeyCreateParams,
             ),
-            options=options,
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
             cast_to=CreatedAPIKey,
         )
 
@@ -260,11 +257,6 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        options = make_request_options(
-            extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-        )
-        # 同期APIと同様に、非冪等な鍵発行の自動再試行を禁止する。
-        options["max_retries"] = 0
         return await self._post(
             "/api-keys",
             body=await async_maybe_transform(
@@ -275,7 +267,9 @@ class AsyncAPIKeysResource(AsyncAPIResource):
                 },
                 api_key_create_params.APIKeyCreateParams,
             ),
-            options=options,
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
             cast_to=CreatedAPIKey,
         )
 

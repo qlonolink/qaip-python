@@ -68,11 +68,8 @@ if TYPE_CHECKING:
         secrets,
         sources,
         api_keys,
-        conversations,
         google_drives,
         source_groups,
-        tag_management,
-        external_queries,
         local_file_groups,
         tag_source_groups,
         redaction_policies,
@@ -84,11 +81,8 @@ if TYPE_CHECKING:
     from .resources.secrets import SecretsResource, AsyncSecretsResource
     from .resources.sources import SourcesResource, AsyncSourcesResource
     from .resources.api_keys import APIKeysResource, AsyncAPIKeysResource
-    from .resources.conversations import ConversationsResource, AsyncConversationsResource
     from .resources.google_drives import GoogleDrivesResource, AsyncGoogleDrivesResource
     from .resources.source_groups import SourceGroupsResource, AsyncSourceGroupsResource
-    from .resources.tag_management import TagManagementResource, AsyncTagManagementResource
-    from .resources.external_queries import ExternalQueriesResource, AsyncExternalQueriesResource
     from .resources.local_file_groups import LocalFileGroupsResource, AsyncLocalFileGroupsResource
     from .resources.tag_source_groups import TagSourceGroupsResource, AsyncTagSourceGroupsResource
     from .resources.redaction_policies import RedactionPoliciesResource, AsyncRedactionPoliciesResource
@@ -168,25 +162,11 @@ class Qaip(SyncAPIClient):
         return AgentResource(self)
 
     @cached_property
-    def conversations(self) -> ConversationsResource:
-        """Conversation history and branch management"""
-        from .resources.conversations import ConversationsResource
+    def api_keys(self) -> APIKeysResource:
+        """API key issuance (requires the `apikeys:issue` scope)"""
+        from .resources.api_keys import APIKeysResource
 
-        return ConversationsResource(self)
-
-    @cached_property
-    def external_queries(self) -> ExternalQueriesResource:
-        """Read-only queries against external tables"""
-        from .resources.external_queries import ExternalQueriesResource
-
-        return ExternalQueriesResource(self)
-
-    @cached_property
-    def tag_management(self) -> TagManagementResource:
-        """Tag creation, update, and deletion"""
-        from .resources.tag_management import TagManagementResource
-
-        return TagManagementResource(self)
+        return APIKeysResource(self)
 
     @cached_property
     def tag_source_groups(self) -> TagSourceGroupsResource:
@@ -222,13 +202,6 @@ class Qaip(SyncAPIClient):
         from .resources.secrets import SecretsResource
 
         return SecretsResource(self)
-
-    @cached_property
-    def api_keys(self) -> APIKeysResource:
-        """API key issuance"""
-        from .resources.api_keys import APIKeysResource
-
-        return APIKeysResource(self)
 
     @cached_property
     def google_drives(self) -> GoogleDrivesResource:
@@ -929,25 +902,11 @@ class AsyncQaip(AsyncAPIClient):
         return AsyncAgentResource(self)
 
     @cached_property
-    def conversations(self) -> AsyncConversationsResource:
-        """Conversation history and branch management"""
-        from .resources.conversations import AsyncConversationsResource
+    def api_keys(self) -> AsyncAPIKeysResource:
+        """API key issuance (requires the `apikeys:issue` scope)"""
+        from .resources.api_keys import AsyncAPIKeysResource
 
-        return AsyncConversationsResource(self)
-
-    @cached_property
-    def external_queries(self) -> AsyncExternalQueriesResource:
-        """Read-only queries against external tables"""
-        from .resources.external_queries import AsyncExternalQueriesResource
-
-        return AsyncExternalQueriesResource(self)
-
-    @cached_property
-    def tag_management(self) -> AsyncTagManagementResource:
-        """Tag creation, update, and deletion"""
-        from .resources.tag_management import AsyncTagManagementResource
-
-        return AsyncTagManagementResource(self)
+        return AsyncAPIKeysResource(self)
 
     @cached_property
     def tag_source_groups(self) -> AsyncTagSourceGroupsResource:
@@ -983,13 +942,6 @@ class AsyncQaip(AsyncAPIClient):
         from .resources.secrets import AsyncSecretsResource
 
         return AsyncSecretsResource(self)
-
-    @cached_property
-    def api_keys(self) -> AsyncAPIKeysResource:
-        """API key issuance"""
-        from .resources.api_keys import AsyncAPIKeysResource
-
-        return AsyncAPIKeysResource(self)
 
     @cached_property
     def google_drives(self) -> AsyncGoogleDrivesResource:
@@ -1648,22 +1600,11 @@ class QaipWithRawResponse:
         return AgentResourceWithRawResponse(self._client.agent)
 
     @cached_property
-    def conversations(self) -> conversations.ConversationsResourceWithRawResponse:
-        from .resources.conversations import ConversationsResourceWithRawResponse
+    def api_keys(self) -> api_keys.APIKeysResourceWithRawResponse:
+        """API key issuance (requires the `apikeys:issue` scope)"""
+        from .resources.api_keys import APIKeysResourceWithRawResponse
 
-        return ConversationsResourceWithRawResponse(self._client.conversations)
-
-    @cached_property
-    def external_queries(self) -> external_queries.ExternalQueriesResourceWithRawResponse:
-        from .resources.external_queries import ExternalQueriesResourceWithRawResponse
-
-        return ExternalQueriesResourceWithRawResponse(self._client.external_queries)
-
-    @cached_property
-    def tag_management(self) -> tag_management.TagManagementResourceWithRawResponse:
-        from .resources.tag_management import TagManagementResourceWithRawResponse
-
-        return TagManagementResourceWithRawResponse(self._client.tag_management)
+        return APIKeysResourceWithRawResponse(self._client.api_keys)
 
     @cached_property
     def tag_source_groups(self) -> tag_source_groups.TagSourceGroupsResourceWithRawResponse:
@@ -1699,13 +1640,6 @@ class QaipWithRawResponse:
         from .resources.secrets import SecretsResourceWithRawResponse
 
         return SecretsResourceWithRawResponse(self._client.secrets)
-
-    @cached_property
-    def api_keys(self) -> api_keys.APIKeysResourceWithRawResponse:
-        """API key issuance"""
-        from .resources.api_keys import APIKeysResourceWithRawResponse
-
-        return APIKeysResourceWithRawResponse(self._client.api_keys)
 
     @cached_property
     def google_drives(self) -> google_drives.GoogleDrivesResourceWithRawResponse:
@@ -1771,22 +1705,11 @@ class AsyncQaipWithRawResponse:
         return AsyncAgentResourceWithRawResponse(self._client.agent)
 
     @cached_property
-    def conversations(self) -> conversations.AsyncConversationsResourceWithRawResponse:
-        from .resources.conversations import AsyncConversationsResourceWithRawResponse
+    def api_keys(self) -> api_keys.AsyncAPIKeysResourceWithRawResponse:
+        """API key issuance (requires the `apikeys:issue` scope)"""
+        from .resources.api_keys import AsyncAPIKeysResourceWithRawResponse
 
-        return AsyncConversationsResourceWithRawResponse(self._client.conversations)
-
-    @cached_property
-    def external_queries(self) -> external_queries.AsyncExternalQueriesResourceWithRawResponse:
-        from .resources.external_queries import AsyncExternalQueriesResourceWithRawResponse
-
-        return AsyncExternalQueriesResourceWithRawResponse(self._client.external_queries)
-
-    @cached_property
-    def tag_management(self) -> tag_management.AsyncTagManagementResourceWithRawResponse:
-        from .resources.tag_management import AsyncTagManagementResourceWithRawResponse
-
-        return AsyncTagManagementResourceWithRawResponse(self._client.tag_management)
+        return AsyncAPIKeysResourceWithRawResponse(self._client.api_keys)
 
     @cached_property
     def tag_source_groups(self) -> tag_source_groups.AsyncTagSourceGroupsResourceWithRawResponse:
@@ -1822,13 +1745,6 @@ class AsyncQaipWithRawResponse:
         from .resources.secrets import AsyncSecretsResourceWithRawResponse
 
         return AsyncSecretsResourceWithRawResponse(self._client.secrets)
-
-    @cached_property
-    def api_keys(self) -> api_keys.AsyncAPIKeysResourceWithRawResponse:
-        """API key issuance"""
-        from .resources.api_keys import AsyncAPIKeysResourceWithRawResponse
-
-        return AsyncAPIKeysResourceWithRawResponse(self._client.api_keys)
 
     @cached_property
     def google_drives(self) -> google_drives.AsyncGoogleDrivesResourceWithRawResponse:
@@ -1894,22 +1810,11 @@ class QaipWithStreamedResponse:
         return AgentResourceWithStreamingResponse(self._client.agent)
 
     @cached_property
-    def conversations(self) -> conversations.ConversationsResourceWithStreamingResponse:
-        from .resources.conversations import ConversationsResourceWithStreamingResponse
+    def api_keys(self) -> api_keys.APIKeysResourceWithStreamingResponse:
+        """API key issuance (requires the `apikeys:issue` scope)"""
+        from .resources.api_keys import APIKeysResourceWithStreamingResponse
 
-        return ConversationsResourceWithStreamingResponse(self._client.conversations)
-
-    @cached_property
-    def external_queries(self) -> external_queries.ExternalQueriesResourceWithStreamingResponse:
-        from .resources.external_queries import ExternalQueriesResourceWithStreamingResponse
-
-        return ExternalQueriesResourceWithStreamingResponse(self._client.external_queries)
-
-    @cached_property
-    def tag_management(self) -> tag_management.TagManagementResourceWithStreamingResponse:
-        from .resources.tag_management import TagManagementResourceWithStreamingResponse
-
-        return TagManagementResourceWithStreamingResponse(self._client.tag_management)
+        return APIKeysResourceWithStreamingResponse(self._client.api_keys)
 
     @cached_property
     def tag_source_groups(self) -> tag_source_groups.TagSourceGroupsResourceWithStreamingResponse:
@@ -1945,13 +1850,6 @@ class QaipWithStreamedResponse:
         from .resources.secrets import SecretsResourceWithStreamingResponse
 
         return SecretsResourceWithStreamingResponse(self._client.secrets)
-
-    @cached_property
-    def api_keys(self) -> api_keys.APIKeysResourceWithStreamingResponse:
-        """API key issuance"""
-        from .resources.api_keys import APIKeysResourceWithStreamingResponse
-
-        return APIKeysResourceWithStreamingResponse(self._client.api_keys)
 
     @cached_property
     def google_drives(self) -> google_drives.GoogleDrivesResourceWithStreamingResponse:
@@ -2017,22 +1915,11 @@ class AsyncQaipWithStreamedResponse:
         return AsyncAgentResourceWithStreamingResponse(self._client.agent)
 
     @cached_property
-    def conversations(self) -> conversations.AsyncConversationsResourceWithStreamingResponse:
-        from .resources.conversations import AsyncConversationsResourceWithStreamingResponse
+    def api_keys(self) -> api_keys.AsyncAPIKeysResourceWithStreamingResponse:
+        """API key issuance (requires the `apikeys:issue` scope)"""
+        from .resources.api_keys import AsyncAPIKeysResourceWithStreamingResponse
 
-        return AsyncConversationsResourceWithStreamingResponse(self._client.conversations)
-
-    @cached_property
-    def external_queries(self) -> external_queries.AsyncExternalQueriesResourceWithStreamingResponse:
-        from .resources.external_queries import AsyncExternalQueriesResourceWithStreamingResponse
-
-        return AsyncExternalQueriesResourceWithStreamingResponse(self._client.external_queries)
-
-    @cached_property
-    def tag_management(self) -> tag_management.AsyncTagManagementResourceWithStreamingResponse:
-        from .resources.tag_management import AsyncTagManagementResourceWithStreamingResponse
-
-        return AsyncTagManagementResourceWithStreamingResponse(self._client.tag_management)
+        return AsyncAPIKeysResourceWithStreamingResponse(self._client.api_keys)
 
     @cached_property
     def tag_source_groups(self) -> tag_source_groups.AsyncTagSourceGroupsResourceWithStreamingResponse:
@@ -2068,13 +1955,6 @@ class AsyncQaipWithStreamedResponse:
         from .resources.secrets import AsyncSecretsResourceWithStreamingResponse
 
         return AsyncSecretsResourceWithStreamingResponse(self._client.secrets)
-
-    @cached_property
-    def api_keys(self) -> api_keys.AsyncAPIKeysResourceWithStreamingResponse:
-        """API key issuance"""
-        from .resources.api_keys import AsyncAPIKeysResourceWithStreamingResponse
-
-        return AsyncAPIKeysResourceWithStreamingResponse(self._client.api_keys)
 
     @cached_property
     def google_drives(self) -> google_drives.AsyncGoogleDrivesResourceWithStreamingResponse:

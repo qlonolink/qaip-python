@@ -7,10 +7,8 @@ import httpx
 from ..types import (
     agent_cancel_run_params,
     agent_create_run_params,
-    agent_list_threads_params,
     agent_retrieve_run_params,
     agent_list_run_events_params,
-    agent_retrieve_thread_params,
     agent_stream_run_events_params,
     agent_retrieve_run_result_params,
 )
@@ -27,8 +25,6 @@ from .._response import (
 from .._streaming import Stream, AsyncStream
 from .._base_client import make_request_options
 from ..types.agent_run import AgentRun
-from ..types.agent_thread_detail import AgentThreadDetail
-from ..types.agent_thread_list_response import AgentThreadListResponse
 from ..types.create_agent_run_input_param import CreateAgentRunInputParam
 from ..types.agent_list_run_events_response import AgentListRunEventsResponse
 from ..types.agent_stream_run_events_response import AgentStreamRunEventsResponse
@@ -191,38 +187,6 @@ class AgentResource(SyncAPIResource):
             cast_to=AgentListRunEventsResponse,
         )
 
-    def list_threads(
-        self,
-        *,
-        all_principals: bool | Omit = omit,
-        limit: int | Omit = omit,
-        offset: int | Omit = omit,
-        principal_id: str | Omit = omit,
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AgentThreadListResponse:
-        return self._get(
-            "/agent/threads",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=maybe_transform(
-                    {
-                        "all_principals": all_principals,
-                        "limit": limit,
-                        "offset": offset,
-                        "principal_id": principal_id,
-                    },
-                    agent_list_threads_params.AgentListThreadsParams,
-                ),
-            ),
-            cast_to=AgentThreadListResponse,
-        )
-
     def retrieve_run(
         self,
         run_id: str,
@@ -307,32 +271,6 @@ class AgentResource(SyncAPIResource):
                 ),
             ),
             cast_to=AgentRetrieveRunResultResponse,
-        )
-
-    def retrieve_thread(
-        self,
-        thread_id: str,
-        *,
-        principal_id: str | Omit = omit,
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AgentThreadDetail:
-        if not thread_id:
-            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
-        return self._get(
-            path_template("/agent/threads/{thread_id}", thread_id=thread_id),
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=maybe_transform(
-                    {"principal_id": principal_id}, agent_retrieve_thread_params.AgentRetrieveThreadParams
-                ),
-            ),
-            cast_to=AgentThreadDetail,
         )
 
     def stream_run_events(
@@ -550,38 +488,6 @@ class AsyncAgentResource(AsyncAPIResource):
             cast_to=AgentListRunEventsResponse,
         )
 
-    async def list_threads(
-        self,
-        *,
-        all_principals: bool | Omit = omit,
-        limit: int | Omit = omit,
-        offset: int | Omit = omit,
-        principal_id: str | Omit = omit,
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AgentThreadListResponse:
-        return await self._get(
-            "/agent/threads",
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=await async_maybe_transform(
-                    {
-                        "all_principals": all_principals,
-                        "limit": limit,
-                        "offset": offset,
-                        "principal_id": principal_id,
-                    },
-                    agent_list_threads_params.AgentListThreadsParams,
-                ),
-            ),
-            cast_to=AgentThreadListResponse,
-        )
-
     async def retrieve_run(
         self,
         run_id: str,
@@ -670,32 +576,6 @@ class AsyncAgentResource(AsyncAPIResource):
             cast_to=AgentRetrieveRunResultResponse,
         )
 
-    async def retrieve_thread(
-        self,
-        thread_id: str,
-        *,
-        principal_id: str | Omit = omit,
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AgentThreadDetail:
-        if not thread_id:
-            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
-        return await self._get(
-            path_template("/agent/threads/{thread_id}", thread_id=thread_id),
-            options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
-                query=await async_maybe_transform(
-                    {"principal_id": principal_id}, agent_retrieve_thread_params.AgentRetrieveThreadParams
-                ),
-            ),
-            cast_to=AgentThreadDetail,
-        )
-
     async def stream_run_events(
         self,
         run_id: str,
@@ -768,17 +648,11 @@ class AgentResourceWithRawResponse:
         self.list_run_events = to_raw_response_wrapper(
             agent.list_run_events,
         )
-        self.list_threads = to_raw_response_wrapper(
-            agent.list_threads,
-        )
         self.retrieve_run = to_raw_response_wrapper(
             agent.retrieve_run,
         )
         self.retrieve_run_result = to_raw_response_wrapper(
             agent.retrieve_run_result,
-        )
-        self.retrieve_thread = to_raw_response_wrapper(
-            agent.retrieve_thread,
         )
         self.stream_run_events = to_raw_response_wrapper(
             agent.stream_run_events,
@@ -798,17 +672,11 @@ class AsyncAgentResourceWithRawResponse:
         self.list_run_events = async_to_raw_response_wrapper(
             agent.list_run_events,
         )
-        self.list_threads = async_to_raw_response_wrapper(
-            agent.list_threads,
-        )
         self.retrieve_run = async_to_raw_response_wrapper(
             agent.retrieve_run,
         )
         self.retrieve_run_result = async_to_raw_response_wrapper(
             agent.retrieve_run_result,
-        )
-        self.retrieve_thread = async_to_raw_response_wrapper(
-            agent.retrieve_thread,
         )
         self.stream_run_events = async_to_raw_response_wrapper(
             agent.stream_run_events,
@@ -828,17 +696,11 @@ class AgentResourceWithStreamingResponse:
         self.list_run_events = to_streamed_response_wrapper(
             agent.list_run_events,
         )
-        self.list_threads = to_streamed_response_wrapper(
-            agent.list_threads,
-        )
         self.retrieve_run = to_streamed_response_wrapper(
             agent.retrieve_run,
         )
         self.retrieve_run_result = to_streamed_response_wrapper(
             agent.retrieve_run_result,
-        )
-        self.retrieve_thread = to_streamed_response_wrapper(
-            agent.retrieve_thread,
         )
         self.stream_run_events = to_streamed_response_wrapper(
             agent.stream_run_events,
@@ -858,17 +720,11 @@ class AsyncAgentResourceWithStreamingResponse:
         self.list_run_events = async_to_streamed_response_wrapper(
             agent.list_run_events,
         )
-        self.list_threads = async_to_streamed_response_wrapper(
-            agent.list_threads,
-        )
         self.retrieve_run = async_to_streamed_response_wrapper(
             agent.retrieve_run,
         )
         self.retrieve_run_result = async_to_streamed_response_wrapper(
             agent.retrieve_run_result,
-        )
-        self.retrieve_thread = async_to_streamed_response_wrapper(
-            agent.retrieve_thread,
         )
         self.stream_run_events = async_to_streamed_response_wrapper(
             agent.stream_run_events,

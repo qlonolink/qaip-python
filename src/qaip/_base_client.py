@@ -52,7 +52,6 @@ from ._types import (
     ResponseT,
     AnyMapping,
     PostParser,
-    ArrayFormat,
     BinaryTypes,
     RequestFiles,
     HttpxSendArgs,
@@ -529,10 +528,7 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
                     raise TypeError(
                         f"Expected query input to be a dictionary for multipart requests but got {type(json_data)} instead."
                     )
-                kwargs["data"] = self._serialize_multipartform(
-                    json_data,
-                    array_format=options.multipart_form_array_format,
-                )
+                kwargs["data"] = self._serialize_multipartform(json_data)
 
             # httpx determines whether or not to send a "multipart/form-data"
             # request based on the truthiness of the "files" argument.
@@ -586,17 +582,12 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
             **kwargs,
         )
 
-    def _serialize_multipartform(
-        self,
-        data: Mapping[object, object],
-        *,
-        array_format: ArrayFormat = "brackets",
-    ) -> dict[str, object]:
+    def _serialize_multipartform(self, data: Mapping[object, object]) -> dict[str, object]:
         items = self.qs.stringify_items(
             # TODO: type ignore is required as stringify_items is well typed but we can't be
             # well typed without heavy validation.
             data,  # type: ignore
-            array_format=array_format,
+            array_format="brackets",
         )
         serialized: dict[str, object] = {}
         for key, value in items:
@@ -781,28 +772,7 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
         timeout = sleep_seconds * jitter
         return timeout if timeout >= 0 else 0
 
-    def _is_api_key_issuance_conflict(self, response: httpx.Response) -> bool:
-        return (
-            response.status_code == 409
-            and response.request.method == "POST"
-            and response.request.url.path.endswith("/api-keys/expiring")
-        )
-
     def _should_retry(self, response: httpx.Response) -> bool:
-        if self._is_api_key_issuance_conflict(response):
-            try:
-                body = response.json()
-            except (ValueError, httpx.ResponseNotRead):
-                body = None
-            error = body.get("error") if is_dict(body) else None
-            # 復旧IDを持つ確定応答を、後続の通信失敗で失わないようにする。
-            if (
-                is_dict(error)
-                and error.get("code") in ("credential_already_created", "idempotency_conflict")
-                and error.get("retryable") is False
-            ):
-                return False
-
         # Note: this is not a standard header
         should_retry_header = response.headers.get("x-should-retry")
 
@@ -1081,18 +1051,6 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
                 response.raise_for_status()
             except httpx.HTTPStatusError as err:  # thrown on 4xx and 5xx status code
                 log.debug("Encountered httpx.HTTPStatusError", exc_info=True)
-
-                # ストリーミング応答でも、発行の確定エラーは再試行前に判定する。
-                if (
-                    remaining_retries > 0
-                    and self._is_api_key_issuance_conflict(err.response)
-                    and not err.response.is_closed
-                ):
-                    try:
-                        err.response.read()
-                    except httpx.HTTPError:
-                        if not self._should_retry(err.response):
-                            raise
 
                 if remaining_retries > 0 and self._should_retry(err.response):
                     err.response.close()
@@ -1678,18 +1636,6 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
             except httpx.HTTPStatusError as err:  # thrown on 4xx and 5xx status code
                 log.debug("Encountered httpx.HTTPStatusError", exc_info=True)
 
-                # ストリーミング応答でも、発行の確定エラーは再試行前に判定する。
-                if (
-                    remaining_retries > 0
-                    and self._is_api_key_issuance_conflict(err.response)
-                    and not err.response.is_closed
-                ):
-                    try:
-                        await err.response.aread()
-                    except httpx.HTTPError:
-                        if not self._should_retry(err.response):
-                            raise
-
                 if remaining_retries > 0 and self._should_retry(err.response):
                     await err.response.aclose()
                     await self._sleep_for_retry(
@@ -2010,7 +1956,6 @@ def make_request_options(
     idempotency_key: str | None = None,
     timeout: float | httpx.Timeout | None | NotGiven = not_given,
     post_parser: PostParser | NotGiven = not_given,
-    multipart_form_array_format: ArrayFormat | NotGiven = not_given,
 ) -> RequestOptions:
     """Create a dict of type RequestOptions without keys of NotGiven values."""
     options: RequestOptions = {}
@@ -2035,9 +1980,6 @@ def make_request_options(
     if is_given(post_parser):
         # internal
         options["post_parser"] = post_parser  # type: ignore
-
-    if not isinstance(multipart_form_array_format, NotGiven):
-        options["multipart_form_array_format"] = multipart_form_array_format
 
     return options
 
