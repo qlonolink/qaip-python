@@ -68,8 +68,11 @@ if TYPE_CHECKING:
         secrets,
         sources,
         api_keys,
+        conversations,
         google_drives,
         source_groups,
+        tag_management,
+        external_queries,
         local_file_groups,
         tag_source_groups,
         redaction_policies,
@@ -81,8 +84,11 @@ if TYPE_CHECKING:
     from .resources.secrets import SecretsResource, AsyncSecretsResource
     from .resources.sources import SourcesResource, AsyncSourcesResource
     from .resources.api_keys import APIKeysResource, AsyncAPIKeysResource
+    from .resources.conversations import ConversationsResource, AsyncConversationsResource
     from .resources.google_drives import GoogleDrivesResource, AsyncGoogleDrivesResource
     from .resources.source_groups import SourceGroupsResource, AsyncSourceGroupsResource
+    from .resources.tag_management import TagManagementResource, AsyncTagManagementResource
+    from .resources.external_queries import ExternalQueriesResource, AsyncExternalQueriesResource
     from .resources.local_file_groups import LocalFileGroupsResource, AsyncLocalFileGroupsResource
     from .resources.tag_source_groups import TagSourceGroupsResource, AsyncTagSourceGroupsResource
     from .resources.redaction_policies import RedactionPoliciesResource, AsyncRedactionPoliciesResource
@@ -167,6 +173,26 @@ class Qaip(SyncAPIClient):
         from .resources.api_keys import APIKeysResource
 
         return APIKeysResource(self)
+
+    @cached_property
+    def conversations(self) -> ConversationsResource:
+        from .resources.conversations import ConversationsResource
+
+        return ConversationsResource(self)
+
+    @cached_property
+    def external_queries(self) -> ExternalQueriesResource:
+        """Query materialized external tables"""
+        from .resources.external_queries import ExternalQueriesResource
+
+        return ExternalQueriesResource(self)
+
+    @cached_property
+    def tag_management(self) -> TagManagementResource:
+        """List available tags"""
+        from .resources.tag_management import TagManagementResource
+
+        return TagManagementResource(self)
 
     @cached_property
     def tag_source_groups(self) -> TagSourceGroupsResource:
@@ -909,6 +935,26 @@ class AsyncQaip(AsyncAPIClient):
         return AsyncAPIKeysResource(self)
 
     @cached_property
+    def conversations(self) -> AsyncConversationsResource:
+        from .resources.conversations import AsyncConversationsResource
+
+        return AsyncConversationsResource(self)
+
+    @cached_property
+    def external_queries(self) -> AsyncExternalQueriesResource:
+        """Query materialized external tables"""
+        from .resources.external_queries import AsyncExternalQueriesResource
+
+        return AsyncExternalQueriesResource(self)
+
+    @cached_property
+    def tag_management(self) -> AsyncTagManagementResource:
+        """List available tags"""
+        from .resources.tag_management import AsyncTagManagementResource
+
+        return AsyncTagManagementResource(self)
+
+    @cached_property
     def tag_source_groups(self) -> AsyncTagSourceGroupsResource:
         """Tag and source group associations"""
         from .resources.tag_source_groups import AsyncTagSourceGroupsResource
@@ -1607,6 +1653,26 @@ class QaipWithRawResponse:
         return APIKeysResourceWithRawResponse(self._client.api_keys)
 
     @cached_property
+    def conversations(self) -> conversations.ConversationsResourceWithRawResponse:
+        from .resources.conversations import ConversationsResourceWithRawResponse
+
+        return ConversationsResourceWithRawResponse(self._client.conversations)
+
+    @cached_property
+    def external_queries(self) -> external_queries.ExternalQueriesResourceWithRawResponse:
+        """Query materialized external tables"""
+        from .resources.external_queries import ExternalQueriesResourceWithRawResponse
+
+        return ExternalQueriesResourceWithRawResponse(self._client.external_queries)
+
+    @cached_property
+    def tag_management(self) -> tag_management.TagManagementResourceWithRawResponse:
+        """List available tags"""
+        from .resources.tag_management import TagManagementResourceWithRawResponse
+
+        return TagManagementResourceWithRawResponse(self._client.tag_management)
+
+    @cached_property
     def tag_source_groups(self) -> tag_source_groups.TagSourceGroupsResourceWithRawResponse:
         """Tag and source group associations"""
         from .resources.tag_source_groups import TagSourceGroupsResourceWithRawResponse
@@ -1710,6 +1776,26 @@ class AsyncQaipWithRawResponse:
         from .resources.api_keys import AsyncAPIKeysResourceWithRawResponse
 
         return AsyncAPIKeysResourceWithRawResponse(self._client.api_keys)
+
+    @cached_property
+    def conversations(self) -> conversations.AsyncConversationsResourceWithRawResponse:
+        from .resources.conversations import AsyncConversationsResourceWithRawResponse
+
+        return AsyncConversationsResourceWithRawResponse(self._client.conversations)
+
+    @cached_property
+    def external_queries(self) -> external_queries.AsyncExternalQueriesResourceWithRawResponse:
+        """Query materialized external tables"""
+        from .resources.external_queries import AsyncExternalQueriesResourceWithRawResponse
+
+        return AsyncExternalQueriesResourceWithRawResponse(self._client.external_queries)
+
+    @cached_property
+    def tag_management(self) -> tag_management.AsyncTagManagementResourceWithRawResponse:
+        """List available tags"""
+        from .resources.tag_management import AsyncTagManagementResourceWithRawResponse
+
+        return AsyncTagManagementResourceWithRawResponse(self._client.tag_management)
 
     @cached_property
     def tag_source_groups(self) -> tag_source_groups.AsyncTagSourceGroupsResourceWithRawResponse:
@@ -1817,6 +1903,26 @@ class QaipWithStreamedResponse:
         return APIKeysResourceWithStreamingResponse(self._client.api_keys)
 
     @cached_property
+    def conversations(self) -> conversations.ConversationsResourceWithStreamingResponse:
+        from .resources.conversations import ConversationsResourceWithStreamingResponse
+
+        return ConversationsResourceWithStreamingResponse(self._client.conversations)
+
+    @cached_property
+    def external_queries(self) -> external_queries.ExternalQueriesResourceWithStreamingResponse:
+        """Query materialized external tables"""
+        from .resources.external_queries import ExternalQueriesResourceWithStreamingResponse
+
+        return ExternalQueriesResourceWithStreamingResponse(self._client.external_queries)
+
+    @cached_property
+    def tag_management(self) -> tag_management.TagManagementResourceWithStreamingResponse:
+        """List available tags"""
+        from .resources.tag_management import TagManagementResourceWithStreamingResponse
+
+        return TagManagementResourceWithStreamingResponse(self._client.tag_management)
+
+    @cached_property
     def tag_source_groups(self) -> tag_source_groups.TagSourceGroupsResourceWithStreamingResponse:
         """Tag and source group associations"""
         from .resources.tag_source_groups import TagSourceGroupsResourceWithStreamingResponse
@@ -1920,6 +2026,26 @@ class AsyncQaipWithStreamedResponse:
         from .resources.api_keys import AsyncAPIKeysResourceWithStreamingResponse
 
         return AsyncAPIKeysResourceWithStreamingResponse(self._client.api_keys)
+
+    @cached_property
+    def conversations(self) -> conversations.AsyncConversationsResourceWithStreamingResponse:
+        from .resources.conversations import AsyncConversationsResourceWithStreamingResponse
+
+        return AsyncConversationsResourceWithStreamingResponse(self._client.conversations)
+
+    @cached_property
+    def external_queries(self) -> external_queries.AsyncExternalQueriesResourceWithStreamingResponse:
+        """Query materialized external tables"""
+        from .resources.external_queries import AsyncExternalQueriesResourceWithStreamingResponse
+
+        return AsyncExternalQueriesResourceWithStreamingResponse(self._client.external_queries)
+
+    @cached_property
+    def tag_management(self) -> tag_management.AsyncTagManagementResourceWithStreamingResponse:
+        """List available tags"""
+        from .resources.tag_management import AsyncTagManagementResourceWithStreamingResponse
+
+        return AsyncTagManagementResourceWithStreamingResponse(self._client.tag_management)
 
     @cached_property
     def tag_source_groups(self) -> tag_source_groups.AsyncTagSourceGroupsResourceWithStreamingResponse:
