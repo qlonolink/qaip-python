@@ -4,10 +4,19 @@
 手書き差分を取り消して、対応する生成内容へ戻す**。SDK の機能定義は公開 OpenAPI と
 `stainless.yml`、型名は Stainless の標準生成名に揃える。既存の生成・配布フローを維持する。
 サポートへの問い合わせや、独自のパッケージ組み立て基盤を前提にしない。
-生成設定の絞り込みは実施済み。今回の削除・改名を含む SDK 候補を実装中で、
-候補全体の検証・統合・再発確認は未完了。
+生成設定の絞り込みと旧名・公開仕様外リソースの撤去は実施済み。撤去差分は検証して next へ統合した。残りの生成物置換・設定統合・再発確認は未完了。
+SDK の撤去差分は PR #278 で `next=ec873577` へ統合済み。以前の観測は変更前のSDKを使った生成であり、撤去差分の再生成検証にはならなかった。更新後の next を入力に、親競合の解消と新しい生成確認を進める。
 
-## 実施状況（2026-09-09）
+## 実施状況（2026-09-10）
+
+- SDK PR #278 は `ec873577bd556a960f27c94b64c076d9f91a546f` として next へ統合済み。
+  [next の push CI](https://github.com/stainless-sdks/qaip-python/actions/runs/34356195613) も成功。
+- 親競合解消 PR #237 に #278 の撤去差分と比較先の履歴を取り込んだ。候補 `72e5617caff991cc4fd6b2a0bd4b30acb5eeb4f5` の tree は next と一致し、#216 の生成 head `91ee0ff2` と比較先 `0c9e8162` を祖先に含む。
+  [候補の push CI](https://github.com/stainless-sdks/qaip-python/actions/runs/34450460365) 成功後、`f51412e680870a119f3320737e0492d8addd8e88` で merge。#216 も merged/closed を確認した。
+- 更新済み next と親競合解消後の状態で、[qdev #7737 の preview を再実行](https://github.com/qlonolink/qdev/actions/runs/34318634525/attempts/2)した。新しい base `bui_0cmtv7rc8j000z28s6escsbm4g` / head `bui_0cmtv7redn001028s6b55k2qxt` が9月10日16:36 JSTに作成された。今回の head 設定revisionは `ca29baa71ef38dda58feaabb55fc4ef7e3ffef83`。前日の未開始ビルドとは別の実行。 [新ビルドのAPI観測](https://github.com/qlonolink/qdev/actions/runs/34451333052)では16:44 JST時点で両方のOpenAPI/Pythonが `not_started`、診断は空。親競合を解消してnextへ撤去差分を反映した後も、生成開始を確認できていない。
+- 既存の親生成物 `91ee0ff2` → `fcaa350` の未統合差分6ファイルを通常PR [#281](https://github.com/stainless-sdks/qaip-python/pull/281)にまとめた。completion の `include_retrieved` と応答型などを採用し、撤去済み機能と保護処理は保持する。v2 793 passed / 1518 skipped、v1 780 passed / 1531 skipped、lint成功。HTTPモックで要求・応答18通りを確認。[候補 push CI](https://github.com/stainless-sdks/qaip-python/actions/runs/34451021760)も成功。これは現在の親に対応する生成物の取り込みであり、#7737の新設定の生成結果ではない。
+
+以下は9月9日の生成・候補検証記録。変更後の next を入力とする再生成結果とは区別する。
 
 - 親1件・preview 9件の競合を base/head SHA と衝突ファイルで確認し、
   [PR 一覧](stainless-conflict-pr-status.tsv)を更新した。候補検証後の処置は未実施。
@@ -18,8 +27,8 @@
   実際には結果の観測が600秒でタイムアウトした。新しい生成結果は未確認。
   head のビルド `bui_0cmttpo0kt002n24s65zh67vb6` と
   base のビルド `bui_0cmttpnynn002m24s6djrg5vif` を公式 API で再確認した。
-  [状態・履歴取得ログ](https://github.com/qlonolink/qdev/actions/runs/34321082998)では、
-  15:54 JST 時点でも両方の Python / OpenAPI が `not_started`。
+  [状態・履歴取得ログ](https://github.com/qlonolink/qdev/actions/runs/34321082998/attempts/4)では、
+  16:18 JST 時点でも両方の Python / OpenAPI が `not_started`。
   本日10:40 JST以降の既存10ビルドもすべて同じ状態で、今回の2ビルドの診断結果は空。
   昨日の10ビルドは完了しているため、今回の設定だけに限定された開始待ちではない。
   新規ビルドを重複起動せず、同じ ID の状態を追跡している。
@@ -35,6 +44,10 @@
   wheel/sdist のビルドと、wheel単独の環境での `qaip --version`、`qaip schema`、
   API key作成・conversations一覧の `--dry-run`、新名import・廃止moduleの除去を確認した。
   これは撤去差分の検証であり、新設定の純生成物との一致・統合・再発確認の完了ではない。
+- [SDK PR #278](https://github.com/stainless-sdks/qaip-python/pull/278) の候補
+  `81ce5545c44e4d8492634b094ea865174e89f2bb` を push し、同じ SHA の
+  [push CI](https://github.com/stainless-sdks/qaip-python/actions/runs/34322149077)で
+  lint・test・build の成功を確認した。PRイベントのskipは成功として数えていない。
 
 Stainless は2026-05-18に、SDK生成を含むホスト製品の終了方針を
 [発表している](https://www.stainless.com/blog/stainless-is-joining-anthropic/)。
@@ -109,8 +122,9 @@ API key/query 周辺で当面残す手書き差分は、再送抑止と、`_base
 
 ## 実施手順
 
-適用順は、**候補の検証 → 既存競合の解消と生成設定・SDK 差分の取り込み →
-継続 PR の再生成による再発確認**とする。
+適用順は、**撤去候補を検証して next へ反映 → 現在の next を保持して既存の親競合を解消 → 更新後の SDK を使って設定 preview を生成 → 残りの生成物を取り込み → 継続 PR の再発確認**とする。
+
+撤去候補の next 反映は #278 で完了した。#237 は撤去前の候補のままマージせず、現在の next と同じ tree に更新してから処置する。以降の新規生成は SDK 入力が変更されたことを理由に起動し、未開始の同じビルドを時間切れだけで重複起動しない。以下の手順3〜5は残りの生成物置換を対象に実施し、#278 の統合を新規生成待ちの条件に戻さない。
 
 1. 現在の親と継続 preview の競合箇所を固定 SHA で確認し、手書き変更と対応づける。
    既存の [調査結果](stainless-conflict-investigation.md)と

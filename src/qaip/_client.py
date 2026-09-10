@@ -355,6 +355,7 @@ class Qaip(SyncAPIClient):
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
         grounding: bool | Omit = omit,
+        include_retrieved: bool | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
         metadata_filter: MetadataFilterGroup | Omit = omit,
@@ -378,7 +379,7 @@ class Qaip(SyncAPIClient):
     ) -> CompletionResponse:
         """<p> Generates a completion based on the input messages and retrieval chunks.
 
-        If the 'stream' parameter is set to true, the response is streamed. By default the stream is plain text (text/plain). Send the request header 'Accept: text/event-stream' to instead receive a Server-Sent Events (SSE) stream of ag-ui protocol events (delta text as TEXT_MESSAGE_CONTENT, grounding and citations as CUSTOM events, history ids and completion as RUN_STARTED / RUN_FINISHED). </p> <p> Required scope: `inference:run` </p>
+        If the 'stream' parameter is set to true, the response is streamed. By default the stream is plain text (text/plain). Send the request header 'Accept: text/event-stream' to instead receive a Server-Sent Events (SSE) stream of ag-ui protocol events (delta text as TEXT_MESSAGE_CONTENT, grounding, citations and (opt-in) retrieved chunks as CUSTOM events, history ids and completion as RUN_STARTED / RUN_FINISHED). </p> <p> Required scope: `inference:run` </p>
 
         Args:
           messages: The messages to generate completion for
@@ -409,6 +410,18 @@ class Qaip(SyncAPIClient):
               Only effective when the completion model is a Gemini model and the
               `gemini_grounding` feature is enabled on the server; otherwise this flag is
               ignored.
+
+          include_retrieved: Whether to return, separately from `citations`, every knowledge-base chunk that
+              was retrieved for this request and passed to the model as context (after
+              authorization filtering), whether or not the answer cited it. When true, the
+              JSON response carries them in the top-level `retrieved` array, the SSE stream
+              emits one or more CUSTOM events named `retrieved` before RUN_FINISHED (split by
+              encoded size; concatenate their values in order to get the full list), and the
+              persisted assistant message keeps them in `assistant_metadata.retrieved` (see
+              GET /conversations). The text/plain stream cannot carry them in the body, so it
+              only persists them. Intended for callers that audit what the end-user was shown;
+              off by default so the response size and stored history of existing clients do
+              not change.
 
           limit: Maximum number of chunks to retrieve as context for completion
 
@@ -478,6 +491,7 @@ class Qaip(SyncAPIClient):
                     "domains": domains,
                     "file_types": file_types,
                     "grounding": grounding,
+                    "include_retrieved": include_retrieved,
                     "limit": limit,
                     "metadata": metadata,
                     "metadata_filter": metadata_filter,
@@ -1102,6 +1116,7 @@ class AsyncQaip(AsyncAPIClient):
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
         grounding: bool | Omit = omit,
+        include_retrieved: bool | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
         metadata_filter: MetadataFilterGroup | Omit = omit,
@@ -1125,7 +1140,7 @@ class AsyncQaip(AsyncAPIClient):
     ) -> CompletionResponse:
         """<p> Generates a completion based on the input messages and retrieval chunks.
 
-        If the 'stream' parameter is set to true, the response is streamed. By default the stream is plain text (text/plain). Send the request header 'Accept: text/event-stream' to instead receive a Server-Sent Events (SSE) stream of ag-ui protocol events (delta text as TEXT_MESSAGE_CONTENT, grounding and citations as CUSTOM events, history ids and completion as RUN_STARTED / RUN_FINISHED). </p> <p> Required scope: `inference:run` </p>
+        If the 'stream' parameter is set to true, the response is streamed. By default the stream is plain text (text/plain). Send the request header 'Accept: text/event-stream' to instead receive a Server-Sent Events (SSE) stream of ag-ui protocol events (delta text as TEXT_MESSAGE_CONTENT, grounding, citations and (opt-in) retrieved chunks as CUSTOM events, history ids and completion as RUN_STARTED / RUN_FINISHED). </p> <p> Required scope: `inference:run` </p>
 
         Args:
           messages: The messages to generate completion for
@@ -1156,6 +1171,18 @@ class AsyncQaip(AsyncAPIClient):
               Only effective when the completion model is a Gemini model and the
               `gemini_grounding` feature is enabled on the server; otherwise this flag is
               ignored.
+
+          include_retrieved: Whether to return, separately from `citations`, every knowledge-base chunk that
+              was retrieved for this request and passed to the model as context (after
+              authorization filtering), whether or not the answer cited it. When true, the
+              JSON response carries them in the top-level `retrieved` array, the SSE stream
+              emits one or more CUSTOM events named `retrieved` before RUN_FINISHED (split by
+              encoded size; concatenate their values in order to get the full list), and the
+              persisted assistant message keeps them in `assistant_metadata.retrieved` (see
+              GET /conversations). The text/plain stream cannot carry them in the body, so it
+              only persists them. Intended for callers that audit what the end-user was shown;
+              off by default so the response size and stored history of existing clients do
+              not change.
 
           limit: Maximum number of chunks to retrieve as context for completion
 
@@ -1225,6 +1252,7 @@ class AsyncQaip(AsyncAPIClient):
                     "domains": domains,
                     "file_types": file_types,
                     "grounding": grounding,
+                    "include_retrieved": include_retrieved,
                     "limit": limit,
                     "metadata": metadata,
                     "metadata_filter": metadata_filter,
