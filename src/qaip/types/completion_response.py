@@ -86,6 +86,14 @@ class CompletionResponse(BaseModel):
     write failed).
     """
 
+    retrieved: Optional[List[Content]] = None
+    """
+    Every knowledge-base chunk retrieved for this request and passed to the model as
+    context (after authorization filtering), in retrieval order, whether or not the
+    answer cited it. Null unless the request set `include_retrieved: true`; an empty
+    array means nothing was retrieved.
+    """
+
     user_message_id: Optional[str] = None
     """Id of the persisted user message node for this turn.
 

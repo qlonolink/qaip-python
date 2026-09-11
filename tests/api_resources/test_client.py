@@ -68,6 +68,7 @@ class TestClient:
             domains=["string"],
             file_types=["html"],
             grounding=True,
+            include_retrieved=True,
             limit=1,
             metadata={
                 "filters": [
@@ -585,6 +586,7 @@ class TestAsyncClient:
             domains=["string"],
             file_types=["html"],
             grounding=True,
+            include_retrieved=True,
             limit=1,
             metadata={
                 "filters": [

@@ -40,7 +40,7 @@ def extract_files(
     query: Mapping[str, object],
     *,
     paths: Sequence[Sequence[str]],
-    array_format: ArrayFormat = "brackets",
+    array_format: ArrayFormat = "repeat",
 ) -> list[tuple[str, FileTypes]]:
     """Recursively extract files from the given dictionary based on specified paths.
 

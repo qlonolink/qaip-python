@@ -10,6 +10,8 @@ import pytest
 from qaip import Qaip, AsyncQaip
 from qaip.types import (
     AgentRun,
+    AgentThreadDetail,
+    AgentThreadListResponse,
     AgentListRunEventsResponse,
     AgentRetrieveRunResultResponse,
 )
@@ -182,6 +184,45 @@ class TestAgent:
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
+    def test_method_list_threads(self, client: Qaip) -> None:
+        agent = client.agent.list_threads()
+        assert_matches_type(AgentThreadListResponse, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_list_threads_with_all_params(self, client: Qaip) -> None:
+        agent = client.agent.list_threads(
+            all_principals=True,
+            limit=1,
+            offset=0,
+            principal_id="principal_id",
+        )
+        assert_matches_type(AgentThreadListResponse, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_list_threads(self, client: Qaip) -> None:
+        response = client.agent.with_raw_response.list_threads()
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        agent = response.parse()
+        assert_matches_type(AgentThreadListResponse, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_list_threads(self, client: Qaip) -> None:
+        with client.agent.with_streaming_response.list_threads() as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            agent = response.parse()
+            assert_matches_type(AgentThreadListResponse, agent, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
     def test_method_retrieve_run(self, client: Qaip) -> None:
         agent = client.agent.retrieve_run(
             run_id="run_id",
@@ -280,6 +321,57 @@ class TestAgent:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `run_id` but received ''"):
             client.agent.with_raw_response.retrieve_run_result(
                 run_id="",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_retrieve_thread(self, client: Qaip) -> None:
+        agent = client.agent.retrieve_thread(
+            thread_id="thread_id",
+        )
+        assert_matches_type(AgentThreadDetail, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_retrieve_thread_with_all_params(self, client: Qaip) -> None:
+        agent = client.agent.retrieve_thread(
+            thread_id="thread_id",
+            principal_id="principal_id",
+        )
+        assert_matches_type(AgentThreadDetail, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_retrieve_thread(self, client: Qaip) -> None:
+        response = client.agent.with_raw_response.retrieve_thread(
+            thread_id="thread_id",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        agent = response.parse()
+        assert_matches_type(AgentThreadDetail, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_retrieve_thread(self, client: Qaip) -> None:
+        with client.agent.with_streaming_response.retrieve_thread(
+            thread_id="thread_id",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            agent = response.parse()
+            assert_matches_type(AgentThreadDetail, agent, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_retrieve_thread(self, client: Qaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `thread_id` but received ''"):
+            client.agent.with_raw_response.retrieve_thread(
+                thread_id="",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
@@ -501,6 +593,45 @@ class TestAsyncAgent:
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
+    async def test_method_list_threads(self, async_client: AsyncQaip) -> None:
+        agent = await async_client.agent.list_threads()
+        assert_matches_type(AgentThreadListResponse, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_list_threads_with_all_params(self, async_client: AsyncQaip) -> None:
+        agent = await async_client.agent.list_threads(
+            all_principals=True,
+            limit=1,
+            offset=0,
+            principal_id="principal_id",
+        )
+        assert_matches_type(AgentThreadListResponse, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_list_threads(self, async_client: AsyncQaip) -> None:
+        response = await async_client.agent.with_raw_response.list_threads()
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        agent = await response.parse()
+        assert_matches_type(AgentThreadListResponse, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_list_threads(self, async_client: AsyncQaip) -> None:
+        async with async_client.agent.with_streaming_response.list_threads() as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            agent = await response.parse()
+            assert_matches_type(AgentThreadListResponse, agent, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
     async def test_method_retrieve_run(self, async_client: AsyncQaip) -> None:
         agent = await async_client.agent.retrieve_run(
             run_id="run_id",
@@ -599,6 +730,57 @@ class TestAsyncAgent:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `run_id` but received ''"):
             await async_client.agent.with_raw_response.retrieve_run_result(
                 run_id="",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_retrieve_thread(self, async_client: AsyncQaip) -> None:
+        agent = await async_client.agent.retrieve_thread(
+            thread_id="thread_id",
+        )
+        assert_matches_type(AgentThreadDetail, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_retrieve_thread_with_all_params(self, async_client: AsyncQaip) -> None:
+        agent = await async_client.agent.retrieve_thread(
+            thread_id="thread_id",
+            principal_id="principal_id",
+        )
+        assert_matches_type(AgentThreadDetail, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_retrieve_thread(self, async_client: AsyncQaip) -> None:
+        response = await async_client.agent.with_raw_response.retrieve_thread(
+            thread_id="thread_id",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        agent = await response.parse()
+        assert_matches_type(AgentThreadDetail, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_retrieve_thread(self, async_client: AsyncQaip) -> None:
+        async with async_client.agent.with_streaming_response.retrieve_thread(
+            thread_id="thread_id",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            agent = await response.parse()
+            assert_matches_type(AgentThreadDetail, agent, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_retrieve_thread(self, async_client: AsyncQaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `thread_id` but received ''"):
+            await async_client.agent.with_raw_response.retrieve_thread(
+                thread_id="",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")

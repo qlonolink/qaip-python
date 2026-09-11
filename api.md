@@ -54,10 +54,10 @@ from qaip.types import (
     AgentRunEvent,
     AgentRunNode,
     AgentRunStatus,
-    CreateAgentRunInputParam,
     AgentThread,
     AgentThreadDetail,
     AgentThreadListResponse,
+    CreateAgentRunInput,
     AgentListRunEventsResponse,
     AgentRetrieveRunResultResponse,
     AgentStreamRunEventsResponse,
@@ -75,6 +75,28 @@ Methods:
 - <code title="get /agent/threads/{thread_id}">client.agent.<a href="./src/qaip/resources/agent.py">retrieve_thread</a>(thread_id, \*\*<a href="src/qaip/types/agent_retrieve_thread_params.py">params</a>) -> <a href="./src/qaip/types/agent_thread_detail.py">AgentThreadDetail</a></code>
 - <code title="get /agent/runs/{run_id}/events/stream">client.agent.<a href="./src/qaip/resources/agent.py">stream_run_events</a>(run_id, \*\*<a href="src/qaip/types/agent_stream_run_events_params.py">params</a>) -> str</code>
 
+# APIKeys
+
+Types:
+
+```python
+from qaip.types import (
+    APIKeyKind,
+    CreateAPIKeyRequest,
+    CreateExpiringAPIKeyRequest,
+    CreatedAPIKey,
+    CreatedExpiringAPIKey,
+    IssuableAPIKeyScope,
+    PublicAPIError,
+)
+```
+
+Methods:
+
+- <code title="post /api-keys">client.api_keys.<a href="./src/qaip/resources/api_keys.py">create</a>(\*\*<a href="src/qaip/types/api_key_create_params.py">params</a>) -> <a href="./src/qaip/types/created_api_key.py">CreatedAPIKey</a></code>
+- <code title="post /api-keys/expiring">client.api_keys.<a href="./src/qaip/resources/api_keys.py">create_expiring</a>(\*\*<a href="src/qaip/types/api_key_create_expiring_params.py">params</a>) -> <a href="./src/qaip/types/created_expiring_api_key.py">CreatedExpiringAPIKey</a></code>
+- <code title="delete /api-keys/{api_key_id}">client.api_keys.<a href="./src/qaip/resources/api_keys.py">revoke</a>(api_key_id) -> None</code>
+
 # Conversations
 
 Types:
@@ -91,10 +113,10 @@ from qaip.types import (
 
 Methods:
 
-- <code title="get /conversations">client.conversations.<a href="./src/qaip/resources/conversations.py">list</a>(\*\*<a href="src/qaip/types/conversation_list_params.py">params</a>) -> <a href="./src/qaip/types/conversation_list_response.py">ConversationListResponse</a></code>
 - <code title="get /conversations/{conversation_id}">client.conversations.<a href="./src/qaip/resources/conversations.py">retrieve</a>(conversation_id, \*\*<a href="src/qaip/types/conversation_retrieve_params.py">params</a>) -> <a href="./src/qaip/types/conversation_detail.py">ConversationDetail</a></code>
 - <code title="patch /conversations/{conversation_id}">client.conversations.<a href="./src/qaip/resources/conversations.py">update</a>(conversation_id, \*\*<a href="src/qaip/types/conversation_update_params.py">params</a>) -> <a href="./src/qaip/types/conversation.py">Conversation</a></code>
-- <code title="delete /conversations/{conversation_id}">client.conversations.<a href="./src/qaip/resources/conversations.py">delete</a>(conversation_id, \*\*<a href="src/qaip/types/conversation_scope_params.py">params</a>) -> None</code>
+- <code title="get /conversations">client.conversations.<a href="./src/qaip/resources/conversations.py">list</a>(\*\*<a href="src/qaip/types/conversation_list_params.py">params</a>) -> <a href="./src/qaip/types/conversation_list_response.py">ConversationListResponse</a></code>
+- <code title="delete /conversations/{conversation_id}">client.conversations.<a href="./src/qaip/resources/conversations.py">delete</a>(conversation_id, \*\*<a href="src/qaip/types/conversation_delete_params.py">params</a>) -> None</code>
 
 # ExternalQueries
 
@@ -103,7 +125,6 @@ Types:
 ```python
 from qaip.types import (
     ExternalQueryColumn,
-    ExternalQueryCreateResponse,
     ExternalQueryPreparingResponse,
     ExternalQueryResultResponse,
     ExternalQueryState,
@@ -112,14 +133,15 @@ from qaip.types import (
     ExternalTableQueryResponse,
     ExternalTableSchema,
     ExternalTableSchemaResponse,
+    ExternalQueryCreateResponse,
 )
 ```
 
 Methods:
 
 - <code title="post /query">client.external_queries.<a href="./src/qaip/resources/external_queries.py">create</a>(\*\*<a href="src/qaip/types/external_query_create_params.py">params</a>) -> <a href="./src/qaip/types/external_query_create_response.py">ExternalQueryCreateResponse</a></code>
-- <code title="delete /query/{request_id}">client.external_queries.<a href="./src/qaip/resources/external_queries.py">cancel</a>(request_id) -> <a href="./src/qaip/types/external_query_state_only_response.py">ExternalQueryStateOnlyResponse</a></code>
 - <code title="get /query/{request_id}">client.external_queries.<a href="./src/qaip/resources/external_queries.py">retrieve</a>(request_id) -> <a href="./src/qaip/types/external_query_state_only_response.py">ExternalQueryStateOnlyResponse</a></code>
+- <code title="delete /query/{request_id}">client.external_queries.<a href="./src/qaip/resources/external_queries.py">cancel</a>(request_id) -> <a href="./src/qaip/types/external_query_state_only_response.py">ExternalQueryStateOnlyResponse</a></code>
 - <code title="get /query/schema">client.external_queries.<a href="./src/qaip/resources/external_queries.py">retrieve_schema</a>() -> <a href="./src/qaip/types/external_table_schema_response.py">ExternalTableSchemaResponse</a></code>
 
 # TagManagement
@@ -214,46 +236,6 @@ Methods:
 - <code title="put /secrets/{secret_id}">client.secrets.<a href="./src/qaip/resources/secrets.py">update</a>(secret_id, \*\*<a href="src/qaip/types/secret_update_params.py">params</a>) -> <a href="./src/qaip/types/secret.py">Secret</a></code>
 - <code title="get /secrets">client.secrets.<a href="./src/qaip/resources/secrets.py">list</a>(\*\*<a href="src/qaip/types/secret_list_params.py">params</a>) -> <a href="./src/qaip/types/secret_list_response.py">SecretListResponse</a></code>
 - <code title="delete /secrets/{secret_id}">client.secrets.<a href="./src/qaip/resources/secrets.py">delete</a>(secret_id) -> <a href="./src/qaip/types/secret.py">Secret</a></code>
-
-# ApiKeys
-
-Types:
-
-```python
-from qaip.types import CreatedApiKey, IssuableApiKeyScope
-```
-
-Methods:
-
-- <code title="post /api-keys">client.api_keys.<a href="./src/qaip/resources/api_keys.py">create</a>(\*\*<a href="src/qaip/types/api_key_create_params.py">params</a>) -> <a href="./src/qaip/types/created_api_key.py">CreatedApiKey</a></code>
-
-# Keywords
-
-Types:
-
-```python
-from qaip.types import Keyword, KeywordListResponse
-```
-
-Methods:
-
-- <code title="post /keywords">client.keywords.<a href="./src/qaip/resources/keywords.py">create</a>(\*\*<a href="src/qaip/types/keyword_create_params.py">params</a>) -> <a href="./src/qaip/types/keyword.py">Keyword</a></code>
-- <code title="get /keywords/{id}">client.keywords.<a href="./src/qaip/resources/keywords.py">retrieve</a>(id) -> <a href="./src/qaip/types/keyword.py">Keyword</a></code>
-- <code title="put /keywords/{id}">client.keywords.<a href="./src/qaip/resources/keywords.py">update</a>(id, \*\*<a href="src/qaip/types/keyword_update_params.py">params</a>) -> <a href="./src/qaip/types/keyword.py">Keyword</a></code>
-- <code title="get /keywords">client.keywords.<a href="./src/qaip/resources/keywords.py">list</a>(\*\*<a href="src/qaip/types/keyword_list_params.py">params</a>) -> <a href="./src/qaip/types/keyword_list_response.py">KeywordListResponse</a></code>
-- <code title="delete /keywords/{id}">client.keywords.<a href="./src/qaip/resources/keywords.py">delete</a>(id) -> <a href="./src/qaip/types/keyword.py">Keyword</a></code>
-
-# UserKeywordSnapshots
-
-Types:
-
-```python
-from qaip.types import UserKeywordSnapshot
-```
-
-Methods:
-
-- <code title="post /user-keyword-snapshots">client.user_keyword_snapshots.<a href="./src/qaip/resources/user_keyword_snapshots.py">create</a>() -> <a href="./src/qaip/types/user_keyword_snapshot.py">UserKeywordSnapshot</a></code>
 
 # GoogleDrives
 

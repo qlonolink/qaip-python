@@ -1,6 +1,6 @@
 [project]
 name = "qaip"
-version = "0.14.0"
+version = "0.15.0"
 description = "The official Python library for the qaip API"
 dynamic = ["readme"]
 license = "Apache-2.0"
@@ -36,14 +36,9 @@ classifiers = [
   "License :: OSI Approved :: Apache Software License"
 ]
 
-[project.scripts]
-qaip = "qaip.cli:main"
-
 [project.urls]
-Homepage = "https://developer.qaip.com/"
+Homepage = "https://github.com/qlonolink/qaip-python"
 Repository = "https://github.com/qlonolink/qaip-python"
-Documentation = "https://developer.qaip.com/docs/"
-Tracker = "https://github.com/qlonolink/qaip-python/issues"
 
 [project.optional-dependencies]
 aiohttp = ["aiohttp", "httpx_aiohttp>=0.1.9"]
@@ -272,4 +267,3 @@ known-first-party = ["qaip", "tests"]
 "scripts/**.py" = ["T201", "T203"]
 "tests/**.py" = ["T201", "T203"]
 "examples/**.py" = ["T201", "T203"]
-"src/qaip/cli/**.py" = ["T201", "T203"]

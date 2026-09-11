@@ -29,10 +29,10 @@ from .shared import (
     BatchSetMetadataResponse as BatchSetMetadataResponse,
 )
 from .source import Source as Source
-from .keyword import Keyword as Keyword
 from .agent_run import AgentRun as AgentRun
 from .secret_type import SecretType as SecretType
 from .agent_thread import AgentThread as AgentThread
+from .api_key_kind import APIKeyKind as APIKeyKind
 from .conversation import Conversation as Conversation
 from .google_drive import GoogleDrive as GoogleDrive
 from .source_group import SourceGroup as SourceGroup
@@ -48,7 +48,7 @@ from .notion_setting import NotionSetting as NotionSetting
 from .policy_summary import PolicySummary as PolicySummary
 from .policy_version import PolicyVersion as PolicyVersion
 from .agent_run_event import AgentRunEvent as AgentRunEvent
-from .created_api_key import CreatedApiKey as CreatedApiKey
+from .created_api_key import CreatedAPIKey as CreatedAPIKey
 from .policy_versions import PolicyVersions as PolicyVersions
 from .search_response import SearchResponse as SearchResponse
 from .agent_run_status import AgentRunStatus as AgentRunStatus
@@ -65,7 +65,6 @@ from .completion_response import CompletionResponse as CompletionResponse
 from .conversation_detail import ConversationDetail as ConversationDetail
 from .crawl_create_params import CrawlCreateParams as CrawlCreateParams
 from .crawl_list_response import CrawlListResponse as CrawlListResponse
-from .keyword_list_params import KeywordListParams as KeywordListParams
 from .agent_execution_mode import AgentExecutionMode as AgentExecutionMode
 from .client_search_params import ClientSearchParams as ClientSearchParams
 from .conversation_message import ConversationMessage as ConversationMessage
@@ -79,30 +78,27 @@ from .secret_create_params import SecretCreateParams as SecretCreateParams
 from .secret_list_response import SecretListResponse as SecretListResponse
 from .secret_update_params import SecretUpdateParams as SecretUpdateParams
 from .source_list_response import SourceListResponse as SourceListResponse
-from .api_key_create_params import ApiKeyCreateParams as ApiKeyCreateParams
+from .api_key_create_params import APIKeyCreateParams as APIKeyCreateParams
 from .client_content_params import ClientContentParams as ClientContentParams
 from .client_extract_params import ClientExtractParams as ClientExtractParams
 from .external_query_column import ExternalQueryColumn as ExternalQueryColumn
 from .external_table_column import ExternalTableColumn as ExternalTableColumn
 from .external_table_schema import ExternalTableSchema as ExternalTableSchema
 from .github_reference_type import GitHubReferenceType as GitHubReferenceType
-from .keyword_create_params import KeywordCreateParams as KeywordCreateParams
-from .keyword_list_response import KeywordListResponse as KeywordListResponse
-from .keyword_update_params import KeywordUpdateParams as KeywordUpdateParams
-from .user_keyword_snapshot import UserKeywordSnapshot as UserKeywordSnapshot
 from .conversation_tree_node import ConversationTreeNode as ConversationTreeNode
-from .issuable_api_key_scope import IssuableApiKeyScope as IssuableApiKeyScope
+from .issuable_api_key_scope import IssuableAPIKeyScope as IssuableAPIKeyScope
 from .agent_cancel_run_params import AgentCancelRunParams as AgentCancelRunParams
 from .agent_create_run_params import AgentCreateRunParams as AgentCreateRunParams
 from .client_completion_params import ClientCompletionParams as ClientCompletionParams
 from .conversation_list_params import ConversationListParams as ConversationListParams
+from .created_expiring_api_key import CreatedExpiringAPIKey as CreatedExpiringAPIKey
 from .google_drive_list_params import GoogleDriveListParams as GoogleDriveListParams
 from .source_group_list_params import SourceGroupListParams as SourceGroupListParams
 from .agent_list_threads_params import AgentListThreadsParams as AgentListThreadsParams
 from .agent_retrieve_run_params import AgentRetrieveRunParams as AgentRetrieveRunParams
 from .chunk_metadata_key_config import ChunkMetadataKeyConfig as ChunkMetadataKeyConfig
-from .conversation_scope_params import ConversationScopeParams as ConversationScopeParams
 from .agent_thread_list_response import AgentThreadListResponse as AgentThreadListResponse
+from .conversation_delete_params import ConversationDeleteParams as ConversationDeleteParams
 from .conversation_list_response import ConversationListResponse as ConversationListResponse
 from .conversation_update_params import ConversationUpdateParams as ConversationUpdateParams
 from .google_drive_create_params import GoogleDriveCreateParams as GoogleDriveCreateParams
@@ -125,6 +121,7 @@ from .external_table_query_response import ExternalTableQueryResponse as Externa
 from .source_update_metadata_params import SourceUpdateMetadataParams as SourceUpdateMetadataParams
 from .agent_list_run_events_response import AgentListRunEventsResponse as AgentListRunEventsResponse
 from .agent_stream_run_events_params import AgentStreamRunEventsParams as AgentStreamRunEventsParams
+from .api_key_create_expiring_params import APIKeyCreateExpiringParams as APIKeyCreateExpiringParams
 from .external_query_create_response import ExternalQueryCreateResponse as ExternalQueryCreateResponse
 from .external_query_result_response import ExternalQueryResultResponse as ExternalQueryResultResponse
 from .external_table_schema_response import ExternalTableSchemaResponse as ExternalTableSchemaResponse

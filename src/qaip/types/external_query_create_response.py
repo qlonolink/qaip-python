@@ -12,7 +12,7 @@ __all__ = ["ExternalQueryCreateResponse"]
 
 ExternalQueryCreateResponse: TypeAlias = Union[
     ExternalQueryResultResponse,
-    ExternalQueryPreparingResponse,
     ExternalQueryStateOnlyResponse,
+    ExternalQueryPreparingResponse,
     ExternalTableQueryResponse,
 ]

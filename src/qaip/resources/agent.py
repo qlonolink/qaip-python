@@ -198,11 +198,32 @@ class AgentResource(SyncAPIResource):
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         principal_id: str | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> AgentThreadListResponse:
+        """
+        <p> List the caller's agent conversations grouped by thread (most recently active first). Restore a thread's messages via the run events endpoints. </p> <p> Required scope: `inference:run` </p>
+
+        Args:
+          all_principals: If true, return threads across all principals in the tenant. Mutually exclusive
+              with principal_id (400 if both are set).
+
+          principal_id: Filter by principal. If omitted, only threads with no principal (principal_id is
+              null) are returned. Mutually exclusive with all_principals=true (400 if both are
+              set).
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         return self._get(
             "/agent/threads",
             options=make_request_options(
@@ -314,11 +335,29 @@ class AgentResource(SyncAPIResource):
         thread_id: str,
         *,
         principal_id: str | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> AgentThreadDetail:
+        """<p> Get the runs of a thread as a tree (via parent_run_id).
+
+        Use it to detect branches (sibling runs from edit/regenerate) and pick a run to restore (restore via the run events endpoints). </p> <p> Required scope: `inference:run` </p>
+
+        Args:
+          principal_id: Scope by principal. If omitted, only a thread with no principal (principal_id is
+              null) is returned; a thread whose principal differs yields 404.
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         if not thread_id:
             raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         return self._get(
@@ -557,11 +596,32 @@ class AsyncAgentResource(AsyncAPIResource):
         limit: int | Omit = omit,
         offset: int | Omit = omit,
         principal_id: str | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> AgentThreadListResponse:
+        """
+        <p> List the caller's agent conversations grouped by thread (most recently active first). Restore a thread's messages via the run events endpoints. </p> <p> Required scope: `inference:run` </p>
+
+        Args:
+          all_principals: If true, return threads across all principals in the tenant. Mutually exclusive
+              with principal_id (400 if both are set).
+
+          principal_id: Filter by principal. If omitted, only threads with no principal (principal_id is
+              null) are returned. Mutually exclusive with all_principals=true (400 if both are
+              set).
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         return await self._get(
             "/agent/threads",
             options=make_request_options(
@@ -675,11 +735,29 @@ class AsyncAgentResource(AsyncAPIResource):
         thread_id: str,
         *,
         principal_id: str | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> AgentThreadDetail:
+        """<p> Get the runs of a thread as a tree (via parent_run_id).
+
+        Use it to detect branches (sibling runs from edit/regenerate) and pick a run to restore (restore via the run events endpoints). </p> <p> Required scope: `inference:run` </p>
+
+        Args:
+          principal_id: Scope by principal. If omitted, only a thread with no principal (principal_id is
+              null) is returned; a thread whose principal differs yields 404.
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
         if not thread_id:
             raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         return await self._get(

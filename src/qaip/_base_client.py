@@ -52,7 +52,6 @@ from ._types import (
     ResponseT,
     AnyMapping,
     PostParser,
-    ArrayFormat,
     BinaryTypes,
     RequestFiles,
     HttpxSendArgs,
@@ -529,10 +528,7 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
                     raise TypeError(
                         f"Expected query input to be a dictionary for multipart requests but got {type(json_data)} instead."
                     )
-                kwargs["data"] = self._serialize_multipartform(
-                    json_data,
-                    array_format=options.multipart_form_array_format,
-                )
+                kwargs["data"] = self._serialize_multipartform(json_data)
 
             # httpx determines whether or not to send a "multipart/form-data"
             # request based on the truthiness of the "files" argument.
@@ -586,17 +582,12 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
             **kwargs,
         )
 
-    def _serialize_multipartform(
-        self,
-        data: Mapping[object, object],
-        *,
-        array_format: ArrayFormat = "brackets",
-    ) -> dict[str, object]:
+    def _serialize_multipartform(self, data: Mapping[object, object]) -> dict[str, object]:
         items = self.qs.stringify_items(
             # TODO: type ignore is required as stringify_items is well typed but we can't be
             # well typed without heavy validation.
             data,  # type: ignore
-            array_format=array_format,
+            array_format="repeat",
         )
         serialized: dict[str, object] = {}
         for key, value in items:
@@ -1965,7 +1956,6 @@ def make_request_options(
     idempotency_key: str | None = None,
     timeout: float | httpx.Timeout | None | NotGiven = not_given,
     post_parser: PostParser | NotGiven = not_given,
-    multipart_form_array_format: ArrayFormat | NotGiven = not_given,
 ) -> RequestOptions:
     """Create a dict of type RequestOptions without keys of NotGiven values."""
     options: RequestOptions = {}
@@ -1990,9 +1980,6 @@ def make_request_options(
     if is_given(post_parser):
         # internal
         options["post_parser"] = post_parser  # type: ignore
-
-    if not isinstance(multipart_form_array_format, NotGiven):
-        options["multipart_form_array_format"] = multipart_form_array_format
 
     return options
 

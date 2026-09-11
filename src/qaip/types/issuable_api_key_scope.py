@@ -2,9 +2,9 @@
 
 from typing_extensions import Literal, TypeAlias
 
-__all__ = ["IssuableApiKeyScope"]
+__all__ = ["IssuableAPIKeyScope"]
 
-IssuableApiKeyScope: TypeAlias = Literal[
+IssuableAPIKeyScope: TypeAlias = Literal[
     "inference:run",
     "knowledge:read",
     "knowledge:write",

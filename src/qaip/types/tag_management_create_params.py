@@ -9,5 +9,7 @@ __all__ = ["TagManagementCreateParams"]
 
 class TagManagementCreateParams(TypedDict, total=False):
     name: Required[str]
+    """Tag name"""
 
     description: str
+    """Tag description"""

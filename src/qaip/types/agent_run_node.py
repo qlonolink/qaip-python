@@ -13,6 +13,7 @@ class AgentRunNode(BaseModel):
     run_id: str
 
     status: AgentRunStatus
+    """Agent run lifecycle state."""
 
     created_at: Optional[datetime] = None
 

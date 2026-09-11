@@ -9,4 +9,4 @@ __all__ = ["ExternalQueryCreateParams"]
 
 class ExternalQueryCreateParams(TypedDict, total=False):
     sql: Required[str]
-    """A single read-only SELECT using logical table names."""
+    """A single read-only SELECT using logical table names"""

@@ -30,14 +30,26 @@ class LegacyFullAgentRunInput(TypedDict, total=False):
 
     This remains a free-form object because AG-UI clients and server-side
     integrations may add extension keys. Known QAIP keys include `filters`,
-    `authz_policy`, `principal_id`, `grounding`, and `retrieval_mode`; their values
-    are validated by the run service before use.
+    `authz_policy`, `principal_id`, `grounding`, `retrieval_mode`, and
+    `include_retrieved`; their values are validated by the run service before use.
 
     `retrieval_mode` controls only the built-in QAIP knowledge-base `search` tool.
     Its accepted values are `required` (the default when omitted) and `disabled`. In
     `disabled` mode the tool and its retrieval/citation system instructions are both
     omitted. It does not disable explicitly configured external-table tools or
     Google grounding.
+
+    `include_retrieved` (boolean, default `false`) makes the run emit one or more
+    CUSTOM events named `retrieved` before RUN_FINISHED, listing every
+    knowledge-base chunk the built-in `search` tool returned to the model during the
+    run (after authorization filtering and redaction, deduplicated by chunk id, in
+    retrieval order) in the same `Content` shape as the `citations` event, whether
+    or not the answer cited it. The list is split across events by encoded size so
+    that no single event exceeds the transport limit; concatenate the `value` arrays
+    in order to get the full list. `text` is the stored chunk text, exactly as in
+    `citations`; the model prompt itself carries a shortened excerpt of each chunk,
+    so `retrieved` identifies which chunks were supplied rather than reproducing the
+    prompt verbatim. Non-boolean values are treated as `false`.
     """
 
     input_history_mode: Annotated[Literal["legacy_full"], PropertyInfo(alias="inputHistoryMode")]
@@ -153,8 +165,10 @@ class DeltaV1AgentRunInput(TypedDict, total=False):
     forwarded_props: Annotated[Dict[str, object], PropertyInfo(alias="forwardedProps")]
     """AG-UI extension properties.
 
-    `retrieval_mode` accepts `required` (default) or `disabled`; the server
-    validates known QAIP keys before use.
+    `retrieval_mode` accepts `required` (default) or `disabled`; `include_retrieved`
+    (boolean) adds one or more CUSTOM events named `retrieved` listing every chunk
+    the built-in `search` tool returned to the model (concatenate their values in
+    order). The server validates known QAIP keys before use.
     """
 
     messages: Iterable[Dict[str, object]]

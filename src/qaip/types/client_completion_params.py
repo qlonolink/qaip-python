@@ -62,6 +62,21 @@ class ClientCompletionParams(TypedDict, total=False):
     ignored.
     """
 
+    include_retrieved: bool
+    """
+    Whether to return, separately from `citations`, every knowledge-base chunk that
+    was retrieved for this request and passed to the model as context (after
+    authorization filtering), whether or not the answer cited it. When true, the
+    JSON response carries them in the top-level `retrieved` array, the SSE stream
+    emits one or more CUSTOM events named `retrieved` before RUN_FINISHED (split by
+    encoded size; concatenate their values in order to get the full list), and the
+    persisted assistant message keeps them in `assistant_metadata.retrieved` (see
+    GET /conversations). The text/plain stream cannot carry them in the body, so it
+    only persists them. Intended for callers that audit what the end-user was shown;
+    off by default so the response size and stored history of existing clients do
+    not change.
+    """
+
     limit: int
     """Maximum number of chunks to retrieve as context for completion"""
 
