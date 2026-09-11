@@ -428,8 +428,9 @@ class Qaip(SyncAPIClient):
               filters with AND/OR logic.
 
           metadata_filter: Filter by declared metadata columns (see /metadata_columns) pushed down directly
-              to LanceDB (no PostgreSQL round-trip). Targets string/integer typed columns.
-              Keys must be declared via /metadata_columns or the request is rejected (400).
+              to LanceDB (no PostgreSQL round-trip). Targets string/integer/string_list
+              /integer_list typed columns. Keys must be declared via /metadata_columns or the
+              request is rejected (400).
 
           parent_message_id: Id of the message node to branch this turn from (the parent of the new user
               message). When omitted, the turn continues from the conversation's current
@@ -737,8 +738,9 @@ class Qaip(SyncAPIClient):
               filters with AND/OR logic.
 
           metadata_filter: Filter by declared metadata columns (see /metadata_columns) pushed down directly
-              to LanceDB (no PostgreSQL round-trip). Targets string/integer typed columns.
-              Keys must be declared via /metadata_columns or the request is rejected (400).
+              to LanceDB (no PostgreSQL round-trip). Targets string/integer/string_list
+              /integer_list typed columns. Keys must be declared via /metadata_columns or the
+              request is rejected (400).
 
           offset: Number of results to skip
 
@@ -1188,8 +1190,9 @@ class AsyncQaip(AsyncAPIClient):
               filters with AND/OR logic.
 
           metadata_filter: Filter by declared metadata columns (see /metadata_columns) pushed down directly
-              to LanceDB (no PostgreSQL round-trip). Targets string/integer typed columns.
-              Keys must be declared via /metadata_columns or the request is rejected (400).
+              to LanceDB (no PostgreSQL round-trip). Targets string/integer/string_list
+              /integer_list typed columns. Keys must be declared via /metadata_columns or the
+              request is rejected (400).
 
           parent_message_id: Id of the message node to branch this turn from (the parent of the new user
               message). When omitted, the turn continues from the conversation's current
@@ -1497,8 +1500,9 @@ class AsyncQaip(AsyncAPIClient):
               filters with AND/OR logic.
 
           metadata_filter: Filter by declared metadata columns (see /metadata_columns) pushed down directly
-              to LanceDB (no PostgreSQL round-trip). Targets string/integer typed columns.
-              Keys must be declared via /metadata_columns or the request is rejected (400).
+              to LanceDB (no PostgreSQL round-trip). Targets string/integer/string_list
+              /integer_list typed columns. Keys must be declared via /metadata_columns or the
+              request is rejected (400).
 
           offset: Number of results to skip
 
