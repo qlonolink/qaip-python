@@ -1,0 +1,39 @@
+name: Publish CLI
+
+on:
+  push:
+    tags:
+      - 'qaip-cli-v*'
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d
+        with:
+          python-version: '3.13'
+      - name: Validate release version
+        run: |
+          python - <<'PY'
+          import os, tomllib
+          from pathlib import Path
+          version = tomllib.loads(Path('cli/pyproject.toml').read_text())['project']['version']
+          assert os.environ['GITHUB_REF_NAME'] == f'qaip-cli-v{version}'
+          PY
+      - name: Build CLI distributions
+        run: uv build cli --out-dir cli-dist
+      - name: Verify against the published SDK
+        run: |
+          uv venv wheel-check
+          uv pip install --python wheel-check/bin/python cli-dist/*.whl pytest
+          uv pip check --python wheel-check/bin/python
+          wheel-check/bin/python -m pytest --noconftest -o addopts='' cli/tests
+          wheel-check/bin/qaip schema local-file-groups
+      - name: Publish CLI to PyPI
+        run: uv publish cli-dist/*
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.QAIP_CLI_PYPI_TOKEN || secrets.QAIP_PYPI_TOKEN || secrets.PYPI_TOKEN }}

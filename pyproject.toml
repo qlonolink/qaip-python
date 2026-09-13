@@ -1,6 +1,6 @@
 [project]
 name = "qaip"
-version = "0.15.0"
+version = "0.16.0"
 description = "The official Python library for the qaip API"
 dynamic = ["readme"]
 license = "Apache-2.0"
@@ -144,6 +144,7 @@ filterwarnings = [
 # default in strict mode as they are experimental and niche.
 typeCheckingMode = "strict"
 pythonVersion = "3.9"
+extraPaths = ["cli/src"]
 
 exclude = [
     "_dev",
