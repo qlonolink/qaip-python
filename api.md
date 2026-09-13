@@ -206,11 +206,16 @@ Types:
 
 ```python
 from qaip.types import (
+    BulkDeletion,
+    BulkDeletionRejection,
+    ChunkDeletion,
     ChunkMetadataKeyConfig,
     LocalFileGroup,
     LocalFileGroupCreateResponse,
     LocalFileGroupListResponse,
     LocalFileGroupDeleteResponse,
+    LocalFileGroupStartBulkDeletionResponse,
+    LocalFileGroupStartChunkDeletionResponse,
 )
 ```
 
@@ -220,6 +225,10 @@ Methods:
 - <code title="get /local-file-groups/{id}">client.local_file_groups.<a href="./src/qaip/resources/local_file_groups.py">retrieve</a>(id) -> <a href="./src/qaip/types/local_file_group.py">LocalFileGroup</a></code>
 - <code title="get /local-file-groups">client.local_file_groups.<a href="./src/qaip/resources/local_file_groups.py">list</a>(\*\*<a href="src/qaip/types/local_file_group_list_params.py">params</a>) -> <a href="./src/qaip/types/local_file_group_list_response.py">LocalFileGroupListResponse</a></code>
 - <code title="delete /local-file-groups/{id}">client.local_file_groups.<a href="./src/qaip/resources/local_file_groups.py">delete</a>(id) -> <a href="./src/qaip/types/local_file_group_delete_response.py">LocalFileGroupDeleteResponse</a></code>
+- <code title="get /local-file-groups/bulk-deletions/{bulk_deletion_id}">client.local_file_groups.<a href="./src/qaip/resources/local_file_groups.py">retrieve_bulk_deletion</a>(bulk_deletion_id, \*\*<a href="src/qaip/types/local_file_group_retrieve_bulk_deletion_params.py">params</a>) -> <a href="./src/qaip/types/bulk_deletion.py">BulkDeletion</a></code>
+- <code title="get /local-file-groups/{id}/chunk-deletions/{chunk_deletion_id}">client.local_file_groups.<a href="./src/qaip/resources/local_file_groups.py">retrieve_chunk_deletion</a>(chunk_deletion_id, \*, id) -> <a href="./src/qaip/types/chunk_deletion.py">ChunkDeletion</a></code>
+- <code title="post /local-file-groups/bulk-deletions">client.local_file_groups.<a href="./src/qaip/resources/local_file_groups.py">start_bulk_deletion</a>(\*\*<a href="src/qaip/types/local_file_group_start_bulk_deletion_params.py">params</a>) -> <a href="./src/qaip/types/local_file_group_start_bulk_deletion_response.py">LocalFileGroupStartBulkDeletionResponse</a></code>
+- <code title="post /local-file-groups/{id}/chunk-deletions">client.local_file_groups.<a href="./src/qaip/resources/local_file_groups.py">start_chunk_deletion</a>(id, \*\*<a href="src/qaip/types/local_file_group_start_chunk_deletion_params.py">params</a>) -> <a href="./src/qaip/types/local_file_group_start_chunk_deletion_response.py">LocalFileGroupStartChunkDeletionResponse</a></code>
 
 # Secrets
 
