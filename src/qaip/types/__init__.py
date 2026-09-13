@@ -36,6 +36,7 @@ from .api_key_kind import APIKeyKind as APIKeyKind
 from .conversation import Conversation as Conversation
 from .google_drive import GoogleDrive as GoogleDrive
 from .source_group import SourceGroup as SourceGroup
+from .bulk_deletion import BulkDeletion as BulkDeletion
 from .crawl_setting import CrawlSetting as CrawlSetting
 from .policy_detail import PolicyDetail as PolicyDetail
 from .policy_source import PolicySource as PolicySource
@@ -43,6 +44,7 @@ from .policy_status import PolicyStatus as PolicyStatus
 from .tags_response import TagsResponse as TagsResponse
 from .agent_provider import AgentProvider as AgentProvider
 from .agent_run_node import AgentRunNode as AgentRunNode
+from .chunk_deletion import ChunkDeletion as ChunkDeletion
 from .github_setting import GitHubSetting as GitHubSetting
 from .notion_setting import NotionSetting as NotionSetting
 from .policy_summary import PolicySummary as PolicySummary
@@ -89,6 +91,7 @@ from .conversation_tree_node import ConversationTreeNode as ConversationTreeNode
 from .issuable_api_key_scope import IssuableAPIKeyScope as IssuableAPIKeyScope
 from .agent_cancel_run_params import AgentCancelRunParams as AgentCancelRunParams
 from .agent_create_run_params import AgentCreateRunParams as AgentCreateRunParams
+from .bulk_deletion_rejection import BulkDeletionRejection as BulkDeletionRejection
 from .client_completion_params import ClientCompletionParams as ClientCompletionParams
 from .conversation_list_params import ConversationListParams as ConversationListParams
 from .created_expiring_api_key import CreatedExpiringAPIKey as CreatedExpiringAPIKey
@@ -162,6 +165,21 @@ from .source_group_batch_set_metadata_params import (
 )
 from .redaction_policy_activate_version_params import (
     RedactionPolicyActivateVersionParams as RedactionPolicyActivateVersionParams,
+)
+from .local_file_group_start_bulk_deletion_params import (
+    LocalFileGroupStartBulkDeletionParams as LocalFileGroupStartBulkDeletionParams,
+)
+from .local_file_group_start_chunk_deletion_params import (
+    LocalFileGroupStartChunkDeletionParams as LocalFileGroupStartChunkDeletionParams,
+)
+from .local_file_group_start_bulk_deletion_response import (
+    LocalFileGroupStartBulkDeletionResponse as LocalFileGroupStartBulkDeletionResponse,
+)
+from .local_file_group_retrieve_bulk_deletion_params import (
+    LocalFileGroupRetrieveBulkDeletionParams as LocalFileGroupRetrieveBulkDeletionParams,
+)
+from .local_file_group_start_chunk_deletion_response import (
+    LocalFileGroupStartChunkDeletionResponse as LocalFileGroupStartChunkDeletionResponse,
 )
 
 # Rebuild cyclical models only after all modules are imported.
