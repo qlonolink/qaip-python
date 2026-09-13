@@ -5,7 +5,7 @@
 ### Features
 
 * Add local file group chunk deletion and bulk deletion job operations, including synchronous and asynchronous clients.
-* Provide the `qaip` command through the independent `qaip-cli` package, with deletion previews, confirmation and job retrieval.
+* Restore the bundled `qaip` command with deletion previews, confirmation and job retrieval.
 
 
 ## 0.15.0 (2026-09-11)

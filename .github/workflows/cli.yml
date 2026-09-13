@@ -27,9 +27,9 @@ jobs:
       - name: Install SDK, CLI and test dependencies
         run: |
           uv venv
-          uv pip install . ./cli 'pydantic${{ matrix.pydantic }}' pytest
+          uv pip install . 'pydantic${{ matrix.pydantic }}' pytest pytest-asyncio
       - name: Test CLI contracts
-        run: uv run --no-project pytest --noconftest -o addopts='' cli/tests
+        run: uv run --no-project pytest --noconftest -o addopts='' tests/custom/cli
       - name: Check installed command
         run: |
           uv run --no-project qaip --version
@@ -42,14 +42,14 @@ jobs:
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d
         with:
           python-version: '3.13'
-      - name: Build both distributions
+      - name: Build SDK with bundled CLI
         run: |
           uv build --out-dir sdk-dist
-          uv build cli --out-dir cli-dist
       - name: Verify isolated wheel installation
         run: |
           uv venv wheel-check
-          uv pip install --python wheel-check/bin/python sdk-dist/*.whl cli-dist/*.whl
+          uv pip install --python wheel-check/bin/python sdk-dist/*.whl
           uv pip check --python wheel-check/bin/python
           wheel-check/bin/qaip --version
+          wheel-check/bin/python -m qaip --version
           wheel-check/bin/qaip schema local-file-groups

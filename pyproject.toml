@@ -36,6 +36,9 @@ classifiers = [
   "License :: OSI Approved :: Apache Software License"
 ]
 
+[project.scripts]
+qaip = "qaip.cli:main"
+
 [project.urls]
 Homepage = "https://github.com/qlonolink/qaip-python"
 Repository = "https://github.com/qlonolink/qaip-python"
@@ -144,7 +147,6 @@ filterwarnings = [
 # default in strict mode as they are experimental and niche.
 typeCheckingMode = "strict"
 pythonVersion = "3.9"
-extraPaths = ["cli/src"]
 
 exclude = [
     "_dev",
