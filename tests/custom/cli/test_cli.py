@@ -2581,6 +2581,7 @@ class TestApiKeysCreate:
         request = httpx.Request("POST", "https://example.test/api-keys")
         response = httpx.Response(status, json={"error": "boom"}, request=request)
         mock_client = MagicMock()
+        mock_client.with_options.return_value = mock_client
         mock_client.api_keys.create.side_effect = APIStatusError("boom", response=response, body=None)
         monkeypatch.setattr(sys, "argv", ["qaip", "api", "api-keys.create", "--name", "n", "--scopes", "inference:run"])
         with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
@@ -2597,6 +2598,7 @@ class TestApiKeysCreate:
 
         monkeypatch.setenv("QAIP_API_KEY", "fake")
         mock_client = MagicMock()
+        mock_client.with_options.return_value = mock_client
         mock_client.api_keys.create.return_value.model_dump.return_value = {"id": _VALID_UUID}
         with _patch("qaip.cli._utils.qaip.Qaip", return_value=mock_client):
             parser = _build_parser()

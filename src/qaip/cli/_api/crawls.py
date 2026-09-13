@@ -254,7 +254,7 @@ def _download_raw_archive(args: Namespace) -> None:
             _stream_response_to_stdout(response)
             return
 
-        bytes_written, sha256 = _stream_response_to_path(response, output_path)
+        bytes_written, sha256 = _stream_response_to_path(response, output_path, force=args.force)
         print_result(_download_raw_result(response, output_path, bytes_written, sha256), args)
 
 

@@ -1,13 +1,5 @@
 # Changelog
 
-## 0.16.0
-
-### Features
-
-* Add local file group chunk deletion and bulk deletion job operations, including synchronous and asynchronous clients.
-* Restore the bundled `qaip` command with deletion previews, confirmation and job retrieval.
-
-
 ## 0.15.0 (2026-09-11)
 
 Full Changelog: [v0.14.0...v0.15.0](https://github.com/qlonolink/qaip-python/compare/v0.14.0...v0.15.0)

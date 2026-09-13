@@ -9,6 +9,7 @@ from typing import Any, cast
 from .._errors import CLIError
 
 _UUID_RE = re.compile(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+_SDK_CONTROL_FIELDS = frozenset({"extra_body", "extra_headers", "extra_query", "timeout"})
 
 # `validate_loose_id` の許容文字。空白（タブ・改行・unicode 空白すべて）/ path 区切り
 # (`/` `\\`) / URL エンコード文字 (`%`) / ASCII 制御文字 (`\x00`-`\x1f`, DEL) を弾く
@@ -126,21 +127,32 @@ def parse_json_body(args: argparse.Namespace) -> dict[str, Any] | None:
         return None
 
     if raw == "-":
-        raw = sys.stdin.read()
+        try:
+            buffer = getattr(sys.stdin, "buffer", None)
+            raw = buffer.read().decode("utf-8") if buffer is not None else sys.stdin.read()
+        except UnicodeDecodeError as err:
+            raise CLIError("JSON stdin must be UTF-8 encoded", code="invalid_argument") from err
     elif raw.startswith("@"):
         filepath = raw[1:]
         try:
-            with open(filepath) as f:
+            with open(filepath, encoding="utf-8") as f:
                 raw = f.read()
         except FileNotFoundError as err:
             raise CLIError(f"File not found: {filepath}") from err
+        except UnicodeDecodeError as err:
+            raise CLIError("JSON file must be UTF-8 encoded", code="invalid_argument") from err
 
     data = parse_json_arg(raw, label="--json")
 
     if not isinstance(data, dict):
         raise CLIError("JSON body must be an object")
 
-    return cast(dict[str, Any], data)
+    body = cast(dict[str, Any], data)
+    controls = sorted(_SDK_CONTROL_FIELDS.intersection(body))
+    if controls:
+        raise CLIError(f"unsupported field(s) in --json: {', '.join(controls)}", code="invalid_argument")
+
+    return body
 
 
 def validate_json_body_fields(body: dict[str, Any], *, allowed: frozenset[str]) -> None:

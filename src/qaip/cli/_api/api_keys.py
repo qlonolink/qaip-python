@@ -93,7 +93,7 @@ def _create(args: Namespace) -> None:
         return
     # body を **展開せず明示的に渡す。展開すると --json の未知キーが SDK の
     # 制御引数 (extra_body 等) として解釈され、dry-run と実送信がずれる。
-    client = get_client(args)
+    client = get_client(args).with_options(max_retries=0)
     try:
         # 旧CLIコマンドは期限省略時の公開済み契約を維持する。
         result = client.api_keys.create(  # pyright: ignore[reportDeprecated]

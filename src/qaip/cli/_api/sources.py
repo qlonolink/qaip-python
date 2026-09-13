@@ -229,7 +229,7 @@ def _download_raw(args: Namespace) -> None:
             _stream_response_to_stdout(response)
             return
 
-        bytes_written, sha256 = _stream_response_to_path(response, output_path)
+        bytes_written, sha256 = _stream_response_to_path(response, output_path, force=args.force)
         print_result(_download_raw_result(response, output_path, bytes_written, sha256), args)
 
 
@@ -251,7 +251,7 @@ def _prepare_output_path(raw_output: str, *, force: bool) -> Path:
     return output
 
 
-def _stream_response_to_path(response: Any, output: Path) -> tuple[int, str]:  # noqa: ANN401
+def _stream_response_to_path(response: Any, output: Path, *, force: bool) -> tuple[int, str]:  # noqa: ANN401
     tmp_name: str | None = None
     bytes_written = 0
     digest = hashlib.sha256()
@@ -267,7 +267,18 @@ def _stream_response_to_path(response: Any, output: Path) -> tuple[int, str]:  #
                 tmp.write(chunk)
                 bytes_written += len(chunk)
                 digest.update(chunk)
-        os.replace(tmp_name, output)
+        if force:
+            os.replace(tmp_name, output)
+        else:
+            try:
+                os.link(tmp_name, output)
+            except FileExistsError as err:
+                raise CLIError(
+                    f"Output file already exists: {output}",
+                    code="confirmation_required",
+                    hint="Pass --force to overwrite the existing file.",
+                ) from err
+            os.unlink(tmp_name)
         return bytes_written, digest.hexdigest()
     except OSError as err:
         if tmp_name is not None:

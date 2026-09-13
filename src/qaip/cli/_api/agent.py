@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import json
 from typing import TYPE_CHECKING, Any, cast
 from argparse import ArgumentParser
 
@@ -174,9 +175,13 @@ def _run(args: Namespace) -> None:
         principal_id=principal_id if principal_id is not None else omit,
     )
     for event in stream:
-        # Stream[AgentStreamRunEventsResponse] は SSE data を文字列として返す。
-        sys.stdout.write(event + "\n")
-        sys.stdout.flush()
+        _print_event(event)
+
+
+def _print_event(event: object) -> None:
+    # SDK は SSE data の JSON オブジェクトをデコード済みで返す。
+    sys.stdout.write((event if isinstance(event, str) else json.dumps(event, ensure_ascii=False)) + "\n")
+    sys.stdout.flush()
 
 
 def _create_run(args: Namespace) -> None:
@@ -290,8 +295,7 @@ def _stream_run_events(args: Namespace) -> None:
         principal_id=args.principal_id if args.principal_id is not None else omit,
     )
     for event in stream:
-        sys.stdout.write(event + "\n")
-        sys.stdout.flush()
+        _print_event(event)
 
 
 def _list_threads(args: Namespace) -> None:
