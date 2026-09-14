@@ -354,9 +354,12 @@ class LocalFileGroupsResource(SyncAPIResource):
                 {"source_group_ids": source_group_ids},
                 local_file_group_start_bulk_deletion_params.LocalFileGroupStartBulkDeletionParams,
             ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
+            options={
+                **make_request_options(
+                    extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                ),
+                "max_retries": 0,
+            },
             cast_to=LocalFileGroupStartBulkDeletionResponse,
         )
 
@@ -395,9 +398,12 @@ class LocalFileGroupsResource(SyncAPIResource):
                 {"text_contains": text_contains},
                 local_file_group_start_chunk_deletion_params.LocalFileGroupStartChunkDeletionParams,
             ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
+            options={
+                **make_request_options(
+                    extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                ),
+                "max_retries": 0,
+            },
             cast_to=LocalFileGroupStartChunkDeletionResponse,
         )
 
@@ -719,9 +725,12 @@ class AsyncLocalFileGroupsResource(AsyncAPIResource):
                 {"source_group_ids": source_group_ids},
                 local_file_group_start_bulk_deletion_params.LocalFileGroupStartBulkDeletionParams,
             ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
+            options={
+                **make_request_options(
+                    extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                ),
+                "max_retries": 0,
+            },
             cast_to=LocalFileGroupStartBulkDeletionResponse,
         )
 
@@ -760,9 +769,12 @@ class AsyncLocalFileGroupsResource(AsyncAPIResource):
                 {"text_contains": text_contains},
                 local_file_group_start_chunk_deletion_params.LocalFileGroupStartChunkDeletionParams,
             ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
+            options={
+                **make_request_options(
+                    extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                ),
+                "max_retries": 0,
+            },
             cast_to=LocalFileGroupStartChunkDeletionResponse,
         )
 

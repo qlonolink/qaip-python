@@ -20,6 +20,18 @@ The REST API documentation can be found on [developer.qaip.com](https://develope
 pip install qaip
 ```
 
+## Command-line usage
+
+The `qaip` package also includes the `qaip` command:
+
+```sh
+qaip --version
+qaip schema local-file-groups
+```
+
+Upgrade with `pip install --upgrade qaip`, or `uv tool upgrade qaip` for a tool installation.
+See [the CLI guide](CLI.md) for deletion commands, previews and job status checks.
+
 ## Usage
 
 The full API of this library can be found in [api.md](api.md).
