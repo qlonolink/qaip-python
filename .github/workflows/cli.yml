@@ -28,8 +28,8 @@ jobs:
         run: |
           uv venv
           uv pip install . 'pydantic${{ matrix.pydantic }}' pytest pytest-asyncio
-      - name: Test CLI contracts
-        run: uv run --no-project pytest --noconftest -o addopts='' tests/custom/cli
+      - name: Test SDK retry and CLI contracts
+        run: uv run --no-project pytest --noconftest -o addopts='' tests/custom
       - name: Check installed command
         run: |
           uv run --no-project qaip --version
