@@ -36,6 +36,9 @@ classifiers = [
   "License :: OSI Approved :: Apache Software License"
 ]
 
+[project.scripts]
+qaip = "qaip.cli:main"
+
 [project.urls]
 Homepage = "https://github.com/qlonolink/qaip-python"
 Repository = "https://github.com/qlonolink/qaip-python"
