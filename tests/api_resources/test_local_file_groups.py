@@ -9,10 +9,14 @@ import pytest
 
 from qaip import Qaip, AsyncQaip
 from qaip.types import (
+    BulkDeletion,
+    ChunkDeletion,
     LocalFileGroup,
     LocalFileGroupListResponse,
     LocalFileGroupCreateResponse,
     LocalFileGroupDeleteResponse,
+    LocalFileGroupStartBulkDeletionResponse,
+    LocalFileGroupStartChunkDeletionResponse,
 )
 from tests.utils import assert_matches_type
 
@@ -194,6 +198,189 @@ class TestLocalFileGroups:
                 "",
             )
 
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_retrieve_bulk_deletion(self, client: Qaip) -> None:
+        local_file_group = client.local_file_groups.retrieve_bulk_deletion(
+            bulk_deletion_id="bulk_deletion_id",
+        )
+        assert_matches_type(BulkDeletion, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_retrieve_bulk_deletion_with_all_params(self, client: Qaip) -> None:
+        local_file_group = client.local_file_groups.retrieve_bulk_deletion(
+            bulk_deletion_id="bulk_deletion_id",
+            after="after",
+        )
+        assert_matches_type(BulkDeletion, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_retrieve_bulk_deletion(self, client: Qaip) -> None:
+        response = client.local_file_groups.with_raw_response.retrieve_bulk_deletion(
+            bulk_deletion_id="bulk_deletion_id",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        local_file_group = response.parse()
+        assert_matches_type(BulkDeletion, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_retrieve_bulk_deletion(self, client: Qaip) -> None:
+        with client.local_file_groups.with_streaming_response.retrieve_bulk_deletion(
+            bulk_deletion_id="bulk_deletion_id",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            local_file_group = response.parse()
+            assert_matches_type(BulkDeletion, local_file_group, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_retrieve_bulk_deletion(self, client: Qaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `bulk_deletion_id` but received ''"):
+            client.local_file_groups.with_raw_response.retrieve_bulk_deletion(
+                bulk_deletion_id="",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_retrieve_chunk_deletion(self, client: Qaip) -> None:
+        local_file_group = client.local_file_groups.retrieve_chunk_deletion(
+            chunk_deletion_id="chunk_deletion_id",
+            id="id",
+        )
+        assert_matches_type(ChunkDeletion, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_retrieve_chunk_deletion(self, client: Qaip) -> None:
+        response = client.local_file_groups.with_raw_response.retrieve_chunk_deletion(
+            chunk_deletion_id="chunk_deletion_id",
+            id="id",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        local_file_group = response.parse()
+        assert_matches_type(ChunkDeletion, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_retrieve_chunk_deletion(self, client: Qaip) -> None:
+        with client.local_file_groups.with_streaming_response.retrieve_chunk_deletion(
+            chunk_deletion_id="chunk_deletion_id",
+            id="id",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            local_file_group = response.parse()
+            assert_matches_type(ChunkDeletion, local_file_group, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_retrieve_chunk_deletion(self, client: Qaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            client.local_file_groups.with_raw_response.retrieve_chunk_deletion(
+                chunk_deletion_id="chunk_deletion_id",
+                id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `chunk_deletion_id` but received ''"):
+            client.local_file_groups.with_raw_response.retrieve_chunk_deletion(
+                chunk_deletion_id="",
+                id="id",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_start_bulk_deletion(self, client: Qaip) -> None:
+        local_file_group = client.local_file_groups.start_bulk_deletion(
+            source_group_ids=["string"],
+        )
+        assert_matches_type(LocalFileGroupStartBulkDeletionResponse, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_start_bulk_deletion(self, client: Qaip) -> None:
+        response = client.local_file_groups.with_raw_response.start_bulk_deletion(
+            source_group_ids=["string"],
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        local_file_group = response.parse()
+        assert_matches_type(LocalFileGroupStartBulkDeletionResponse, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_start_bulk_deletion(self, client: Qaip) -> None:
+        with client.local_file_groups.with_streaming_response.start_bulk_deletion(
+            source_group_ids=["string"],
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            local_file_group = response.parse()
+            assert_matches_type(LocalFileGroupStartBulkDeletionResponse, local_file_group, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_start_chunk_deletion(self, client: Qaip) -> None:
+        local_file_group = client.local_file_groups.start_chunk_deletion(
+            id="id",
+            text_contains=["string"],
+        )
+        assert_matches_type(LocalFileGroupStartChunkDeletionResponse, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_start_chunk_deletion(self, client: Qaip) -> None:
+        response = client.local_file_groups.with_raw_response.start_chunk_deletion(
+            id="id",
+            text_contains=["string"],
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        local_file_group = response.parse()
+        assert_matches_type(LocalFileGroupStartChunkDeletionResponse, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_start_chunk_deletion(self, client: Qaip) -> None:
+        with client.local_file_groups.with_streaming_response.start_chunk_deletion(
+            id="id",
+            text_contains=["string"],
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            local_file_group = response.parse()
+            assert_matches_type(LocalFileGroupStartChunkDeletionResponse, local_file_group, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_start_chunk_deletion(self, client: Qaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            client.local_file_groups.with_raw_response.start_chunk_deletion(
+                id="",
+                text_contains=["string"],
+            )
+
 
 class TestAsyncLocalFileGroups:
     parametrize = pytest.mark.parametrize(
@@ -370,4 +557,187 @@ class TestAsyncLocalFileGroups:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.local_file_groups.with_raw_response.delete(
                 "",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_retrieve_bulk_deletion(self, async_client: AsyncQaip) -> None:
+        local_file_group = await async_client.local_file_groups.retrieve_bulk_deletion(
+            bulk_deletion_id="bulk_deletion_id",
+        )
+        assert_matches_type(BulkDeletion, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_retrieve_bulk_deletion_with_all_params(self, async_client: AsyncQaip) -> None:
+        local_file_group = await async_client.local_file_groups.retrieve_bulk_deletion(
+            bulk_deletion_id="bulk_deletion_id",
+            after="after",
+        )
+        assert_matches_type(BulkDeletion, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_retrieve_bulk_deletion(self, async_client: AsyncQaip) -> None:
+        response = await async_client.local_file_groups.with_raw_response.retrieve_bulk_deletion(
+            bulk_deletion_id="bulk_deletion_id",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        local_file_group = await response.parse()
+        assert_matches_type(BulkDeletion, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_retrieve_bulk_deletion(self, async_client: AsyncQaip) -> None:
+        async with async_client.local_file_groups.with_streaming_response.retrieve_bulk_deletion(
+            bulk_deletion_id="bulk_deletion_id",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            local_file_group = await response.parse()
+            assert_matches_type(BulkDeletion, local_file_group, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_retrieve_bulk_deletion(self, async_client: AsyncQaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `bulk_deletion_id` but received ''"):
+            await async_client.local_file_groups.with_raw_response.retrieve_bulk_deletion(
+                bulk_deletion_id="",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_retrieve_chunk_deletion(self, async_client: AsyncQaip) -> None:
+        local_file_group = await async_client.local_file_groups.retrieve_chunk_deletion(
+            chunk_deletion_id="chunk_deletion_id",
+            id="id",
+        )
+        assert_matches_type(ChunkDeletion, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_retrieve_chunk_deletion(self, async_client: AsyncQaip) -> None:
+        response = await async_client.local_file_groups.with_raw_response.retrieve_chunk_deletion(
+            chunk_deletion_id="chunk_deletion_id",
+            id="id",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        local_file_group = await response.parse()
+        assert_matches_type(ChunkDeletion, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_retrieve_chunk_deletion(self, async_client: AsyncQaip) -> None:
+        async with async_client.local_file_groups.with_streaming_response.retrieve_chunk_deletion(
+            chunk_deletion_id="chunk_deletion_id",
+            id="id",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            local_file_group = await response.parse()
+            assert_matches_type(ChunkDeletion, local_file_group, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_retrieve_chunk_deletion(self, async_client: AsyncQaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            await async_client.local_file_groups.with_raw_response.retrieve_chunk_deletion(
+                chunk_deletion_id="chunk_deletion_id",
+                id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `chunk_deletion_id` but received ''"):
+            await async_client.local_file_groups.with_raw_response.retrieve_chunk_deletion(
+                chunk_deletion_id="",
+                id="id",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_start_bulk_deletion(self, async_client: AsyncQaip) -> None:
+        local_file_group = await async_client.local_file_groups.start_bulk_deletion(
+            source_group_ids=["string"],
+        )
+        assert_matches_type(LocalFileGroupStartBulkDeletionResponse, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_start_bulk_deletion(self, async_client: AsyncQaip) -> None:
+        response = await async_client.local_file_groups.with_raw_response.start_bulk_deletion(
+            source_group_ids=["string"],
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        local_file_group = await response.parse()
+        assert_matches_type(LocalFileGroupStartBulkDeletionResponse, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_start_bulk_deletion(self, async_client: AsyncQaip) -> None:
+        async with async_client.local_file_groups.with_streaming_response.start_bulk_deletion(
+            source_group_ids=["string"],
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            local_file_group = await response.parse()
+            assert_matches_type(LocalFileGroupStartBulkDeletionResponse, local_file_group, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_start_chunk_deletion(self, async_client: AsyncQaip) -> None:
+        local_file_group = await async_client.local_file_groups.start_chunk_deletion(
+            id="id",
+            text_contains=["string"],
+        )
+        assert_matches_type(LocalFileGroupStartChunkDeletionResponse, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_start_chunk_deletion(self, async_client: AsyncQaip) -> None:
+        response = await async_client.local_file_groups.with_raw_response.start_chunk_deletion(
+            id="id",
+            text_contains=["string"],
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        local_file_group = await response.parse()
+        assert_matches_type(LocalFileGroupStartChunkDeletionResponse, local_file_group, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_start_chunk_deletion(self, async_client: AsyncQaip) -> None:
+        async with async_client.local_file_groups.with_streaming_response.start_chunk_deletion(
+            id="id",
+            text_contains=["string"],
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            local_file_group = await response.parse()
+            assert_matches_type(LocalFileGroupStartChunkDeletionResponse, local_file_group, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_start_chunk_deletion(self, async_client: AsyncQaip) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            await async_client.local_file_groups.with_raw_response.start_chunk_deletion(
+                id="",
+                text_contains=["string"],
             )

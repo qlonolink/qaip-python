@@ -89,8 +89,9 @@ class ClientCompletionParams(TypedDict, total=False):
     metadata_filter: "MetadataFilterGroup"
     """
     Filter by declared metadata columns (see /metadata_columns) pushed down directly
-    to LanceDB (no PostgreSQL round-trip). Targets string/integer typed columns.
-    Keys must be declared via /metadata_columns or the request is rejected (400).
+    to LanceDB (no PostgreSQL round-trip). Targets string/integer/string_list
+    /integer_list typed columns. Keys must be declared via /metadata_columns or the
+    request is rejected (400).
     """
 
     parent_message_id: str

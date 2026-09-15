@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.16.0 (2026-09-15)
+
+Full Changelog: [v0.15.0...v0.16.0](https://github.com/qlonolink/qaip-python/compare/v0.15.0...v0.16.0)
+
+### Features
+
+* authz メタデータ列に配列型を追加し unknown 側配列のメンバーシップを array_has に翻訳する ([a053306](https://github.com/qlonolink/qaip-python/commit/a0533065b6d6d90011022916ee9651f5d3833bf0))
+* 公開APIの未対応24操作をSDK生成対象に追加 ([f58c8af](https://github.com/qlonolink/qaip-python/commit/f58c8afbec16d68eaf06c9a991e2e5c369a1f547))
+
 ## 0.15.0 (2026-09-11)
 
 Full Changelog: [v0.14.0...v0.15.0](https://github.com/qlonolink/qaip-python/compare/v0.14.0...v0.15.0)
