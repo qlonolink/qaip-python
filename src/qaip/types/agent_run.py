@@ -54,6 +54,16 @@ class AgentRun(BaseModel):
     parent_run_id: Optional[str] = None
     """Run this run branched from within the thread (null for the thread root)."""
 
+    request_id: Optional[str] = None
+    """Correlation ID of the first request that created this run.
+
+    For HTTP creation it matches that request's X-Request-ID. Idempotent retries and
+    later reads preserve this value even though their own HTTP response headers
+    carry different request IDs. Runs created before correlation recording was
+    introduced return null. Direct service callers without an HTTP request receive a
+    generated correlation ID.
+    """
+
     result: Optional[Dict[str, object]] = None
 
     runtime_arn: Optional[str] = None
