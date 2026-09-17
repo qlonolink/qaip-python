@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.17.0 (2026-09-17)
+
+Full Changelog: [v0.16.0...v0.17.0](https://github.com/qlonolink/qaip-python/compare/v0.16.0...v0.17.0)
+
+### Features
+
+* BFFの認証・プラン変更とPublic APIのエラー契約・冪等性を強化 ([1161ac8](https://github.com/qlonolink/qaip-python/commit/1161ac8f44d2c6d6497b64149e42e62a4ad67dd7))
+* SDKにCLIを同梱し削除開始の再試行を停止 ([cf7ab22](https://github.com/qlonolink/qaip-python/commit/cf7ab221e1d1f1a6827306d822ebf7e55e7b8895))
+
+
+### Bug Fixes
+
+* **ci:** Stainless側のCLI検証に既存のDepotランナーを使用 ([3233f83](https://github.com/qlonolink/qaip-python/commit/3233f839998e61efbbedb201ccb46b43dca63f02))
+
 ## 0.16.0 (2026-09-15)
 
 Full Changelog: [v0.15.0...v0.16.0](https://github.com/qlonolink/qaip-python/compare/v0.15.0...v0.16.0)
