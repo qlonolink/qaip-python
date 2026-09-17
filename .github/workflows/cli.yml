@@ -1,0 +1,55 @@
+name: CLI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'release/**'
+      - 'cli/**'
+      - next
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ${{ startsWith(github.repository, 'stainless-sdks/') && 'depot-ubuntu-24.04' || 'ubuntu-latest' }}
+    strategy:
+      matrix:
+        python: ['3.9', '3.13']
+        pydantic: ['<2', '>=2,<3']
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install SDK, CLI and test dependencies
+        run: |
+          uv venv
+          uv pip install . 'pydantic${{ matrix.pydantic }}' pytest pytest-asyncio
+      - name: Test SDK retry and CLI contracts
+        run: uv run --no-project pytest --noconftest -o addopts='' tests/custom
+      - name: Check installed command
+        run: |
+          uv run --no-project qaip --version
+          uv run --no-project qaip schema local-file-groups
+
+  build:
+    runs-on: ${{ startsWith(github.repository, 'stainless-sdks/') && 'depot-ubuntu-24.04' || 'ubuntu-latest' }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d
+        with:
+          python-version: '3.13'
+      - name: Build SDK with bundled CLI
+        run: |
+          uv build --out-dir sdk-dist
+      - name: Verify isolated wheel installation
+        run: |
+          uv venv wheel-check
+          uv pip install --python wheel-check/bin/python sdk-dist/*.whl
+          uv pip check --python wheel-check/bin/python
+          wheel-check/bin/qaip --version
+          wheel-check/bin/python -m qaip --version
+          wheel-check/bin/qaip schema local-file-groups
