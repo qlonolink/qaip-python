@@ -1,0 +1,40 @@
+name: Sync SDK repos
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: stlc-back-sync-main
+  cancel-in-progress: false
+jobs:
+  back-sync:
+    if: github.repository == 'qlonolink/qaip-python-staging' && github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Fetch public main without staging credentials
+        run: git -c http.https://github.com/.extraheader= fetch https://github.com/qlonolink/qaip-python.git main:refs/remotes/production/main
+      - name: Back-sync release commits
+        run: |
+          if git merge-base --is-ancestor production/main HEAD; then
+            echo '公開mainはstagingに取り込み済みです。'
+            exit 0
+          fi
+          git merge-base --is-ancestor HEAD production/main || {
+            echo '::error::stagingと公開mainが分岐しています。自動同期を停止します。'
+            exit 1
+          }
+          git push origin production/main:refs/heads/main
+      - name: Notify failure
+        if: failure()
+        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
+        with:
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          method: chat.postMessage
+          payload: |
+            channel: C087XQH76FK
+            text: "stlc back-sync failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

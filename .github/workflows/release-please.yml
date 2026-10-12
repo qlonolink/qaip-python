@@ -1,20 +1,35 @@
 name: Release Please
 on:
   push:
-    branches:
-      - main
-
+    branches: [main]
 permissions:
   contents: write
   pull-requests: write
-
+  actions: write
+concurrency:
+  group: release-please-main
+  cancel-in-progress: false
 jobs:
   release-please:
     if: github.repository == 'qlonolink/qaip-python'
     runs-on: ubuntu-latest
-
     steps:
       - uses: googleapis/release-please-action@5c625bfb5d1ff62eadeeb3772007f7f66fdcf071 # v4.4.1
         id: release
+      # GITHUB_TOKENが作るReleaseはreleaseイベントのworkflowを起動しないため、明示dispatchする。
+      - name: Publish release through existing PyPI workflow
+        if: steps.release.outputs.release_created == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.release.outputs.tag_name }}
+          GH_REPO: ${{ github.repository }}
+        run: gh workflow run publish-pypi.yml --ref "$TAG"
+      - name: Notify failure
+        if: failure()
+        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
         with:
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          method: chat.postMessage
+          payload: |
+            channel: C087XQH76FK
+            text: "SDK release failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
