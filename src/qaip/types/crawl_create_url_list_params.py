@@ -17,6 +17,15 @@ class CrawlCreateURLListParams(TypedDict, total=False):
     target_urls: Required[SequenceNotStr[str]]
     """List of URLs to download directly. Each URL must use http or https scheme."""
 
+    load_more_enabled: bool
+    """URL-list crawls do not use a browser, so this must be false or omitted."""
+
+    load_more_max_clicks: int
+    """Maximum click attempts per page. Defaults to 10; unused without a browser."""
+
+    load_more_selectors: SequenceNotStr[str]
+    """Ordered CSS selectors retained in the setting; unused without a browser."""
+
     max_num_files: int
     """Maximum number of files to download.
 

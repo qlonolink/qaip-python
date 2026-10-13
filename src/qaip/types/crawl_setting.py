@@ -14,6 +14,18 @@ class CrawlSetting(BaseModel):
     html_only: bool
     """When true, only HTML files will be downloaded"""
 
+    load_more_enabled: bool
+    """Whether to click load-more controls.
+
+    Existing settings without this field are disabled.
+    """
+
+    load_more_max_clicks: int
+    """Maximum click attempts per page. Defaults to 10."""
+
+    load_more_selectors: List[str]
+    """Ordered CSS selectors. An empty array uses built-in load-more controls."""
+
     max_depth: int
     """Maximum crawl depth"""
 

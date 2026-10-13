@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import List, Optional
+from typing_extensions import Literal
 
 import httpx
 
@@ -63,7 +64,29 @@ class RedactionPoliciesResource(SyncAPIResource):
         *,
         business_confidential: redaction_policy_create_params.BusinessConfidential,
         name: str,
+        address: redaction_policy_create_params.Address | Omit = omit,
         description: Optional[str] | Omit = omit,
+        skipped_boundaries: Optional[
+            List[
+                Literal[
+                    "initial_input",
+                    "rag_query",
+                    "rag_result",
+                    "google_query",
+                    "google_result",
+                    "tool_result",
+                    "external_table_result",
+                    "x_query",
+                    "xai_query",
+                    "chartmetric_query",
+                    "chartmetric_result",
+                    "completions_messages",
+                    "completions_query",
+                    "completions_docs",
+                ]
+            ]
+        ]
+        | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -78,6 +101,20 @@ class RedactionPoliciesResource(SyncAPIResource):
         `policy:redaction:manage`.
 
         Args:
+          address: How category `A` (address) findings are accepted. With `requireStreetNumber` the
+              model's address findings that do not contain a street number (`1-2-3`, `3丁目`,
+              `12番地`, `5号`, `〒`) are dropped, so city names, shop names and facility names
+              are not masked. Defaults to `false`, and the whole object is omitted from
+              responses when it is the default.
+
+          skipped_boundaries: Boundaries to leave unredacted (the policy still redacts every other boundary,
+              including boundaries added to QAIP later). Omitted, `null` or `[]` redacts every
+              boundary. Listing every boundary is rejected: omit `redactionPolicyId` on the
+              run instead. Skipping `rag_result` / `completions_docs` sends knowledge-base
+              chunks to the external model unmasked; only do so when the chunks were masked at
+              ingestion, and note that ingestion-time masking covers 7 PII categories only,
+              never `K` (credentials) or `B` (business confidential).
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -92,7 +129,9 @@ class RedactionPoliciesResource(SyncAPIResource):
                 {
                     "business_confidential": business_confidential,
                     "name": name,
+                    "address": address,
                     "description": description,
+                    "skipped_boundaries": skipped_boundaries,
                 },
                 redaction_policy_create_params.RedactionPolicyCreateParams,
             ),
@@ -253,7 +292,29 @@ class RedactionPoliciesResource(SyncAPIResource):
         name: str,
         *,
         business_confidential: redaction_policy_create_version_params.BusinessConfidential,
+        address: redaction_policy_create_version_params.Address | Omit = omit,
         description: Optional[str] | Omit = omit,
+        skipped_boundaries: Optional[
+            List[
+                Literal[
+                    "initial_input",
+                    "rag_query",
+                    "rag_result",
+                    "google_query",
+                    "google_result",
+                    "tool_result",
+                    "external_table_result",
+                    "x_query",
+                    "xai_query",
+                    "chartmetric_query",
+                    "chartmetric_result",
+                    "completions_messages",
+                    "completions_query",
+                    "completions_docs",
+                ]
+            ]
+        ]
+        | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -267,6 +328,20 @@ class RedactionPoliciesResource(SyncAPIResource):
         the server. Required scope: `policy:redaction:manage`.
 
         Args:
+          address: How category `A` (address) findings are accepted. With `requireStreetNumber` the
+              model's address findings that do not contain a street number (`1-2-3`, `3丁目`,
+              `12番地`, `5号`, `〒`) are dropped, so city names, shop names and facility names
+              are not masked. Defaults to `false`, and the whole object is omitted from
+              responses when it is the default.
+
+          skipped_boundaries: Boundaries to leave unredacted (the policy still redacts every other boundary,
+              including boundaries added to QAIP later). Omitted, `null` or `[]` redacts every
+              boundary. Listing every boundary is rejected: omit `redactionPolicyId` on the
+              run instead. Skipping `rag_result` / `completions_docs` sends knowledge-base
+              chunks to the external model unmasked; only do so when the chunks were masked at
+              ingestion, and note that ingestion-time masking covers 7 PII categories only,
+              never `K` (credentials) or `B` (business confidential).
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -282,7 +357,9 @@ class RedactionPoliciesResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "business_confidential": business_confidential,
+                    "address": address,
                     "description": description,
+                    "skipped_boundaries": skipped_boundaries,
                 },
                 redaction_policy_create_version_params.RedactionPolicyCreateVersionParams,
             ),
@@ -421,7 +498,29 @@ class RedactionPoliciesResource(SyncAPIResource):
         *,
         business_confidential: redaction_policy_validate_params.BusinessConfidential,
         name: str,
+        address: redaction_policy_validate_params.Address | Omit = omit,
         description: Optional[str] | Omit = omit,
+        skipped_boundaries: Optional[
+            List[
+                Literal[
+                    "initial_input",
+                    "rag_query",
+                    "rag_result",
+                    "google_query",
+                    "google_result",
+                    "tool_result",
+                    "external_table_result",
+                    "x_query",
+                    "xai_query",
+                    "chartmetric_query",
+                    "chartmetric_result",
+                    "completions_messages",
+                    "completions_query",
+                    "completions_docs",
+                ]
+            ]
+        ]
+        | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -435,6 +534,20 @@ class RedactionPoliciesResource(SyncAPIResource):
         store. Required scope: `policy:redaction:manage`.
 
         Args:
+          address: How category `A` (address) findings are accepted. With `requireStreetNumber` the
+              model's address findings that do not contain a street number (`1-2-3`, `3丁目`,
+              `12番地`, `5号`, `〒`) are dropped, so city names, shop names and facility names
+              are not masked. Defaults to `false`, and the whole object is omitted from
+              responses when it is the default.
+
+          skipped_boundaries: Boundaries to leave unredacted (the policy still redacts every other boundary,
+              including boundaries added to QAIP later). Omitted, `null` or `[]` redacts every
+              boundary. Listing every boundary is rejected: omit `redactionPolicyId` on the
+              run instead. Skipping `rag_result` / `completions_docs` sends knowledge-base
+              chunks to the external model unmasked; only do so when the chunks were masked at
+              ingestion, and note that ingestion-time masking covers 7 PII categories only,
+              never `K` (credentials) or `B` (business confidential).
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -449,7 +562,9 @@ class RedactionPoliciesResource(SyncAPIResource):
                 {
                     "business_confidential": business_confidential,
                     "name": name,
+                    "address": address,
                     "description": description,
+                    "skipped_boundaries": skipped_boundaries,
                 },
                 redaction_policy_validate_params.RedactionPolicyValidateParams,
             ),
@@ -489,7 +604,29 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
         *,
         business_confidential: redaction_policy_create_params.BusinessConfidential,
         name: str,
+        address: redaction_policy_create_params.Address | Omit = omit,
         description: Optional[str] | Omit = omit,
+        skipped_boundaries: Optional[
+            List[
+                Literal[
+                    "initial_input",
+                    "rag_query",
+                    "rag_result",
+                    "google_query",
+                    "google_result",
+                    "tool_result",
+                    "external_table_result",
+                    "x_query",
+                    "xai_query",
+                    "chartmetric_query",
+                    "chartmetric_result",
+                    "completions_messages",
+                    "completions_query",
+                    "completions_docs",
+                ]
+            ]
+        ]
+        | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -504,6 +641,20 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
         `policy:redaction:manage`.
 
         Args:
+          address: How category `A` (address) findings are accepted. With `requireStreetNumber` the
+              model's address findings that do not contain a street number (`1-2-3`, `3丁目`,
+              `12番地`, `5号`, `〒`) are dropped, so city names, shop names and facility names
+              are not masked. Defaults to `false`, and the whole object is omitted from
+              responses when it is the default.
+
+          skipped_boundaries: Boundaries to leave unredacted (the policy still redacts every other boundary,
+              including boundaries added to QAIP later). Omitted, `null` or `[]` redacts every
+              boundary. Listing every boundary is rejected: omit `redactionPolicyId` on the
+              run instead. Skipping `rag_result` / `completions_docs` sends knowledge-base
+              chunks to the external model unmasked; only do so when the chunks were masked at
+              ingestion, and note that ingestion-time masking covers 7 PII categories only,
+              never `K` (credentials) or `B` (business confidential).
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -518,7 +669,9 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
                 {
                     "business_confidential": business_confidential,
                     "name": name,
+                    "address": address,
                     "description": description,
+                    "skipped_boundaries": skipped_boundaries,
                 },
                 redaction_policy_create_params.RedactionPolicyCreateParams,
             ),
@@ -679,7 +832,29 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
         name: str,
         *,
         business_confidential: redaction_policy_create_version_params.BusinessConfidential,
+        address: redaction_policy_create_version_params.Address | Omit = omit,
         description: Optional[str] | Omit = omit,
+        skipped_boundaries: Optional[
+            List[
+                Literal[
+                    "initial_input",
+                    "rag_query",
+                    "rag_result",
+                    "google_query",
+                    "google_result",
+                    "tool_result",
+                    "external_table_result",
+                    "x_query",
+                    "xai_query",
+                    "chartmetric_query",
+                    "chartmetric_result",
+                    "completions_messages",
+                    "completions_query",
+                    "completions_docs",
+                ]
+            ]
+        ]
+        | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -693,6 +868,20 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
         the server. Required scope: `policy:redaction:manage`.
 
         Args:
+          address: How category `A` (address) findings are accepted. With `requireStreetNumber` the
+              model's address findings that do not contain a street number (`1-2-3`, `3丁目`,
+              `12番地`, `5号`, `〒`) are dropped, so city names, shop names and facility names
+              are not masked. Defaults to `false`, and the whole object is omitted from
+              responses when it is the default.
+
+          skipped_boundaries: Boundaries to leave unredacted (the policy still redacts every other boundary,
+              including boundaries added to QAIP later). Omitted, `null` or `[]` redacts every
+              boundary. Listing every boundary is rejected: omit `redactionPolicyId` on the
+              run instead. Skipping `rag_result` / `completions_docs` sends knowledge-base
+              chunks to the external model unmasked; only do so when the chunks were masked at
+              ingestion, and note that ingestion-time masking covers 7 PII categories only,
+              never `K` (credentials) or `B` (business confidential).
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -708,7 +897,9 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "business_confidential": business_confidential,
+                    "address": address,
                     "description": description,
+                    "skipped_boundaries": skipped_boundaries,
                 },
                 redaction_policy_create_version_params.RedactionPolicyCreateVersionParams,
             ),
@@ -847,7 +1038,29 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
         *,
         business_confidential: redaction_policy_validate_params.BusinessConfidential,
         name: str,
+        address: redaction_policy_validate_params.Address | Omit = omit,
         description: Optional[str] | Omit = omit,
+        skipped_boundaries: Optional[
+            List[
+                Literal[
+                    "initial_input",
+                    "rag_query",
+                    "rag_result",
+                    "google_query",
+                    "google_result",
+                    "tool_result",
+                    "external_table_result",
+                    "x_query",
+                    "xai_query",
+                    "chartmetric_query",
+                    "chartmetric_result",
+                    "completions_messages",
+                    "completions_query",
+                    "completions_docs",
+                ]
+            ]
+        ]
+        | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -861,6 +1074,20 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
         store. Required scope: `policy:redaction:manage`.
 
         Args:
+          address: How category `A` (address) findings are accepted. With `requireStreetNumber` the
+              model's address findings that do not contain a street number (`1-2-3`, `3丁目`,
+              `12番地`, `5号`, `〒`) are dropped, so city names, shop names and facility names
+              are not masked. Defaults to `false`, and the whole object is omitted from
+              responses when it is the default.
+
+          skipped_boundaries: Boundaries to leave unredacted (the policy still redacts every other boundary,
+              including boundaries added to QAIP later). Omitted, `null` or `[]` redacts every
+              boundary. Listing every boundary is rejected: omit `redactionPolicyId` on the
+              run instead. Skipping `rag_result` / `completions_docs` sends knowledge-base
+              chunks to the external model unmasked; only do so when the chunks were masked at
+              ingestion, and note that ingestion-time masking covers 7 PII categories only,
+              never `K` (credentials) or `B` (business confidential).
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -875,7 +1102,9 @@ class AsyncRedactionPoliciesResource(AsyncAPIResource):
                 {
                     "business_confidential": business_confidential,
                     "name": name,
+                    "address": address,
                     "description": description,
+                    "skipped_boundaries": skipped_boundaries,
                 },
                 redaction_policy_validate_params.RedactionPolicyValidateParams,
             ),

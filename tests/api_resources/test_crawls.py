@@ -51,6 +51,9 @@ class TestCrawls:
             content_pattern=["string"],
             file_extensions=["string"],
             html_only=True,
+            load_more_enabled=True,
+            load_more_max_clicks=1,
+            load_more_selectors=["string"],
             metadata={
                 "records": [
                     {
@@ -235,6 +238,9 @@ class TestCrawls:
         crawl = client.crawls.create_url_list(
             name="x",
             target_urls=["string"],
+            load_more_enabled=True,
+            load_more_max_clicks=1,
+            load_more_selectors=["string"],
             max_num_files=0,
             metadata={
                 "records": [
@@ -406,6 +412,9 @@ class TestCrawls:
         crawl = client.crawls.update_setting(
             id="id",
             name="name",
+            load_more_enabled=True,
+            load_more_max_clicks=1,
+            load_more_selectors=["string"],
             rrule="rrule",
         )
         assert_matches_type(CrawlSetting, crawl, path=["response"])
@@ -475,6 +484,9 @@ class TestAsyncCrawls:
             content_pattern=["string"],
             file_extensions=["string"],
             html_only=True,
+            load_more_enabled=True,
+            load_more_max_clicks=1,
+            load_more_selectors=["string"],
             metadata={
                 "records": [
                     {
@@ -659,6 +671,9 @@ class TestAsyncCrawls:
         crawl = await async_client.crawls.create_url_list(
             name="x",
             target_urls=["string"],
+            load_more_enabled=True,
+            load_more_max_clicks=1,
+            load_more_selectors=["string"],
             max_num_files=0,
             metadata={
                 "records": [
@@ -834,6 +849,9 @@ class TestAsyncCrawls:
         crawl = await async_client.crawls.update_setting(
             id="id",
             name="name",
+            load_more_enabled=True,
+            load_more_max_clicks=1,
+            load_more_selectors=["string"],
             rrule="rrule",
         )
         assert_matches_type(CrawlSetting, crawl, path=["response"])

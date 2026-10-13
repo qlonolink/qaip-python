@@ -63,6 +63,7 @@ from .notion_list_params import NotionListParams as NotionListParams
 from .secret_list_params import SecretListParams as SecretListParams
 from .source_list_params import SourceListParams as SourceListParams
 from .agent_thread_detail import AgentThreadDetail as AgentThreadDetail
+from .chunk_bulk_deletion import ChunkBulkDeletion as ChunkBulkDeletion
 from .completion_response import CompletionResponse as CompletionResponse
 from .conversation_detail import ConversationDetail as ConversationDetail
 from .crawl_create_params import CrawlCreateParams as CrawlCreateParams
@@ -134,10 +135,12 @@ from .redaction_policy_create_params import RedactionPolicyCreateParams as Redac
 from .redaction_policy_list_response import RedactionPolicyListResponse as RedactionPolicyListResponse
 from .tag_source_group_create_params import TagSourceGroupCreateParams as TagSourceGroupCreateParams
 from .tag_source_group_delete_params import TagSourceGroupDeleteParams as TagSourceGroupDeleteParams
+from .chunk_bulk_deletion_entry_param import ChunkBulkDeletionEntryParam as ChunkBulkDeletionEntryParam
 from .redaction_policy_archive_params import RedactionPolicyArchiveParams as RedactionPolicyArchiveParams
 from .source_delete_metadata_response import SourceDeleteMetadataResponse as SourceDeleteMetadataResponse
 from .agent_retrieve_run_result_params import AgentRetrieveRunResultParams as AgentRetrieveRunResultParams
 from .agent_stream_run_events_response import AgentStreamRunEventsResponse as AgentStreamRunEventsResponse
+from .chunk_bulk_deletion_source_group import ChunkBulkDeletionSourceGroup as ChunkBulkDeletionSourceGroup
 from .local_file_group_create_response import LocalFileGroupCreateResponse as LocalFileGroupCreateResponse
 from .local_file_group_delete_response import LocalFileGroupDeleteResponse as LocalFileGroupDeleteResponse
 from .redaction_policy_validate_params import RedactionPolicyValidateParams as RedactionPolicyValidateParams
@@ -180,6 +183,12 @@ from .local_file_group_retrieve_bulk_deletion_params import (
 )
 from .local_file_group_start_chunk_deletion_response import (
     LocalFileGroupStartChunkDeletionResponse as LocalFileGroupStartChunkDeletionResponse,
+)
+from .local_file_group_start_chunk_bulk_deletion_params import (
+    LocalFileGroupStartChunkBulkDeletionParams as LocalFileGroupStartChunkBulkDeletionParams,
+)
+from .local_file_group_start_chunk_bulk_deletion_response import (
+    LocalFileGroupStartChunkBulkDeletionResponse as LocalFileGroupStartChunkBulkDeletionResponse,
 )
 
 # Rebuild cyclical models only after all modules are imported.

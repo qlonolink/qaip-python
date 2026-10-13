@@ -40,6 +40,21 @@ class CrawlCreateParams(TypedDict, total=False):
     html_only: bool
     """When true, only HTML files will be downloaded"""
 
+    load_more_enabled: bool
+    """Whether to click load-more controls.
+
+    Defaults to use_browser. Enabling requires use_browser=true.
+    """
+
+    load_more_max_clicks: int
+    """Maximum click attempts per page. Defaults to 10."""
+
+    load_more_selectors: SequenceNotStr[str]
+    """Ordered CSS selectors, validated before saving.
+
+    Empty or omitted uses built-in controls.
+    """
+
     metadata: Metadata
     """(reserved for future use) Additional metadata for the web crawl data source"""
 

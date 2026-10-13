@@ -68,6 +68,9 @@ class CrawlsResource(SyncAPIResource):
         content_pattern: SequenceNotStr[str] | Omit = omit,
         file_extensions: SequenceNotStr[str] | Omit = omit,
         html_only: bool | Omit = omit,
+        load_more_enabled: bool | Omit = omit,
+        load_more_max_clicks: int | Omit = omit,
+        load_more_selectors: SequenceNotStr[str] | Omit = omit,
         metadata: Metadata | Omit = omit,
         no_canonical_check: bool | Omit = omit,
         path_filters: SequenceNotStr[str] | Omit = omit,
@@ -102,6 +105,14 @@ class CrawlsResource(SyncAPIResource):
 
           html_only: When true, only HTML files will be downloaded
 
+          load_more_enabled: Whether to click load-more controls. Defaults to use_browser. Enabling requires
+              use_browser=true.
+
+          load_more_max_clicks: Maximum click attempts per page. Defaults to 10.
+
+          load_more_selectors: Ordered CSS selectors, validated before saving. Empty or omitted uses built-in
+              controls.
+
           metadata: (reserved for future use) Additional metadata for the web crawl data source
 
           no_canonical_check: Whether to disable duplicate filtering by canonical URL
@@ -132,6 +143,9 @@ class CrawlsResource(SyncAPIResource):
                     "content_pattern": content_pattern,
                     "file_extensions": file_extensions,
                     "html_only": html_only,
+                    "load_more_enabled": load_more_enabled,
+                    "load_more_max_clicks": load_more_max_clicks,
+                    "load_more_selectors": load_more_selectors,
                     "metadata": metadata,
                     "no_canonical_check": no_canonical_check,
                     "path_filters": path_filters,
@@ -265,6 +279,9 @@ class CrawlsResource(SyncAPIResource):
         *,
         name: str,
         target_urls: SequenceNotStr[str],
+        load_more_enabled: bool | Omit = omit,
+        load_more_max_clicks: int | Omit = omit,
+        load_more_selectors: SequenceNotStr[str] | Omit = omit,
         max_num_files: int | Omit = omit,
         metadata: Metadata | Omit = omit,
         no_canonical_check: bool | Omit = omit,
@@ -284,6 +301,12 @@ class CrawlsResource(SyncAPIResource):
           name: Name of the web crawl data source
 
           target_urls: List of URLs to download directly. Each URL must use http or https scheme.
+
+          load_more_enabled: URL-list crawls do not use a browser, so this must be false or omitted.
+
+          load_more_max_clicks: Maximum click attempts per page. Defaults to 10; unused without a browser.
+
+          load_more_selectors: Ordered CSS selectors retained in the setting; unused without a browser.
 
           max_num_files: Maximum number of files to download. Defaults to the number of target URLs if
               omitted.
@@ -308,6 +331,9 @@ class CrawlsResource(SyncAPIResource):
                 {
                     "name": name,
                     "target_urls": target_urls,
+                    "load_more_enabled": load_more_enabled,
+                    "load_more_max_clicks": load_more_max_clicks,
+                    "load_more_selectors": load_more_selectors,
                     "max_num_files": max_num_files,
                     "metadata": metadata,
                     "no_canonical_check": no_canonical_check,
@@ -402,6 +428,9 @@ class CrawlsResource(SyncAPIResource):
         id: str,
         *,
         name: str,
+        load_more_enabled: bool | Omit = omit,
+        load_more_max_clicks: int | Omit = omit,
+        load_more_selectors: SequenceNotStr[str] | Omit = omit,
         rrule: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -410,12 +439,21 @@ class CrawlsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> CrawlSetting:
-        """<p> Updates the setting (name, schedule) for web crawl data sources.
+        """<p> Updates the name, schedule, and load-more options for web crawl data sources.
 
-        </p> <p> Required scope: `ingestion:manage` </p>
+        Omitted load-more fields preserve saved values; false disables and [] clears selectors. Null is invalid. Name/schedule-only updates do not migrate legacy settings. CSS validation runs before any save, except for disabling without changing selectors or the limit. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the web crawl data source
+
+          load_more_enabled: Omission preserves the saved value; false disables clicking without clearing
+              selectors or the limit. Null is invalid.
+
+          load_more_max_clicks: Maximum click attempts per page. Omission preserves the saved value, or 10 for
+              legacy settings. Null is invalid.
+
+          load_more_selectors: Ordered CSS selectors. Omission preserves them; an empty array clears them and
+              uses built-in controls. Null is invalid.
 
           rrule: Recurrence rule (RFC 5545 RRULE). Empty string or omission removes the existing
               schedule.
@@ -435,6 +473,9 @@ class CrawlsResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "name": name,
+                    "load_more_enabled": load_more_enabled,
+                    "load_more_max_clicks": load_more_max_clicks,
+                    "load_more_selectors": load_more_selectors,
                     "rrule": rrule,
                 },
                 crawl_update_setting_params.CrawlUpdateSettingParams,
@@ -476,6 +517,9 @@ class AsyncCrawlsResource(AsyncAPIResource):
         content_pattern: SequenceNotStr[str] | Omit = omit,
         file_extensions: SequenceNotStr[str] | Omit = omit,
         html_only: bool | Omit = omit,
+        load_more_enabled: bool | Omit = omit,
+        load_more_max_clicks: int | Omit = omit,
+        load_more_selectors: SequenceNotStr[str] | Omit = omit,
         metadata: Metadata | Omit = omit,
         no_canonical_check: bool | Omit = omit,
         path_filters: SequenceNotStr[str] | Omit = omit,
@@ -510,6 +554,14 @@ class AsyncCrawlsResource(AsyncAPIResource):
 
           html_only: When true, only HTML files will be downloaded
 
+          load_more_enabled: Whether to click load-more controls. Defaults to use_browser. Enabling requires
+              use_browser=true.
+
+          load_more_max_clicks: Maximum click attempts per page. Defaults to 10.
+
+          load_more_selectors: Ordered CSS selectors, validated before saving. Empty or omitted uses built-in
+              controls.
+
           metadata: (reserved for future use) Additional metadata for the web crawl data source
 
           no_canonical_check: Whether to disable duplicate filtering by canonical URL
@@ -540,6 +592,9 @@ class AsyncCrawlsResource(AsyncAPIResource):
                     "content_pattern": content_pattern,
                     "file_extensions": file_extensions,
                     "html_only": html_only,
+                    "load_more_enabled": load_more_enabled,
+                    "load_more_max_clicks": load_more_max_clicks,
+                    "load_more_selectors": load_more_selectors,
                     "metadata": metadata,
                     "no_canonical_check": no_canonical_check,
                     "path_filters": path_filters,
@@ -673,6 +728,9 @@ class AsyncCrawlsResource(AsyncAPIResource):
         *,
         name: str,
         target_urls: SequenceNotStr[str],
+        load_more_enabled: bool | Omit = omit,
+        load_more_max_clicks: int | Omit = omit,
+        load_more_selectors: SequenceNotStr[str] | Omit = omit,
         max_num_files: int | Omit = omit,
         metadata: Metadata | Omit = omit,
         no_canonical_check: bool | Omit = omit,
@@ -692,6 +750,12 @@ class AsyncCrawlsResource(AsyncAPIResource):
           name: Name of the web crawl data source
 
           target_urls: List of URLs to download directly. Each URL must use http or https scheme.
+
+          load_more_enabled: URL-list crawls do not use a browser, so this must be false or omitted.
+
+          load_more_max_clicks: Maximum click attempts per page. Defaults to 10; unused without a browser.
+
+          load_more_selectors: Ordered CSS selectors retained in the setting; unused without a browser.
 
           max_num_files: Maximum number of files to download. Defaults to the number of target URLs if
               omitted.
@@ -716,6 +780,9 @@ class AsyncCrawlsResource(AsyncAPIResource):
                 {
                     "name": name,
                     "target_urls": target_urls,
+                    "load_more_enabled": load_more_enabled,
+                    "load_more_max_clicks": load_more_max_clicks,
+                    "load_more_selectors": load_more_selectors,
                     "max_num_files": max_num_files,
                     "metadata": metadata,
                     "no_canonical_check": no_canonical_check,
@@ -810,6 +877,9 @@ class AsyncCrawlsResource(AsyncAPIResource):
         id: str,
         *,
         name: str,
+        load_more_enabled: bool | Omit = omit,
+        load_more_max_clicks: int | Omit = omit,
+        load_more_selectors: SequenceNotStr[str] | Omit = omit,
         rrule: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -818,12 +888,21 @@ class AsyncCrawlsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> CrawlSetting:
-        """<p> Updates the setting (name, schedule) for web crawl data sources.
+        """<p> Updates the name, schedule, and load-more options for web crawl data sources.
 
-        </p> <p> Required scope: `ingestion:manage` </p>
+        Omitted load-more fields preserve saved values; false disables and [] clears selectors. Null is invalid. Name/schedule-only updates do not migrate legacy settings. CSS validation runs before any save, except for disabling without changing selectors or the limit. </p> <p> Required scope: `ingestion:manage` </p>
 
         Args:
           name: Name of the web crawl data source
+
+          load_more_enabled: Omission preserves the saved value; false disables clicking without clearing
+              selectors or the limit. Null is invalid.
+
+          load_more_max_clicks: Maximum click attempts per page. Omission preserves the saved value, or 10 for
+              legacy settings. Null is invalid.
+
+          load_more_selectors: Ordered CSS selectors. Omission preserves them; an empty array clears them and
+              uses built-in controls. Null is invalid.
 
           rrule: Recurrence rule (RFC 5545 RRULE). Empty string or omission removes the existing
               schedule.
@@ -843,6 +922,9 @@ class AsyncCrawlsResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "name": name,
+                    "load_more_enabled": load_more_enabled,
+                    "load_more_max_clicks": load_more_max_clicks,
+                    "load_more_selectors": load_more_selectors,
                     "rrule": rrule,
                 },
                 crawl_update_setting_params.CrawlUpdateSettingParams,

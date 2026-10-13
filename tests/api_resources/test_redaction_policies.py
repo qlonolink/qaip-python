@@ -56,9 +56,12 @@ class TestRedactionPolicies:
                         "text": "契約金額",
                     }
                 ],
+                "semantic_boundary": "clause",
             },
             name="internal-contracts",
+            address={"require_street_number": True},
             description="社内契約情報向け",
+            skipped_boundaries=["initial_input"],
         )
         assert_matches_type(PolicyVersion, redaction_policy, path=["response"])
 
@@ -317,8 +320,11 @@ class TestRedactionPolicies:
                         "text": "x",
                     }
                 ],
+                "semantic_boundary": "clause",
             },
+            address={"require_street_number": True},
             description="description",
+            skipped_boundaries=["initial_input"],
         )
         assert_matches_type(PolicyVersion, redaction_policy, path=["response"])
 
@@ -578,9 +584,12 @@ class TestRedactionPolicies:
                         "text": "契約金額",
                     }
                 ],
+                "semantic_boundary": "clause",
             },
             name="internal-contracts",
+            address={"require_street_number": True},
             description="社内契約情報向け",
+            skipped_boundaries=["initial_input"],
         )
         assert_matches_type(RedactionPolicyValidateResponse, redaction_policy, path=["response"])
 
@@ -671,9 +680,12 @@ class TestAsyncRedactionPolicies:
                         "text": "契約金額",
                     }
                 ],
+                "semantic_boundary": "clause",
             },
             name="internal-contracts",
+            address={"require_street_number": True},
             description="社内契約情報向け",
+            skipped_boundaries=["initial_input"],
         )
         assert_matches_type(PolicyVersion, redaction_policy, path=["response"])
 
@@ -932,8 +944,11 @@ class TestAsyncRedactionPolicies:
                         "text": "x",
                     }
                 ],
+                "semantic_boundary": "clause",
             },
+            address={"require_street_number": True},
             description="description",
+            skipped_boundaries=["initial_input"],
         )
         assert_matches_type(PolicyVersion, redaction_policy, path=["response"])
 
@@ -1193,9 +1208,12 @@ class TestAsyncRedactionPolicies:
                         "text": "契約金額",
                     }
                 ],
+                "semantic_boundary": "clause",
             },
             name="internal-contracts",
+            address={"require_street_number": True},
             description="社内契約情報向け",
+            skipped_boundaries=["initial_input"],
         )
         assert_matches_type(RedactionPolicyValidateResponse, redaction_policy, path=["response"])
 

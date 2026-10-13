@@ -17,4 +17,4 @@ class RedactionPolicyValidateResponse(BaseModel):
 
     name: str
 
-    schema_version: Literal[1] = FieldInfo(alias="schemaVersion")
+    schema_version: Literal[1, 2] = FieldInfo(alias="schemaVersion")

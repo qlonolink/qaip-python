@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Mapping, cast
+from typing import Mapping, Iterable, cast
 
 import httpx
 
@@ -12,6 +12,7 @@ from ..types import (
     local_file_group_start_bulk_deletion_params,
     local_file_group_start_chunk_deletion_params,
     local_file_group_retrieve_bulk_deletion_params,
+    local_file_group_start_chunk_bulk_deletion_params,
 )
 from .._files import deepcopy_with_paths
 from .._types import Body, Omit, Query, Headers, NotGiven, FileTypes, SequenceNotStr, omit, not_given
@@ -28,11 +29,14 @@ from .._base_client import make_request_options
 from ..types.bulk_deletion import BulkDeletion
 from ..types.chunk_deletion import ChunkDeletion
 from ..types.local_file_group import LocalFileGroup
+from ..types.chunk_bulk_deletion import ChunkBulkDeletion
 from ..types.local_file_group_list_response import LocalFileGroupListResponse
+from ..types.chunk_bulk_deletion_entry_param import ChunkBulkDeletionEntryParam
 from ..types.local_file_group_create_response import LocalFileGroupCreateResponse
 from ..types.local_file_group_delete_response import LocalFileGroupDeleteResponse
 from ..types.local_file_group_start_bulk_deletion_response import LocalFileGroupStartBulkDeletionResponse
 from ..types.local_file_group_start_chunk_deletion_response import LocalFileGroupStartChunkDeletionResponse
+from ..types.local_file_group_start_chunk_bulk_deletion_response import LocalFileGroupStartChunkBulkDeletionResponse
 
 __all__ = ["LocalFileGroupsResource", "AsyncLocalFileGroupsResource"]
 
@@ -282,6 +286,44 @@ class LocalFileGroupsResource(SyncAPIResource):
             cast_to=BulkDeletion,
         )
 
+    def retrieve_chunk_bulk_deletion(
+        self,
+        chunk_bulk_deletion_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ChunkBulkDeletion:
+        """
+        <p> Returns the status of a chunk bulk deletion job and, for every source group in it, its state and the number of chunk rows deleted. The status is synced with the underlying execution on read on a best-effort basis: a finished job is normally reported as terminal (success or failure) immediately, but if the live sync fails the status may lag until the periodic reconciliation. </p> <p> Groups whose state is not <code>deleted</code> once the job is terminal were not processed (another job held the group, or the job failed part-way). Deletion is idempotent, so a caller can resubmit those groups with the same substrings. </p> <p> Required scope: `ingestion:manage` </p>
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not chunk_bulk_deletion_id:
+            raise ValueError(
+                f"Expected a non-empty value for `chunk_bulk_deletion_id` but received {chunk_bulk_deletion_id!r}"
+            )
+        return self._get(
+            path_template(
+                "/local-file-groups/chunk-bulk-deletions/{chunk_bulk_deletion_id}",
+                chunk_bulk_deletion_id=chunk_bulk_deletion_id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ChunkBulkDeletion,
+        )
+
     def retrieve_chunk_deletion(
         self,
         chunk_deletion_id: str,
@@ -361,6 +403,47 @@ class LocalFileGroupsResource(SyncAPIResource):
                 "max_retries": 0,
             },
             cast_to=LocalFileGroupStartBulkDeletionResponse,
+        )
+
+    def start_chunk_bulk_deletion(
+        self,
+        *,
+        deletions: Iterable[ChunkBulkDeletionEntryParam],
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> LocalFileGroupStartChunkBulkDeletionResponse:
+        """
+        <p> Initiates a single asynchronous job that deletes chunk rows (subtractive delete, as in POST /local-file-groups/{id}/chunk-deletions) from many local file groups at once. Each entry names a source group and its own <code>text_contains</code>; chunk rows of that group whose text contains any of the substrings are deleted. The source groups themselves are preserved. Starting one chunk deletion per group issues serial commits per group; this endpoint collapses them into one delete per table. </p> <p> Every entry must carry at least one non-empty substring. If any entry is malformed the whole request is rejected with 400 and no job is started, so a missing condition can never turn into deleting a whole group. Entries for the same source group are merged (their substrings are combined). Source groups that do not exist or belong to another user are rejected individually and reported in <code>rejected</code>; the remaining entries still start. When nothing is accepted no job is started and <code>id</code> is absent. </p> <p> Whether a group currently has another job in flight (an ingestion, a deletion or a chunk deletion) is NOT decided here: the job takes the same per-group lock those jobs use and skips any group whose lock is held or whose ingestion has not finished. Such groups come back with state <code>skipped_busy</code> in the final status; resubmit them once the other job has finished. Deletion is idempotent. </p> <p> The response returns a job id; poll GET /local-file-groups/chunk-bulk-deletions/{chunk_bulk_deletion_id} to check the job status. </p> <p> Required scope: `ingestion:manage` </p>
+
+        Args:
+          deletions: Groups and the substrings to delete from each. Entries for the same source group
+              are merged.
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return self._post(
+            "/local-file-groups/chunk-bulk-deletions",
+            body=maybe_transform(
+                {"deletions": deletions},
+                local_file_group_start_chunk_bulk_deletion_params.LocalFileGroupStartChunkBulkDeletionParams,
+            ),
+            options={
+                **make_request_options(
+                    extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                ),
+                "max_retries": 0,
+            },
+            cast_to=LocalFileGroupStartChunkBulkDeletionResponse,
         )
 
     def start_chunk_deletion(
@@ -653,6 +736,44 @@ class AsyncLocalFileGroupsResource(AsyncAPIResource):
             cast_to=BulkDeletion,
         )
 
+    async def retrieve_chunk_bulk_deletion(
+        self,
+        chunk_bulk_deletion_id: str,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ChunkBulkDeletion:
+        """
+        <p> Returns the status of a chunk bulk deletion job and, for every source group in it, its state and the number of chunk rows deleted. The status is synced with the underlying execution on read on a best-effort basis: a finished job is normally reported as terminal (success or failure) immediately, but if the live sync fails the status may lag until the periodic reconciliation. </p> <p> Groups whose state is not <code>deleted</code> once the job is terminal were not processed (another job held the group, or the job failed part-way). Deletion is idempotent, so a caller can resubmit those groups with the same substrings. </p> <p> Required scope: `ingestion:manage` </p>
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not chunk_bulk_deletion_id:
+            raise ValueError(
+                f"Expected a non-empty value for `chunk_bulk_deletion_id` but received {chunk_bulk_deletion_id!r}"
+            )
+        return await self._get(
+            path_template(
+                "/local-file-groups/chunk-bulk-deletions/{chunk_bulk_deletion_id}",
+                chunk_bulk_deletion_id=chunk_bulk_deletion_id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ChunkBulkDeletion,
+        )
+
     async def retrieve_chunk_deletion(
         self,
         chunk_deletion_id: str,
@@ -734,6 +855,47 @@ class AsyncLocalFileGroupsResource(AsyncAPIResource):
             cast_to=LocalFileGroupStartBulkDeletionResponse,
         )
 
+    async def start_chunk_bulk_deletion(
+        self,
+        *,
+        deletions: Iterable[ChunkBulkDeletionEntryParam],
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> LocalFileGroupStartChunkBulkDeletionResponse:
+        """
+        <p> Initiates a single asynchronous job that deletes chunk rows (subtractive delete, as in POST /local-file-groups/{id}/chunk-deletions) from many local file groups at once. Each entry names a source group and its own <code>text_contains</code>; chunk rows of that group whose text contains any of the substrings are deleted. The source groups themselves are preserved. Starting one chunk deletion per group issues serial commits per group; this endpoint collapses them into one delete per table. </p> <p> Every entry must carry at least one non-empty substring. If any entry is malformed the whole request is rejected with 400 and no job is started, so a missing condition can never turn into deleting a whole group. Entries for the same source group are merged (their substrings are combined). Source groups that do not exist or belong to another user are rejected individually and reported in <code>rejected</code>; the remaining entries still start. When nothing is accepted no job is started and <code>id</code> is absent. </p> <p> Whether a group currently has another job in flight (an ingestion, a deletion or a chunk deletion) is NOT decided here: the job takes the same per-group lock those jobs use and skips any group whose lock is held or whose ingestion has not finished. Such groups come back with state <code>skipped_busy</code> in the final status; resubmit them once the other job has finished. Deletion is idempotent. </p> <p> The response returns a job id; poll GET /local-file-groups/chunk-bulk-deletions/{chunk_bulk_deletion_id} to check the job status. </p> <p> Required scope: `ingestion:manage` </p>
+
+        Args:
+          deletions: Groups and the substrings to delete from each. Entries for the same source group
+              are merged.
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        return await self._post(
+            "/local-file-groups/chunk-bulk-deletions",
+            body=await async_maybe_transform(
+                {"deletions": deletions},
+                local_file_group_start_chunk_bulk_deletion_params.LocalFileGroupStartChunkBulkDeletionParams,
+            ),
+            options={
+                **make_request_options(
+                    extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                ),
+                "max_retries": 0,
+            },
+            cast_to=LocalFileGroupStartChunkBulkDeletionResponse,
+        )
+
     async def start_chunk_deletion(
         self,
         id: str,
@@ -798,11 +960,17 @@ class LocalFileGroupsResourceWithRawResponse:
         self.retrieve_bulk_deletion = to_raw_response_wrapper(
             local_file_groups.retrieve_bulk_deletion,
         )
+        self.retrieve_chunk_bulk_deletion = to_raw_response_wrapper(
+            local_file_groups.retrieve_chunk_bulk_deletion,
+        )
         self.retrieve_chunk_deletion = to_raw_response_wrapper(
             local_file_groups.retrieve_chunk_deletion,
         )
         self.start_bulk_deletion = to_raw_response_wrapper(
             local_file_groups.start_bulk_deletion,
+        )
+        self.start_chunk_bulk_deletion = to_raw_response_wrapper(
+            local_file_groups.start_chunk_bulk_deletion,
         )
         self.start_chunk_deletion = to_raw_response_wrapper(
             local_file_groups.start_chunk_deletion,
@@ -828,11 +996,17 @@ class AsyncLocalFileGroupsResourceWithRawResponse:
         self.retrieve_bulk_deletion = async_to_raw_response_wrapper(
             local_file_groups.retrieve_bulk_deletion,
         )
+        self.retrieve_chunk_bulk_deletion = async_to_raw_response_wrapper(
+            local_file_groups.retrieve_chunk_bulk_deletion,
+        )
         self.retrieve_chunk_deletion = async_to_raw_response_wrapper(
             local_file_groups.retrieve_chunk_deletion,
         )
         self.start_bulk_deletion = async_to_raw_response_wrapper(
             local_file_groups.start_bulk_deletion,
+        )
+        self.start_chunk_bulk_deletion = async_to_raw_response_wrapper(
+            local_file_groups.start_chunk_bulk_deletion,
         )
         self.start_chunk_deletion = async_to_raw_response_wrapper(
             local_file_groups.start_chunk_deletion,
@@ -858,11 +1032,17 @@ class LocalFileGroupsResourceWithStreamingResponse:
         self.retrieve_bulk_deletion = to_streamed_response_wrapper(
             local_file_groups.retrieve_bulk_deletion,
         )
+        self.retrieve_chunk_bulk_deletion = to_streamed_response_wrapper(
+            local_file_groups.retrieve_chunk_bulk_deletion,
+        )
         self.retrieve_chunk_deletion = to_streamed_response_wrapper(
             local_file_groups.retrieve_chunk_deletion,
         )
         self.start_bulk_deletion = to_streamed_response_wrapper(
             local_file_groups.start_bulk_deletion,
+        )
+        self.start_chunk_bulk_deletion = to_streamed_response_wrapper(
+            local_file_groups.start_chunk_bulk_deletion,
         )
         self.start_chunk_deletion = to_streamed_response_wrapper(
             local_file_groups.start_chunk_deletion,
@@ -888,11 +1068,17 @@ class AsyncLocalFileGroupsResourceWithStreamingResponse:
         self.retrieve_bulk_deletion = async_to_streamed_response_wrapper(
             local_file_groups.retrieve_bulk_deletion,
         )
+        self.retrieve_chunk_bulk_deletion = async_to_streamed_response_wrapper(
+            local_file_groups.retrieve_chunk_bulk_deletion,
+        )
         self.retrieve_chunk_deletion = async_to_streamed_response_wrapper(
             local_file_groups.retrieve_chunk_deletion,
         )
         self.start_bulk_deletion = async_to_streamed_response_wrapper(
             local_file_groups.start_bulk_deletion,
+        )
+        self.start_chunk_bulk_deletion = async_to_streamed_response_wrapper(
+            local_file_groups.start_chunk_bulk_deletion,
         )
         self.start_chunk_deletion = async_to_streamed_response_wrapper(
             local_file_groups.start_chunk_deletion,

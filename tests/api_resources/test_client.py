@@ -100,6 +100,7 @@ class TestClient:
             },
             parent_message_id="f47ac10b-58cc-4372-a567-0e02b2c3d479",
             principal_id="user-123",
+            redaction_policy_id="redaction_policy_id",
             regenerate=True,
             source_metadata={
                 "filters": [
@@ -618,6 +619,7 @@ class TestAsyncClient:
             },
             parent_message_id="f47ac10b-58cc-4372-a567-0e02b2c3d479",
             principal_id="user-123",
+            redaction_policy_id="redaction_policy_id",
             regenerate=True,
             source_metadata={
                 "filters": [

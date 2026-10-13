@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Any, List, Mapping, Iterable
+from typing import TYPE_CHECKING, Any, List, Mapping, Iterable, Optional
 from typing_extensions import Self, Literal, override
 
 import httpx
@@ -360,6 +360,7 @@ class Qaip(SyncAPIClient):
         metadata_filter: MetadataFilterGroup | Omit = omit,
         parent_message_id: str | Omit = omit,
         principal_id: str | Omit = omit,
+        redaction_policy_id: Optional[str] | Omit = omit,
         regenerate: bool | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
@@ -442,6 +443,27 @@ class Qaip(SyncAPIClient):
               When omitted, subject attributes are empty (most restrictive). Ignored when
               authz is disabled.
 
+          redaction_policy_id: ID of a versioned redaction policy (built-in, or a tenant policy name) to apply
+              before anything leaves QAIP for an external provider: the retrieval query sent
+              to the embedding API, the retrieved knowledge-base chunks (title / URL / text)
+              and the conversation `messages` sent to the LLM. The redaction boundaries are
+              `completions_query`, `completions_docs` and `completions_messages`; a policy can
+              exclude some of them via `skippedBoundaries`.
+
+              When omitted or `null` (the default), **no redaction is performed and the input
+              is sent to the external provider as-is**. This is an explicit API contract, not
+              a fail-open behavior. Unknown IDs return `422 UNKNOWN_REDACTION_POLICY`; an
+              unavailable redactor returns `503 REDACTION_UNAVAILABLE` and a redaction failure
+              during generation returns `503 REDACTION_FAILED` (or `RUN_ERROR` with that code
+              on the SSE stream). The request is never forwarded unmasked.
+
+              Redacted chunks are also what `citations` and `retrieved` return, so citation
+              links can break when the URL itself contains masked values. `grounding: true`
+              may be combined with a policy: Gemini derives its search queries from the
+              redacted messages, but QAIP cannot intercept the built-in grounding search
+              itself, so the guarantee is weaker than the Agent run's explicit `google_query`
+              / `google_result` boundaries.
+
           regenerate: When true, the latest user message is NOT persisted again; instead a new
               assistant answer is created as a sibling under parent_message_id (which must
               reference an existing user message). Used to regenerate an answer.
@@ -497,6 +519,7 @@ class Qaip(SyncAPIClient):
                     "metadata_filter": metadata_filter,
                     "parent_message_id": parent_message_id,
                     "principal_id": principal_id,
+                    "redaction_policy_id": redaction_policy_id,
                     "regenerate": regenerate,
                     "source_metadata": source_metadata,
                     "source_types": source_types,
@@ -1122,6 +1145,7 @@ class AsyncQaip(AsyncAPIClient):
         metadata_filter: MetadataFilterGroup | Omit = omit,
         parent_message_id: str | Omit = omit,
         principal_id: str | Omit = omit,
+        redaction_policy_id: Optional[str] | Omit = omit,
         regenerate: bool | Omit = omit,
         source_metadata: MetadataFilterGroup | Omit = omit,
         source_types: List[SourceType] | Omit = omit,
@@ -1204,6 +1228,27 @@ class AsyncQaip(AsyncAPIClient):
               When omitted, subject attributes are empty (most restrictive). Ignored when
               authz is disabled.
 
+          redaction_policy_id: ID of a versioned redaction policy (built-in, or a tenant policy name) to apply
+              before anything leaves QAIP for an external provider: the retrieval query sent
+              to the embedding API, the retrieved knowledge-base chunks (title / URL / text)
+              and the conversation `messages` sent to the LLM. The redaction boundaries are
+              `completions_query`, `completions_docs` and `completions_messages`; a policy can
+              exclude some of them via `skippedBoundaries`.
+
+              When omitted or `null` (the default), **no redaction is performed and the input
+              is sent to the external provider as-is**. This is an explicit API contract, not
+              a fail-open behavior. Unknown IDs return `422 UNKNOWN_REDACTION_POLICY`; an
+              unavailable redactor returns `503 REDACTION_UNAVAILABLE` and a redaction failure
+              during generation returns `503 REDACTION_FAILED` (or `RUN_ERROR` with that code
+              on the SSE stream). The request is never forwarded unmasked.
+
+              Redacted chunks are also what `citations` and `retrieved` return, so citation
+              links can break when the URL itself contains masked values. `grounding: true`
+              may be combined with a policy: Gemini derives its search queries from the
+              redacted messages, but QAIP cannot intercept the built-in grounding search
+              itself, so the guarantee is weaker than the Agent run's explicit `google_query`
+              / `google_result` boundaries.
+
           regenerate: When true, the latest user message is NOT persisted again; instead a new
               assistant answer is created as a sibling under parent_message_id (which must
               reference an existing user message). Used to regenerate an answer.
@@ -1259,6 +1304,7 @@ class AsyncQaip(AsyncAPIClient):
                     "metadata_filter": metadata_filter,
                     "parent_message_id": parent_message_id,
                     "principal_id": principal_id,
+                    "redaction_policy_id": redaction_policy_id,
                     "regenerate": regenerate,
                     "source_metadata": source_metadata,
                     "source_types": source_types,
