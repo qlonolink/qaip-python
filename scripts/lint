@@ -1,16 +1,11 @@
 #!/usr/bin/env bash
-
-set -e
-
+set -euo pipefail
 cd "$(dirname "$0")/.."
-
-if [ "$1" = "--fix" ]; then
-  echo "==> Running lints with --fix"
-  rye run fix:ruff
+if [ "${1:-}" = '--fix' ]; then
+  uv run --no-sync ruff check --fix .
 else
-  echo "==> Running lints"
-  rye run lint
+  uv run --no-sync ruff check .
+  uv run --no-sync pyright
+  uv run --no-sync mypy .
 fi
-
-echo "==> Making sure it imports"
-rye run python -c 'import qaip'
+uv run --no-sync python -c 'import qaip'

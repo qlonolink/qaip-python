@@ -1,15 +1,8 @@
 #!/usr/bin/env bash
-
-set -e
-
+set -euo pipefail
 cd "$(dirname "$0")/.."
-
-
-
 export DEFER_PYDANTIC_BUILD=false
-
-echo "==> Running tests"
-rye run pytest "$@"
-
-echo "==> Running Pydantic v1 tests"
-rye run nox -s test-pydantic-v1 -- "$@"
+uv run --no-sync pytest "$@"
+SDK_PYDANTIC_VARIANT=v1 UV_PROJECT_ENVIRONMENT=.venv-pydantic-v1 ./scripts/bootstrap
+UV_PROJECT_ENVIRONMENT=.venv-pydantic-v1 uv run --no-sync \
+  pytest --ignore=tests/functional "$@"

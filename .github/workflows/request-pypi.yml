@@ -1,0 +1,20 @@
+name: Request PyPI publication
+on:
+  release:
+    types: [published]
+permissions:
+  contents: read
+  actions: write
+jobs:
+  request:
+    if: github.repository == 'qlonolink/qaip-python'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Dispatch the trusted main controller
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          gh workflow run publish-pypi.yml --repo qlonolink/qaip-python \
+            --ref main -f "tag=$RELEASE_TAG"

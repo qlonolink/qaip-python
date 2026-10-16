@@ -1,36 +1,17 @@
 ## Setting up the environment
 
-### With Rye
-
-We use [Rye](https://rye.astral.sh/) to manage dependencies because it will automatically provision a Python environment with the expected Python version. To set it up, run:
+Install [uv](https://docs.astral.sh/uv/) at the version in `scripts/toolchain.json`, then run:
 
 ```sh
-$ ./scripts/bootstrap
+./scripts/bootstrap
 ```
 
-Or [install Rye manually](https://rye.astral.sh/guide/installation/) and run:
+The bootstrap uses `uv.lock` without resolving new versions. Run local Python commands with
+`uv run --no-sync python ...`. The public SDK dependency ranges remain in `pyproject.toml`;
+CI uses locked environments for Python 3.9/3.13 and Pydantic v1/v2.
 
-```sh
-$ rye sync --all-features
-```
-
-You can then run scripts using `rye run python script.py` or by activating the virtual environment:
-
-```sh
-# Activate the virtual environment - https://docs.python.org/3/library/venv.html#how-venvs-work
-$ source .venv/bin/activate
-
-# now you can omit the `rye run` prefix
-$ python script.py
-```
-
-### Without Rye
-
-Alternatively if you don't want to install `Rye`, you can stick with the standard `pip` setup by ensuring you have the Python version specified in `.python-version`, create a virtual environment however you desire and then install dependencies using this command:
-
-```sh
-$ pip install -r requirements-dev.lock
-```
+To update dependencies, set `tool.uv.exclude-newer` to at most seven days before the current date,
+run `uv lock`, review the lock diff, and run the checks below.
 
 ## Modifying/Adding code
 
@@ -45,7 +26,7 @@ All files in the `examples/` directory are not modified by the generator and can
 ```py
 # add an example to examples/<your-example>.py
 
-#!/usr/bin/env -S rye run python
+#!/usr/bin/env -S uv run --no-sync python
 …
 ```
 
@@ -72,9 +53,7 @@ Building this package will create two files in the `dist/` directory, a `.tar.gz
 To create a distributable version of the library, all you have to do is run this command:
 
 ```sh
-$ rye build
-# or
-$ python -m build
+$ ./scripts/build
 ```
 
 Then to install:
@@ -91,8 +70,7 @@ $ ./scripts/test
 
 ## Linting and formatting
 
-This repository uses [ruff](https://github.com/astral-sh/ruff) and
-[black](https://github.com/psf/black) to format the code in the repository.
+This repository uses [ruff](https://github.com/astral-sh/ruff) to format the code in the repository.
 
 To lint:
 
@@ -108,14 +86,35 @@ $ ./scripts/format
 
 ## Publishing and releases
 
+SDK validation and builds consume only the hash-locked `uv.lock`. The generator also emits
+`requirements.lock` and `requirements-dev.lock`; no CI or validation script installs from them.
+
 Changes made to this repository via the automated release PR pipeline should publish to PyPI automatically. If
 the changes aren't made through the automated pipeline, you may want to make releases manually.
 
 ### Publish with a GitHub workflow
 
-You can release to package managers by using [the `Publish PyPI` GitHub action](https://www.github.com/qlonolink/qaip-python/actions/workflows/publish-pypi.yml). This requires a setup organization or repository secret to be set up.
+A published stable GitHub Release dispatches `Publish PyPI` on `main`. The controller verifies the
+Release tag and protected source definitions, builds without publishing credentials, and sends the
+inspected wheel/sdist from a separate upload job. The `pypi-release` environment permits only the
+`main` branch. Only the upload job has `id-token: write`; builds and tests cannot request a
+publishing identity. `uv publish --trusted-publishing always` uses GitHub OIDC and requires no
+manually issued PyPI API token or secret.
 
-### Publish manually
+In [PyPI's publishing settings](https://pypi.org/manage/project/qaip/settings/publishing/),
+register a GitHub Trusted Publisher with owner `qlonolink`, repository `qaip-python`, workflow
+filename `publish-pypi.yml`, and environment `pypi-release`. All four fields must match.
+Check this registration before enabling publication; a missing registration stops the upload.
 
-If you need to manually release a package, you can run the `bin/publish-pypi` script with a `PYPI_TOKEN` set on
-the environment.
+A retry uses the same published Release tag:
+
+```sh
+gh workflow run publish-pypi.yml --repo qlonolink/qaip-python --ref main -f tag=vX.Y.Z
+```
+
+The upload job checks GitHub's immutable artifact identity/digest and the inspected distribution
+hashes. It does not rebuild the package. After publication, compare PyPI's hashes with the saved
+`release-manifest.json` and verify installation and the `qaip` command.
+
+`bin/publish-pypi vX.Y.Z` dispatches the same main workflow using your `gh` authentication.
+It performs the same validation and build steps and does not require a local PyPI token.

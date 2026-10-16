@@ -1,0 +1,43 @@
+name: Setup verified SDK toolchain
+description: Install the uv binary only after checking its pinned SHA256
+inputs:
+  python-version:
+    description: Python series from the pinned test matrix
+    default: '3.13'
+runs:
+  using: composite
+  steps:
+    - name: Read pinned uv distribution
+      id: pin
+      shell: bash
+      env:
+        SDK_PYTHON_SERIES: ${{ inputs.python-version }}
+      run: |
+        python3 - <<'PYCODE' >> "$GITHUB_OUTPUT"
+        import json, os
+        from pathlib import Path
+        pins = json.loads(Path('scripts/toolchain.json').read_text())
+        uv = pins['tools']['uv']
+        platform = 'linux-' + os.environ['RUNNER_ARCH'].lower()
+        artifact = uv['platforms'][platform]
+        print('url=' + artifact['url'])
+        print('checksum=' + artifact['checksum'])
+        print('version=' + uv['version'])
+        print('python=' + pins['test_python'][os.environ['SDK_PYTHON_SERIES']])
+        PYCODE
+    - name: Verify and install uv
+      shell: bash
+      env:
+        TOOL_URL: ${{ steps.pin.outputs.url }}
+        TOOL_CHECKSUM: ${{ steps.pin.outputs.checksum }}
+        TOOL_VERSION: ${{ steps.pin.outputs.version }}
+      run: |
+        curl --fail --silent --show-error --location "$TOOL_URL" -o "$RUNNER_TEMP/uv.tar.gz"
+        python3 scripts/install-tool.py uv "$RUNNER_TEMP/uv.tar.gz" "$RUNNER_TEMP/sdk-toolchain/uv" "$TOOL_CHECKSUM"
+        test "$("$RUNNER_TEMP/sdk-toolchain/uv" --version | cut -d ' ' -f 2)" = "$TOOL_VERSION"
+        echo "$RUNNER_TEMP/sdk-toolchain" >> "$GITHUB_PATH"
+    - name: Select pinned default Python
+      shell: bash
+      env:
+        PINNED_PYTHON: ${{ steps.pin.outputs.python }}
+      run: echo "UV_PYTHON=$PINNED_PYTHON" >> "$GITHUB_ENV"

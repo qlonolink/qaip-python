@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+uv sync --frozen --no-default-groups --group build --no-install-project
+uv build --no-build-isolation --no-sources --python "${UV_PROJECT_ENVIRONMENT:-.venv}/bin/python" --out-dir "${1:-dist}"

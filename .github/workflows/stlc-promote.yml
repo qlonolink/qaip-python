@@ -1,22 +1,75 @@
 name: Promote SDKs
 on:
   workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Exact current staging main SHA whose required CI passed
+        type: string
+        required: true
 permissions:
   contents: read
+  actions: read
 concurrency:
-  group: stlc-promote-main
+  group: stlc-promote
   cancel-in-progress: false
 jobs:
-  promote:
-    if: github.repository == 'qlonolink/qaip-python-staging' && github.ref_name == 'main'
+  acquire:
+    if: github.repository == 'qlonolink/qaip-python-staging' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      artifact_id: ${{ steps.artifact.outputs.artifact-id }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
+          ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
-        id: production
+      - uses: ./.github/actions/setup-toolchain
+      - name: Verify candidate before exporting Git data
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+        run: |
+          uv run --no-project python scripts/release_control.py check-candidate \
+            --candidate "$CANDIDATE_SHA" --trusted-sha "$GITHUB_SHA"
+          git -c core.hooksPath=/dev/null bundle create "$RUNNER_TEMP/candidate.bundle" HEAD
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        id: artifact
+        with:
+          name: promotion-candidate
+          path: ${{ runner.temp }}/candidate.bundle
+          retention-days: 1
+          if-no-files-found: error
+  publish:
+    needs: acquire
+    if: github.repository == 'qlonolink/qaip-python-staging' && github.ref == 'refs/heads/main'
+    environment: stlc-promote
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup-toolchain
+      - name: Receive only this run's immutable candidate artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ needs.acquire.outputs.artifact_id }}
+        run: |
+          uv run --no-project python scripts/transfer_artifact.py "$ARTIFACT_ID" "$RUNNER_TEMP/promotion-input" \
+            --repo "$GITHUB_REPOSITORY" --name promotion-candidate --run-id "$GITHUB_RUN_ID" \
+            --repository-id "$GITHUB_REPOSITORY_ID" --source-sha "$GITHUB_SHA" --file candidate.bundle
+      - name: Recheck candidate before issuing a write token
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+        run: |
+          uv run --no-project python scripts/release_control.py check-candidate \
+            --candidate "$CANDIDATE_SHA" --trusted-sha "$GITHUB_SHA"
+      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1
+        id: token
         with:
           client-id: ${{ secrets.QDEVBOT_CLIENT_ID }}
           private-key: ${{ secrets.QDEVBOT_APP_PRIVATE_KEY }}
@@ -24,22 +77,27 @@ jobs:
           repositories: qaip-python
           permission-contents: write
           permission-workflows: write
-      - name: Fast-forward production to this staging SHA
+      - name: Push only the verified candidate from a fresh bare repository
         env:
-          GH_TOKEN: ${{ steps.production.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
+          APP_TOKEN: ${{ steps.token.outputs.token }}
+          CANDIDATE_SHA: ${{ inputs.candidate_sha }}
         run: |
-          git -c credential.helper='!gh auth git-credential' fetch https://github.com/qlonolink/qaip-python.git main:refs/remotes/production/main
-          git merge-base --is-ancestor production/main HEAD || {
-            echo '::error::公開mainがstagingの祖先ではありません。先にback-syncを実行してください。'
-            exit 1
-          }
-          git -c credential.helper='!gh auth git-credential' push https://github.com/qlonolink/qaip-python.git HEAD:refs/heads/main
-      - name: Notify failure
-        if: failure()
-        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
+          uv run --no-project python scripts/release_control.py promote \
+            --candidate "$CANDIDATE_SHA" --trusted-sha "$GITHUB_SHA" \
+            --bundle "$RUNNER_TEMP/promotion-input/candidate.bundle" \
+            --repository "$RUNNER_TEMP/public-writer.git"
+  notify:
+    needs: [acquire, publish]
+    if: always() && github.ref == 'refs/heads/main' && contains(needs.*.result, 'failure')
+    permissions: {}
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d
         with:
           token: ${{ secrets.SLACK_BOT_TOKEN }}
           method: chat.postMessage
           payload: |
             channel: C087XQH76FK
-            text: "stlc promote failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            text: "SDK workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

@@ -1,31 +1,150 @@
-# This workflow is triggered when a GitHub release is created.
-# It can also be run manually to re-publish to PyPI in case it failed for some reason.
-# You can run this workflow by navigating to https://www.github.com/qlonolink/qaip-python/actions/workflows/publish-pypi.yml
 name: Publish PyPI
 on:
   workflow_dispatch:
-
-  release:
-    types: [published]
-
+    inputs:
+      tag:
+        description: Published stable GitHub Release tag (vX.Y.Z)
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: publish-pypi
+  cancel-in-progress: false
 jobs:
-  publish:
-    name: publish
+  validate:
+    if: github.repository == 'qlonolink/qaip-python' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-
+    timeout-minutes: 5
+    outputs:
+      candidate_sha: ${{ steps.source.outputs.candidate_sha }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Install Rye
-        run: |
-          curl -sSf https://rye.astral.sh/get | bash
-          echo "$HOME/.rye/shims" >> $GITHUB_PATH
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup-toolchain
+      - name: Validate Release source and workflow against trusted main
+        id: source
         env:
-          RYE_VERSION: '0.44.0'
-          RYE_INSTALL_OPTION: '--yes'
-
-      - name: Publish to PyPI
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
         run: |
-          bash ./bin/publish-pypi
+          candidate=$(uv run --no-project python scripts/release_artifacts.py source \
+            --tag "$RELEASE_TAG" --trusted-sha "$GITHUB_SHA")
+          echo "candidate_sha=$candidate" >> "$GITHUB_OUTPUT"
+  build:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      artifact_id: ${{ steps.artifact.outputs.artifact-id }}
+      artifact_digest: ${{ steps.artifact.outputs.artifact-digest }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup-toolchain
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          ref: ${{ needs.validate.outputs.candidate_sha }}
+          path: candidate
+          persist-credentials: false
+      - name: Build without publishing credentials
+        run: candidate/scripts/build "$RUNNER_TEMP/sdk-dist"
+      - name: Verify isolated wheel installation with locked dependencies
         env:
-          PYPI_TOKEN: ${{ secrets.QAIP_PYPI_TOKEN || secrets.PYPI_TOKEN }}
+          RELEASE_TAG: ${{ inputs.tag }}
+        working-directory: candidate
+        run: |
+          uv export --frozen --all-extras --no-default-groups --no-emit-project -o "$RUNNER_TEMP/runtime.txt"
+          uv venv wheel-check
+          uv pip sync --python wheel-check/bin/python --require-hashes "$RUNNER_TEMP/runtime.txt"
+          uv pip install --python wheel-check/bin/python --no-deps "$RUNNER_TEMP"/sdk-dist/*.whl
+          uv pip check --python wheel-check/bin/python
+          test "$(wheel-check/bin/qaip --version)" = "qaip ${RELEASE_TAG#v}"
+          wheel-check/bin/qaip schema local-file-groups
+      - name: Record inspected distribution hashes
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+          CANDIDATE_SHA: ${{ needs.validate.outputs.candidate_sha }}
+        run: |
+          uv run --no-project python scripts/release_artifacts.py record \
+            --tag "$RELEASE_TAG" --candidate "$CANDIDATE_SHA" --trusted-sha "$GITHUB_SHA" \
+            --directory "$RUNNER_TEMP/sdk-dist"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        id: artifact
+        with:
+          name: inspected-distributions
+          path: ${{ runner.temp }}/sdk-dist
+          if-no-files-found: error
+          retention-days: 14
+  upload:
+    needs: [validate, build]
+    if: github.repository == 'qlonolink/qaip-python' && github.ref == 'refs/heads/main'
+    environment: pypi-release
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup-toolchain
+      - name: Receive only this run's immutable inspected artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ needs.build.outputs.artifact_id }}
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          version="${RELEASE_TAG#v}"
+          uv run --no-project python scripts/transfer_artifact.py "$ARTIFACT_ID" "$RUNNER_TEMP/inspected" \
+            --repo "$GITHUB_REPOSITORY" --name inspected-distributions --run-id "$GITHUB_RUN_ID" \
+            --repository-id "$GITHUB_REPOSITORY_ID" --source-sha "$GITHUB_SHA" \
+            --file "qaip-$version-py3-none-any.whl" --file "qaip-$version.tar.gz" --file release-manifest.json
+      - name: Recheck Release and inspected files before upload
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          CANDIDATE_SHA: ${{ needs.validate.outputs.candidate_sha }}
+        run: |
+          test "$(uv run --no-project python scripts/release_artifacts.py source \
+            --tag "$RELEASE_TAG" --trusted-sha "$GITHUB_SHA")" = "$CANDIDATE_SHA"
+          uv run --no-project python scripts/release_artifacts.py verify \
+            --tag "$RELEASE_TAG" --candidate "$CANDIDATE_SHA" --trusted-sha "$GITHUB_SHA" \
+            --directory "$RUNNER_TEMP/inspected"
+      - name: Upload inspected files without rebuilding
+        working-directory: ${{ runner.temp }}
+        env:
+          UV_NO_CONFIG: 'true'
+        run: |
+          uv publish --trusted-publishing always --check-url https://pypi.org/simple/ \
+            "$RUNNER_TEMP"/inspected/*.whl "$RUNNER_TEMP"/inspected/*.tar.gz
+      - name: Compare PyPI hashes with inspected files
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+          CANDIDATE_SHA: ${{ needs.validate.outputs.candidate_sha }}
+        run: |
+          uv run --no-project python scripts/release_artifacts.py pypi \
+            --tag "$RELEASE_TAG" --candidate "$CANDIDATE_SHA" --trusted-sha "$GITHUB_SHA" \
+            --directory "$RUNNER_TEMP/inspected"
+  notify:
+    needs: [validate, build, upload]
+    if: always() && github.ref == 'refs/heads/main' && contains(needs.*.result, 'failure')
+    permissions: {}
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d
+        with:
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          method: chat.postMessage
+          payload: |
+            channel: C087XQH76FK
+            text: "SDK workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

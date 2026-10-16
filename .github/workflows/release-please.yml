@@ -23,7 +23,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.release.outputs.tag_name }}
           GH_REPO: ${{ github.repository }}
-        run: gh workflow run publish-pypi.yml --ref "$TAG"
+        run: gh workflow run publish-pypi.yml --ref main -f "tag=$TAG"
       - name: Notify failure
         if: failure()
         uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0

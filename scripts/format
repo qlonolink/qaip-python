@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
-
-set -e
-
+set -euo pipefail
 cd "$(dirname "$0")/.."
-
-echo "==> Running formatters"
-rye run format
+uv run --no-sync ruff format
+uv run --no-sync python scripts/utils/ruffen-docs.py README.md api.md
+uv run --no-sync ruff check --fix .
+uv run --no-sync ruff format

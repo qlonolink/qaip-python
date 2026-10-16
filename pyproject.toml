@@ -46,55 +46,33 @@ Repository = "https://github.com/qlonolink/qaip-python"
 [project.optional-dependencies]
 aiohttp = ["aiohttp", "httpx_aiohttp>=0.1.9"]
 
-[tool.rye]
-managed = true
-# version pins are in requirements-dev.lock
-dev-dependencies = [
+[dependency-groups]
+dev = [
+    "anyio==4.12.1",
     "pyright==1.1.399",
     "mypy==1.17",
-    "respx",
-    "pytest",
-    "pytest-asyncio",
-    "ruff",
-    "time-machine",
-    "nox",
+    "respx==0.22.0",
+    "pytest==8.4.2",
+    "pytest-asyncio==1.2.0",
+    "ruff==0.14.13",
+    "time-machine==2.19.0",
+    "nox==2025.11.12",
     "dirty-equals>=0.6.0",
     "importlib-metadata>=6.7.0",
     "rich>=13.7.1",
     "pytest-xdist>=3.6.1",
 ]
+build = ["hatchling==1.26.3", "hatch-fancy-pypi-readme==25.1.0", "editables==0.5"]
+pydantic-v1 = ["pydantic<2"]
+pydantic-v2 = ["pydantic==2.12.5"]
 
-[tool.rye.scripts]
-format = { chain = [
-  "format:ruff",
-  "format:docs",
-  "fix:ruff",
-  # run formatting again to fix any inconsistencies when imports are stripped
-  "format:ruff",
-]}
-"format:docs" = "bash -c 'python scripts/utils/ruffen-docs.py README.md $(find . -type f -name api.md)'"
-"format:ruff" = "ruff format"
-
-"lint" = { chain = [
-  "check:ruff",
-  "typecheck",
-  "check:importable",
-]}
-"check:ruff" = "ruff check ."
-"fix:ruff" = "ruff check --fix ."
-
-"check:importable" = "python -c 'import qaip'"
-
-typecheck = { chain = [
-  "typecheck:pyright",
-  "typecheck:mypy"
-]}
-"typecheck:pyright" = "pyright"
-"typecheck:verify-types" = "pyright --verifytypes qaip --ignoreexternal"
-"typecheck:mypy" = "mypy ."
+[tool.uv]
+exclude-newer = "2026-10-09T00:00:00Z"
+default-groups = ["dev", "build", "pydantic-v2"]
+conflicts = [[{ group = "pydantic-v1" }, { group = "pydantic-v2" }]]
 
 [build-system]
-requires = ["hatchling==1.26.3", "hatch-fancy-pypi-readme"]
+requires = ["hatchling==1.26.3", "hatch-fancy-pypi-readme==25.1.0"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]
@@ -147,10 +125,14 @@ filterwarnings = [
 # default in strict mode as they are experimental and niche.
 typeCheckingMode = "strict"
 pythonVersion = "3.9"
+extraPaths = ["scripts"]
 
 exclude = [
     "_dev",
     ".venv",
+    ".venv-pydantic-v1",
+    ".venv-build",
+    "wheel-check",
     ".nox",
     ".git",
 ]
@@ -162,7 +144,9 @@ reportImportCycles = false
 reportPrivateUsage = false
 
 [tool.mypy]
+python_version = "3.9"
 pretty = true
+mypy_path = ["scripts"]
 show_error_codes = true
 
 # Exclude _files.py because mypy isn't smart enough to apply
@@ -171,7 +155,7 @@ show_error_codes = true
 #
 # We also exclude our `tests` as mypy doesn't always infer
 # types correctly and Pyright will still catch any type errors.
-exclude = ["src/qaip/_files.py", "_dev/.*.py", "tests/.*"]
+exclude = ["src/qaip/_files.py", "_dev/.*.py", "tests/.*", '.venv-pydantic-v1/', '.venv-build/', "wheel-check/"]
 
 strict_equality = true
 implicit_reexport = true
