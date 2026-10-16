@@ -61,6 +61,11 @@
   ],
   "release-type": "python",
   "extra-files": [
-    "src/qaip/_version.py"
+    "src/qaip/_version.py",
+    {
+      "type": "toml",
+      "path": "uv.lock",
+      "jsonpath": "$.package[?(@.name.value === 'qaip')].version"
+    }
   ]
 }
