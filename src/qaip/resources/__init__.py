@@ -8,6 +8,14 @@ from .agent import (
     AgentResourceWithStreamingResponse,
     AsyncAgentResourceWithStreamingResponse,
 )
+from .drive import (
+    DriveResource,
+    AsyncDriveResource,
+    DriveResourceWithRawResponse,
+    AsyncDriveResourceWithRawResponse,
+    DriveResourceWithStreamingResponse,
+    AsyncDriveResourceWithStreamingResponse,
+)
 from .crawls import (
     CrawlsResource,
     AsyncCrawlsResource,
@@ -134,6 +142,12 @@ __all__ = [
     "AsyncAPIKeysResourceWithRawResponse",
     "APIKeysResourceWithStreamingResponse",
     "AsyncAPIKeysResourceWithStreamingResponse",
+    "DriveResource",
+    "AsyncDriveResource",
+    "DriveResourceWithRawResponse",
+    "AsyncDriveResourceWithRawResponse",
+    "DriveResourceWithStreamingResponse",
+    "AsyncDriveResourceWithStreamingResponse",
     "ConversationsResource",
     "AsyncConversationsResource",
     "ConversationsResourceWithRawResponse",

@@ -15,4 +15,6 @@ IssuableAPIKeyScope: TypeAlias = Literal[
     "policy:authz:manage",
     "authz:grant",
     "app_access:resolve",
+    "drive:read",
+    "drive:write",
 ]

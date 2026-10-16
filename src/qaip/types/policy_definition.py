@@ -97,6 +97,8 @@ class PolicyDefinition(BaseModel):
     skipped_boundaries: List[
         Literal[
             "initial_input",
+            "initial_input_system",
+            "initial_input_assistant",
             "rag_query",
             "rag_result",
             "google_query",
@@ -108,6 +110,8 @@ class PolicyDefinition(BaseModel):
             "chartmetric_query",
             "chartmetric_result",
             "completions_messages",
+            "completions_messages_system",
+            "completions_messages_assistant",
             "completions_query",
             "completions_docs",
         ]

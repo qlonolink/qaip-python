@@ -116,7 +116,9 @@ class ClientCompletionParams(TypedDict, total=False):
     before anything leaves QAIP for an external provider: the retrieval query sent
     to the embedding API, the retrieved knowledge-base chunks (title / URL / text)
     and the conversation `messages` sent to the LLM. The redaction boundaries are
-    `completions_query`, `completions_docs` and `completions_messages`; a policy can
+    `completions_query`, `completions_docs`, `completions_messages`,
+    `completions_messages_system` (the `system` role messages) and
+    `completions_messages_assistant` (the `assistant` role messages); a policy can
     exclude some of them via `skippedBoundaries`.
 
     When omitted or `null` (the default), **no redaction is performed and the input

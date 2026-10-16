@@ -79,7 +79,10 @@ class LegacyFullAgentRunInput(TypedDict, total=False):
     corresponding external model or embedding provider. The original text is still
     stored in `agent_runs.input` and emitted in `RUN_STARTED` for UI display; only
     the copy sent to the external provider is masked. Restoration mappings are never
-    stored.
+    stored. The conversation history is split into the `initial_input_system`
+    (`system` messages), `initial_input_assistant` (`assistant` messages) and
+    `initial_input` (every other role) boundaries, so a policy can leave some of
+    them unredacted via `skippedBoundaries`.
 
     Errors:
 

@@ -97,6 +97,59 @@ Methods:
 - <code title="post /api-keys/expiring">client.api_keys.<a href="./src/qaip/resources/api_keys.py">create_expiring</a>(\*\*<a href="src/qaip/types/api_key_create_expiring_params.py">params</a>) -> <a href="./src/qaip/types/created_expiring_api_key.py">CreatedExpiringAPIKey</a></code>
 - <code title="delete /api-keys/{api_key_id}">client.api_keys.<a href="./src/qaip/resources/api_keys.py">revoke</a>(api_key_id) -> None</code>
 
+# Drive
+
+Types:
+
+```python
+from qaip.types import (
+    AvailableReferenceSource,
+    CompleteTransferRequest,
+    CreateTransferRequest,
+    Display,
+    DisplayManifest,
+    Displays,
+    DrivePagination,
+    File,
+    Files,
+    Folder,
+    Folders,
+    Page,
+    PageAsset,
+    PartReceipt,
+    ReferenceEntry,
+    ReferenceSource,
+    References,
+    Revision,
+    Revisions,
+    SearchEvidence,
+    SearchPagination,
+    SearchRequest,
+    SearchResponse,
+    SearchResult,
+    SearchSource,
+    Transfer,
+)
+```
+
+Methods:
+
+- <code title="post /drive/transfers/{transfer_id}/complete">client.drive.<a href="./src/qaip/resources/drive.py">complete_transfer</a>(transfer_id, \*\*<a href="src/qaip/types/drive_complete_transfer_params.py">params</a>) -> <a href="./src/qaip/types/transfer.py">Transfer</a></code>
+- <code title="post /drive/transfers">client.drive.<a href="./src/qaip/resources/drive.py">create_transfer</a>(\*\*<a href="src/qaip/types/drive_create_transfer_params.py">params</a>) -> <a href="./src/qaip/types/transfer.py">Transfer</a></code>
+- <code title="get /drive/files/{file_id}/original">client.drive.<a href="./src/qaip/resources/drive.py">download_original</a>(file_id, \*\*<a href="src/qaip/types/drive_download_original_params.py">params</a>) -> BinaryAPIResponse</code>
+- <code title="get /drive/files/{file_id}/displays/{display_id}/pages/{page_id}/png">client.drive.<a href="./src/qaip/resources/drive.py">download_page_png</a>(page_id, \*, file_id, display_id) -> BinaryAPIResponse</code>
+- <code title="get /drive/files/{file_id}/displays/{display_id}/pages/{page_id}/svg">client.drive.<a href="./src/qaip/resources/drive.py">download_page_svg</a>(page_id, \*, file_id, display_id) -> BinaryAPIResponse</code>
+- <code title="get /drive/files/{file_id}/displays">client.drive.<a href="./src/qaip/resources/drive.py">list_displays</a>(file_id, \*\*<a href="src/qaip/types/drive_list_displays_params.py">params</a>) -> <a href="./src/qaip/types/displays.py">Displays</a></code>
+- <code title="get /drive/files">client.drive.<a href="./src/qaip/resources/drive.py">list_files</a>(\*\*<a href="src/qaip/types/drive_list_files_params.py">params</a>) -> <a href="./src/qaip/types/files.py">Files</a></code>
+- <code title="get /drive/folders">client.drive.<a href="./src/qaip/resources/drive.py">list_folders</a>(\*\*<a href="src/qaip/types/drive_list_folders_params.py">params</a>) -> <a href="./src/qaip/types/folders.py">Folders</a></code>
+- <code title="get /drive/files/{file_id}/revisions">client.drive.<a href="./src/qaip/resources/drive.py">list_revisions</a>(file_id, \*\*<a href="src/qaip/types/drive_list_revisions_params.py">params</a>) -> <a href="./src/qaip/types/revisions.py">Revisions</a></code>
+- <code title="get /drive/files/{file_id}/displays/{display_id}">client.drive.<a href="./src/qaip/resources/drive.py">retrieve_display</a>(display_id, \*, file_id) -> <a href="./src/qaip/types/display_manifest.py">DisplayManifest</a></code>
+- <code title="get /drive/files/{file_id}">client.drive.<a href="./src/qaip/resources/drive.py">retrieve_file</a>(file_id) -> <a href="./src/qaip/types/file.py">File</a></code>
+- <code title="get /drive/files/{file_id}/references">client.drive.<a href="./src/qaip/resources/drive.py">retrieve_references</a>(file_id, \*\*<a href="src/qaip/types/drive_retrieve_references_params.py">params</a>) -> <a href="./src/qaip/types/references.py">References</a></code>
+- <code title="get /drive/transfers/{transfer_id}">client.drive.<a href="./src/qaip/resources/drive.py">retrieve_transfer</a>(transfer_id) -> <a href="./src/qaip/types/transfer.py">Transfer</a></code>
+- <code title="post /drive/search">client.drive.<a href="./src/qaip/resources/drive.py">search</a>(\*\*<a href="src/qaip/types/drive_search_params.py">params</a>) -> <a href="./src/qaip/types/search_response.py">SearchResponse</a></code>
+- <code title="put /drive/transfers/{transfer_id}/parts/{part_number}">client.drive.<a href="./src/qaip/resources/drive.py">upload_part</a>(part_number, body, \*, transfer_id, \*\*<a href="src/qaip/types/drive_upload_part_params.py">params</a>) -> <a href="./src/qaip/types/part_receipt.py">PartReceipt</a></code>
+
 # Conversations
 
 Types:

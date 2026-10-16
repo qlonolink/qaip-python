@@ -62,6 +62,7 @@ from .types.shared_params.metadata_filter_group import MetadataFilterGroup
 if TYPE_CHECKING:
     from .resources import (
         agent,
+        drive,
         crawls,
         githubs,
         notions,
@@ -78,6 +79,7 @@ if TYPE_CHECKING:
         redaction_policies,
     )
     from .resources.agent import AgentResource, AsyncAgentResource
+    from .resources.drive import DriveResource, AsyncDriveResource
     from .resources.crawls import CrawlsResource, AsyncCrawlsResource
     from .resources.githubs import GithubsResource, AsyncGithubsResource
     from .resources.notions import NotionsResource, AsyncNotionsResource
@@ -173,6 +175,12 @@ class Qaip(SyncAPIClient):
         from .resources.api_keys import APIKeysResource
 
         return APIKeysResource(self)
+
+    @cached_property
+    def drive(self) -> DriveResource:
+        from .resources.drive import DriveResource
+
+        return DriveResource(self)
 
     @cached_property
     def conversations(self) -> ConversationsResource:
@@ -447,7 +455,9 @@ class Qaip(SyncAPIClient):
               before anything leaves QAIP for an external provider: the retrieval query sent
               to the embedding API, the retrieved knowledge-base chunks (title / URL / text)
               and the conversation `messages` sent to the LLM. The redaction boundaries are
-              `completions_query`, `completions_docs` and `completions_messages`; a policy can
+              `completions_query`, `completions_docs`, `completions_messages`,
+              `completions_messages_system` (the `system` role messages) and
+              `completions_messages_assistant` (the `assistant` role messages); a policy can
               exclude some of them via `skippedBoundaries`.
 
               When omitted or `null` (the default), **no redaction is performed and the input
@@ -960,6 +970,12 @@ class AsyncQaip(AsyncAPIClient):
         return AsyncAPIKeysResource(self)
 
     @cached_property
+    def drive(self) -> AsyncDriveResource:
+        from .resources.drive import AsyncDriveResource
+
+        return AsyncDriveResource(self)
+
+    @cached_property
     def conversations(self) -> AsyncConversationsResource:
         from .resources.conversations import AsyncConversationsResource
 
@@ -1232,7 +1248,9 @@ class AsyncQaip(AsyncAPIClient):
               before anything leaves QAIP for an external provider: the retrieval query sent
               to the embedding API, the retrieved knowledge-base chunks (title / URL / text)
               and the conversation `messages` sent to the LLM. The redaction boundaries are
-              `completions_query`, `completions_docs` and `completions_messages`; a policy can
+              `completions_query`, `completions_docs`, `completions_messages`,
+              `completions_messages_system` (the `system` role messages) and
+              `completions_messages_assistant` (the `assistant` role messages); a policy can
               exclude some of them via `skippedBoundaries`.
 
               When omitted or `null` (the default), **no redaction is performed and the input
@@ -1703,6 +1721,12 @@ class QaipWithRawResponse:
         return APIKeysResourceWithRawResponse(self._client.api_keys)
 
     @cached_property
+    def drive(self) -> drive.DriveResourceWithRawResponse:
+        from .resources.drive import DriveResourceWithRawResponse
+
+        return DriveResourceWithRawResponse(self._client.drive)
+
+    @cached_property
     def conversations(self) -> conversations.ConversationsResourceWithRawResponse:
         from .resources.conversations import ConversationsResourceWithRawResponse
 
@@ -1826,6 +1850,12 @@ class AsyncQaipWithRawResponse:
         from .resources.api_keys import AsyncAPIKeysResourceWithRawResponse
 
         return AsyncAPIKeysResourceWithRawResponse(self._client.api_keys)
+
+    @cached_property
+    def drive(self) -> drive.AsyncDriveResourceWithRawResponse:
+        from .resources.drive import AsyncDriveResourceWithRawResponse
+
+        return AsyncDriveResourceWithRawResponse(self._client.drive)
 
     @cached_property
     def conversations(self) -> conversations.AsyncConversationsResourceWithRawResponse:
@@ -1953,6 +1983,12 @@ class QaipWithStreamedResponse:
         return APIKeysResourceWithStreamingResponse(self._client.api_keys)
 
     @cached_property
+    def drive(self) -> drive.DriveResourceWithStreamingResponse:
+        from .resources.drive import DriveResourceWithStreamingResponse
+
+        return DriveResourceWithStreamingResponse(self._client.drive)
+
+    @cached_property
     def conversations(self) -> conversations.ConversationsResourceWithStreamingResponse:
         from .resources.conversations import ConversationsResourceWithStreamingResponse
 
@@ -2076,6 +2112,12 @@ class AsyncQaipWithStreamedResponse:
         from .resources.api_keys import AsyncAPIKeysResourceWithStreamingResponse
 
         return AsyncAPIKeysResourceWithStreamingResponse(self._client.api_keys)
+
+    @cached_property
+    def drive(self) -> drive.AsyncDriveResourceWithStreamingResponse:
+        from .resources.drive import AsyncDriveResourceWithStreamingResponse
+
+        return AsyncDriveResourceWithStreamingResponse(self._client.drive)
 
     @cached_property
     def conversations(self) -> conversations.AsyncConversationsResourceWithStreamingResponse:
