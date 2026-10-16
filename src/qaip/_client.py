@@ -362,6 +362,7 @@ class Qaip(SyncAPIClient):
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
         grounding: bool | Omit = omit,
+        include_redacted_input: bool | Omit = omit,
         include_retrieved: bool | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
@@ -418,6 +419,15 @@ class Qaip(SyncAPIClient):
               Only effective when the completion model is a Gemini model and the
               `gemini_grounding` feature is enabled on the server; otherwise this flag is
               ignored.
+
+          include_redacted_input: Whether to return how the latest user message was redacted (see
+              `RedactedInput`), e.g. to show the end-user their question in redacted form. The
+              messages are redacted first, and both the retrieval query and the LLM prompt are
+              built from the redacted text. Only effective with `redaction_policy_id`. The
+              JSON response carries it in the top-level `redacted_input`; the SSE stream emits
+              one CUSTOM event named `redaction_applied` as soon as the messages are redacted,
+              before the search and the answer text. The text/plain stream cannot carry it,
+              and it is not stored in the conversation history.
 
           include_retrieved: Whether to return, separately from `citations`, every knowledge-base chunk that
               was retrieved for this request and passed to the model as context (after
@@ -526,6 +536,7 @@ class Qaip(SyncAPIClient):
                     "domains": domains,
                     "file_types": file_types,
                     "grounding": grounding,
+                    "include_redacted_input": include_redacted_input,
                     "include_retrieved": include_retrieved,
                     "limit": limit,
                     "metadata": metadata,
@@ -1158,6 +1169,7 @@ class AsyncQaip(AsyncAPIClient):
         domains: SequenceNotStr[str] | Omit = omit,
         file_types: List[FileType] | Omit = omit,
         grounding: bool | Omit = omit,
+        include_redacted_input: bool | Omit = omit,
         include_retrieved: bool | Omit = omit,
         limit: int | Omit = omit,
         metadata: MetadataFilterGroup | Omit = omit,
@@ -1214,6 +1226,15 @@ class AsyncQaip(AsyncAPIClient):
               Only effective when the completion model is a Gemini model and the
               `gemini_grounding` feature is enabled on the server; otherwise this flag is
               ignored.
+
+          include_redacted_input: Whether to return how the latest user message was redacted (see
+              `RedactedInput`), e.g. to show the end-user their question in redacted form. The
+              messages are redacted first, and both the retrieval query and the LLM prompt are
+              built from the redacted text. Only effective with `redaction_policy_id`. The
+              JSON response carries it in the top-level `redacted_input`; the SSE stream emits
+              one CUSTOM event named `redaction_applied` as soon as the messages are redacted,
+              before the search and the answer text. The text/plain stream cannot carry it,
+              and it is not stored in the conversation history.
 
           include_retrieved: Whether to return, separately from `citations`, every knowledge-base chunk that
               was retrieved for this request and passed to the model as context (after
@@ -1322,6 +1343,7 @@ class AsyncQaip(AsyncAPIClient):
                     "domains": domains,
                     "file_types": file_types,
                     "grounding": grounding,
+                    "include_redacted_input": include_redacted_input,
                     "include_retrieved": include_retrieved,
                     "limit": limit,
                     "metadata": metadata,

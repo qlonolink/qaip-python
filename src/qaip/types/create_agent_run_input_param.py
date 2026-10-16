@@ -30,8 +30,9 @@ class LegacyFullAgentRunInput(TypedDict, total=False):
 
     This remains a free-form object because AG-UI clients and server-side
     integrations may add extension keys. Known QAIP keys include `filters`,
-    `authz_policy`, `principal_id`, `grounding`, `retrieval_mode`, and
-    `include_retrieved`; their values are validated by the run service before use.
+    `authz_policy`, `principal_id`, `grounding`, `retrieval_mode`,
+    `include_retrieved` and `include_redacted_input`; their values are validated by
+    the run service before use.
 
     `retrieval_mode` controls only the built-in QAIP knowledge-base `search` tool.
     Its accepted values are `required` (the default when omitted) and `disabled`. In
@@ -50,6 +51,13 @@ class LegacyFullAgentRunInput(TypedDict, total=False):
     `citations`; the model prompt itself carries a shortened excerpt of each chunk,
     so `retrieved` identifies which chunks were supplied rather than reproducing the
     prompt verbatim. Non-boolean values are treated as `false`.
+
+    `include_redacted_input` (boolean, default `false`) makes a run with
+    `redactionPolicyId` emit one CUSTOM event named `redaction_applied` as soon as
+    the conversation is redacted, before the search and the answer. Its `value` is a
+    `RedactedInput`: the latest user message after redaction, with per-category mask
+    counts. Non-boolean values are treated as `false`; runs without a redaction
+    policy or without a user message never emit it.
     """
 
     input_history_mode: Annotated[Literal["legacy_full"], PropertyInfo(alias="inputHistoryMode")]
@@ -171,7 +179,9 @@ class DeltaV1AgentRunInput(TypedDict, total=False):
     `retrieval_mode` accepts `required` (default) or `disabled`; `include_retrieved`
     (boolean) adds one or more CUSTOM events named `retrieved` listing every chunk
     the built-in `search` tool returned to the model (concatenate their values in
-    order). The server validates known QAIP keys before use.
+    order); `include_redacted_input` (boolean) adds a CUSTOM event named
+    `redaction_applied` carrying a `RedactedInput` when the run has a redaction
+    policy. The server validates known QAIP keys before use.
     """
 
     messages: Iterable[Dict[str, object]]

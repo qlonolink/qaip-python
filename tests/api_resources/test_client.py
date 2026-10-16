@@ -68,6 +68,7 @@ class TestClient:
             domains=["string"],
             file_types=["html"],
             grounding=True,
+            include_redacted_input=True,
             include_retrieved=True,
             limit=1,
             metadata={
@@ -587,6 +588,7 @@ class TestAsyncClient:
             domains=["string"],
             file_types=["html"],
             grounding=True,
+            include_redacted_input=True,
             include_retrieved=True,
             limit=1,
             metadata={

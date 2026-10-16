@@ -62,6 +62,18 @@ class ClientCompletionParams(TypedDict, total=False):
     ignored.
     """
 
+    include_redacted_input: bool
+    """
+    Whether to return how the latest user message was redacted (see
+    `RedactedInput`), e.g. to show the end-user their question in redacted form. The
+    messages are redacted first, and both the retrieval query and the LLM prompt are
+    built from the redacted text. Only effective with `redaction_policy_id`. The
+    JSON response carries it in the top-level `redacted_input`; the SSE stream emits
+    one CUSTOM event named `redaction_applied` as soon as the messages are redacted,
+    before the search and the answer text. The text/plain stream cannot carry it,
+    and it is not stored in the conversation history.
+    """
+
     include_retrieved: bool
     """
     Whether to return, separately from `citations`, every knowledge-base chunk that
