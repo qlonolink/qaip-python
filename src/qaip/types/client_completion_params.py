@@ -119,7 +119,10 @@ class ClientCompletionParams(TypedDict, total=False):
     `completions_query`, `completions_docs`, `completions_messages`,
     `completions_messages_system` (the `system` role messages) and
     `completions_messages_assistant` (the `assistant` role messages); a policy can
-    exclude some of them via `skippedBoundaries`.
+    exclude some of them via `skippedBoundaries`. The `messages` are redacted first
+    and the retrieval query is built from the redacted user messages, so
+    `completions_query` only applies when the policy excludes
+    `completions_messages`.
 
     When omitted or `null` (the default), **no redaction is performed and the input
     is sent to the external provider as-is**. This is an explicit API contract, not
