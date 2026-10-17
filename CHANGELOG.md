@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.1](https://github.com/qlonolink/qaip-python/compare/v0.18.0...v0.18.1) (2026-10-17)
+
+
+### Bug Fixes
+
+* 配布物の余分なgitignore生成を止める ([#4](https://github.com/qlonolink/qaip-python/issues/4)) ([524e6c3](https://github.com/qlonolink/qaip-python/commit/524e6c37bccb895f5b42389c2b7bbfd14bade717))
+
 ## [0.18.0](https://github.com/qlonolink/qaip-python/compare/v0.17.0...v0.18.0) (2026-10-17)
 
 
