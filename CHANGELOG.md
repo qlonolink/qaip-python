@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.18.0](https://github.com/qlonolink/qaip-python/compare/v0.17.0...v0.18.0) (2026-10-17)
+
+
+### Features
+
+* /completions で会話の発言を先に秘匿化し、検索クエリも秘匿化した後の発言から作る ([#8402](https://github.com/qlonolink/qaip-python/issues/8402)) ([6d8c1b3](https://github.com/qlonolink/qaip-python/commit/6d8c1b3f6ae108c0540b80532a502cb88757e13d))
+* SDK検証の依存を固定しPyPI公開をOIDCへ分離 ([#2](https://github.com/qlonolink/qaip-python/issues/2)) ([76867c3](https://github.com/qlonolink/qaip-python/commit/76867c3ea7a04022504d97a65b58fb37393002cc))
+* 現行API定義をSDKへ反映し削除開始の再試行を停止 ([#1](https://github.com/qlonolink/qaip-python/issues/1)) ([2b388c4](https://github.com/qlonolink/qaip-python/commit/2b388c48b200932c218e3bc02af14daf4207d25c))
+* 精査・即答で、利用者の発言を伏せた後の文面を opt-in で呼び出し元へ返す ([#8403](https://github.com/qlonolink/qaip-python/issues/8403)) ([2046a98](https://github.com/qlonolink/qaip-python/commit/2046a980b36352c0eb616fc6252a27611173a2a1))
+
+
+### Bug Fixes
+
+* SDK反映で変更されない既存indexを保持する ([#8399](https://github.com/qlonolink/qaip-python/issues/8399)) ([8a35da3](https://github.com/qlonolink/qaip-python/commit/8a35da302b0a1305f101b9a1eaf9a9a7ec5d787a))
+* リリース時にuv.lockのSDK版番号も更新する ([#3](https://github.com/qlonolink/qaip-python/issues/3)) ([d874916](https://github.com/qlonolink/qaip-python/commit/d8749162555d5af57d2c5da28a539d01558bdb21))
+
 ## 0.17.0 (2026-09-17)
 
 Full Changelog: [v0.16.0...v0.17.0](https://github.com/qlonolink/qaip-python/compare/v0.16.0...v0.17.0)
