@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.2](https://github.com/qlonolink/qaip-python/compare/v0.18.1...v0.18.2) (2026-10-18)
+
+
+### Chores
+
+* SDK失敗通知の送信先をalert-qdev-prodへ変更 ([#31](https://github.com/qlonolink/qaip-python/issues/31)) ([44a1adb](https://github.com/qlonolink/qaip-python/commit/44a1adbd9989f86c99ccd670f9db98725bc76165))
+
 ## [0.18.1](https://github.com/qlonolink/qaip-python/compare/v0.18.0...v0.18.1) (2026-10-17)
 
 
