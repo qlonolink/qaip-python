@@ -31,5 +31,5 @@ jobs:
           token: ${{ secrets.SLACK_BOT_TOKEN }}
           method: chat.postMessage
           payload: |
-            channel: C087XQH76FK
+            channel: C09KBK260NL
             text: "SDK release failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
